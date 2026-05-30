@@ -606,6 +606,8 @@ app.post("/api/admin/reissue-delivery", requireAdminSecret, async (req, res) => 
 });
 
 app.get("/api/blinks", (req, res) => {
+    // Allow public read-only access from any origin for listing blinks.
+    res.setHeader("Access-Control-Allow-Origin", "*");
     res.json(store.blinks.map((blink) => ({
         ...blink,
         blink_url: createBlinkUrl(blink.id)
@@ -734,7 +736,8 @@ app.get("/api/blink/:id", (req, res) => {
     if (!blink) {
         return res.status(404).json({ error: "Blink not found." });
     }
-
+    // Allow public read-only access to individual blink details from any origin.
+    res.setHeader("Access-Control-Allow-Origin", "*");
     blink.total_clicks += 1;
     saveStore();
     logWebhookEvent({ type: "action_get", blink_id: blink.id });
