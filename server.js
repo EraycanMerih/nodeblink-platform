@@ -4,6 +4,7 @@ const path = require("path");
 const express = require("express");
 const cors = require("cors");
 const multer = require("multer");
+const rateLimit = require("express-rate-limit");
 const {
     Connection,
     PublicKey,
@@ -346,13 +347,30 @@ app.get("/admin", (req, res) => res.redirect(301, ADMIN_ENTRY_PATH));
 app.get("/admin.html", (req, res) => res.redirect(301, ADMIN_ENTRY_PATH));
 
 app.use(express.static(__dirname));
-app.use("/uploads", express.static(UPLOAD_DIR));
+// Do NOT serve the entire uploads directory statically. Asset files (purchased
+// downloads) must be delivered only via signed download links. Expose only
+// safe banner image assets via a controlled route.
+app.get("/uploads/:file", (req, res) => {
+    const file = String(req.params.file || "").trim();
+    // Prevent path traversal
+    const safeName = path.basename(file);
+    const ext = path.extname(safeName).toLowerCase();
+    const allowedImageExts = new Set([".png", ".jpg", ".jpeg", ".webp", ".svg"]);
+    if (!allowedImageExts.has(ext)) {
+        return res.status(404).end();
+    }
+    const filePath = path.join(UPLOAD_DIR, safeName);
+    if (!fs.existsSync(filePath)) return res.status(404).end();
+    return res.sendFile(filePath);
+});
 
 app.get("/api/metrics", (req, res) => {
     res.json(computeMetrics());
 });
 
-app.post("/api/admin/login", express.json(), (req, res) => {
+const loginLimiter = rateLimit({ windowMs: 15 * 60 * 1000, max: ADMIN_LOGIN_MAX_ATTEMPTS, standardHeaders: true, legacyHeaders: false });
+
+app.post("/api/admin/login", loginLimiter, express.json(), (req, res) => {
     if (!ADMIN_SECRET) {
         return res.status(503).json({ error: "Access denied." });
     }
@@ -590,7 +608,9 @@ app.get("/api/blinks", (req, res) => {
     })));
 });
 
-app.post("/api/blinks", upload.fields([
+const createBlinkLimiter = rateLimit({ windowMs: 60 * 1000, max: 10, standardHeaders: true, legacyHeaders: false });
+
+app.post("/api/blinks", createBlinkLimiter, upload.fields([
     { name: "asset_file", maxCount: 1 },
     { name: "banner_file", maxCount: 1 }
 ]), (req, res) => {
@@ -663,9 +683,10 @@ app.post("/api/blinks", upload.fields([
 
     const id = crypto.randomUUID();
     const maxQuantity = Math.max(0, Math.floor(numericStock));
-    const assetFileUrl = assetFile
-        ? `${ASSET_BASE_URL}/uploads/${assetFile.filename}`
-        : null;
+    // Asset files should NOT be exposed directly. Leave `asset_file_url` null
+    // until a purchase generates a signed download link. Banner images are
+    // safe to expose via the controlled `/uploads/:file` route.
+    const assetFileUrl = null;
     const bannerFileUrl = bannerFile
         ? `${ASSET_BASE_URL}/uploads/${bannerFile.filename}`
         : null;
