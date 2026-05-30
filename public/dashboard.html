@@ -171,6 +171,14 @@
         @media (max-width: 860px) {
             .desktop-nav { display: none; }
         }
+        @media (max-width: 640px) {
+            .panel { border-radius: 12px; padding: 12px; }
+            h1 { font-size: 1.5rem; }
+            h2 { font-size: 1.125rem; }
+            .preview-banner img { height: 96px; }
+            .btn-primary, .btn-secondary { padding: 10px; font-size: 14px; }
+            .table th, .table td { padding: 10px; font-size: 13px; }
+        }
     </style>
 </head>
 <body>
@@ -265,7 +273,7 @@
                     <div>
                         <p class="uppercase text-xs tracking-[0.25em] muted mb-2">Create Blink</p>
                         <h2 class="text-3xl font-semibold">Create a new checkout link</h2>
-                        <p class="muted mt-2">Simple form. Banner image is optional. Stock 0 means unlimited.</p>
+                        <!-- brief info removed per request -->
                     </div>
 
                     <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
@@ -414,9 +422,7 @@
                     <div id="activityFeed" class="space-y-3 text-sm muted">
                         <p>No activity yet.</p>
                     </div>
-                    <div class="mt-5 rounded-xl border border-slate-200 bg-slate-50 p-4 text-sm text-slate-600">
-                        The dashboard now focuses on creating and tracking Blinks. Extra admin details stay out of the way.
-                    </div>
+                    <!-- explanatory copy removed per request -->
                 </div>
 
             </section>
@@ -581,16 +587,38 @@
 
         const connectWallet = async () => {
             const provider = resolveProvider();
+            const ua = navigator.userAgent || "";
+            const isIOS = /iPad|iPhone|iPod/.test(ua) && !window.MSStream;
+            const isSafari = /^((?!chrome|android).)*safari/i.test(ua);
+
             if (!provider) {
-                showWalletGate("No Solana wallet detected. Install Phantom to continue.");
+                if (isIOS || isSafari) {
+                    showWalletGate("Phantom and many wallets are limited in Safari/iOS. Use a supported browser (Chrome/Firefox) or open the Phantom mobile app.");
+                } else {
+                    showWalletGate("No Solana wallet detected. Install Phantom (https://phantom.app/) or use a supported wallet.");
+                }
                 return;
             }
+
             state.provider = provider;
+            attachProviderListeners(provider);
+
             try {
-                const response = await provider.connect();
-                if (response?.publicKey) handleConnected(response.publicKey.toString());
+                // Request only a connection (publicKey). Avoid requesting extra scopes.
+                const response = await (provider.connect ? provider.connect() : provider.request && provider.request({ method: 'connect' }));
+                if (response?.publicKey) {
+                    handleConnected(response.publicKey.toString());
+                    return;
+                }
+                showWalletGate("Connect your wallet to continue.");
             } catch (error) {
-                showToast(error.message || "Wallet connection rejected.");
+                const msg = (error && (error.message || error.toString())) || "Wallet connection failed.";
+                if (isIOS || isSafari) {
+                    showWalletGate("Wallet connect failed in Safari/iOS. Try opening the Phantom app or switching to a supported browser.");
+                } else {
+                    showWalletGate(msg);
+                }
+                showToast(msg);
             }
         };
 
@@ -843,19 +871,29 @@
         const startWalletFlow = async () => {
             const provider = resolveProvider();
             state.provider = provider;
+            const ua = navigator.userAgent || "";
+            const isIOS = /iPad|iPhone|iPod/.test(ua) && !window.MSStream;
+            const isSafari = /^((?!chrome|android).)*safari/i.test(ua);
+
             if (!provider) {
-                showWalletGate("No Solana wallet detected. Install Phantom to continue.");
+                if (isIOS || isSafari) {
+                    showPreviewGate("Preview unlocked. Note: Phantom may not be available in Safari/iOS — open the Phantom app or use Chrome/Firefox.");
+                } else {
+                    showPreviewGate("Preview unlocked. No Solana wallet detected — install Phantom or a supported wallet to continue.");
+                }
                 return;
             }
+
             attachProviderListeners(provider);
             try {
-                const response = await provider.connect({ onlyIfTrusted: true });
+                // Try a silent reconnect if the wallet trusts this site
+                const response = await (provider.connect ? provider.connect({ onlyIfTrusted: true }) : (provider.request && provider.request({ method: 'connect', params: { onlyIfTrusted: true } } )));
                 if (response?.publicKey) {
                     handleConnected(response.publicKey.toString());
                     return;
                 }
             } catch (error) {
-                showWalletGate("Connect your wallet to continue.");
+                // fall through to prompt the user
             }
             showWalletGate("Connect your wallet to continue.");
         };
