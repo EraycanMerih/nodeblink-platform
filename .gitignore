@@ -1,0 +1,10 @@
+# Keep the GitHub repo public-only by default.
+# Everything is ignored unless it is explicitly allowed below.
+/*
+
+# Keep the ignore rules themselves.
+!.gitignore
+
+# Keep the public GitHub Pages payload.
+!public/
+!public/**
