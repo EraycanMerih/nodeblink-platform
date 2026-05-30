@@ -365,6 +365,10 @@ app.get("/uploads/:file", (req, res) => {
 });
 
 app.get("/api/metrics", (req, res) => {
+    // Allow public read-only access to metrics from any origin (used by the
+    // static dashboard and other monitoring tools). This endpoint exposes
+    // aggregate, non-sensitive data only.
+    res.setHeader("Access-Control-Allow-Origin", "*");
     res.json(computeMetrics());
 });
 
