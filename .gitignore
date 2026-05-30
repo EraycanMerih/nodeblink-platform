@@ -8,3 +8,17 @@
 # Keep the public GitHub Pages payload.
 !public/
 !public/**
+
+# Keep the backend source and repo metadata tracked.
+!.github/
+!.github/workflows/
+!.github/workflows/pages.yml
+!README.md
+!package.json
+!package-lock.json
+!server.js
+!admin.html
+!index.html
+!dashboard.html
+!assets/
+!assets/**
