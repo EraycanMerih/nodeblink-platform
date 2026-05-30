@@ -616,10 +616,20 @@ app.get("/api/blinks", (req, res) => {
 
 const createBlinkLimiter = rateLimit({ windowMs: 60 * 1000, max: 10, standardHeaders: true, legacyHeaders: false });
 
+// Ensure preflight (OPTIONS) is handled for form uploads from external origins.
+app.options("/api/blinks", (req, res) => {
+    res.setHeader("Access-Control-Allow-Origin", "*");
+    res.setHeader("Access-Control-Allow-Methods", "GET,POST,OPTIONS");
+    res.setHeader("Access-Control-Allow-Headers", "Content-Type, Authorization, x-admin-secret");
+    return res.status(204).end();
+});
+
 app.post("/api/blinks", createBlinkLimiter, upload.fields([
     { name: "asset_file", maxCount: 1 },
     { name: "banner_file", maxCount: 1 }
 ]), (req, res) => {
+    // Allow cross-origin form submissions from the static dashboard and other origins.
+    res.setHeader("Access-Control-Allow-Origin", "*");
     const {
         title,
         price,
