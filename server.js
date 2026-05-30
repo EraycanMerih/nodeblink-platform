@@ -157,7 +157,18 @@ const computeMetrics = () => {
     };
 };
 
-const createBlinkUrl = (id) => `${PUBLIC_BASE_URL}/api/blink/${id}`;
+const createBlinkUrl = (id, req) => {
+    // Prefer an explicit PUBLIC_BASE_URL when set to a non-local value.
+    if (PUBLIC_BASE_URL && !PUBLIC_BASE_URL.includes("localhost") && !PUBLIC_BASE_URL.includes("127.0.0.1")) {
+        return `${PUBLIC_BASE_URL}/api/blink/${id}`;
+    }
+    // Otherwise, try to derive from the incoming request (supports proxy via trust proxy).
+    if (req && req.protocol && req.get && req.get("host")) {
+        return `${req.protocol}://${req.get("host")}/api/blink/${id}`;
+    }
+    // Fallback to configured PUBLIC_BASE_URL.
+    return `${PUBLIC_BASE_URL}/api/blink/${id}`;
+};
 
 const createSignedDownload = (blinkId, buyerAccount, filePath, fileName) => {
     const token = crypto.randomBytes(20).toString("hex");
@@ -610,7 +621,7 @@ app.get("/api/blinks", (req, res) => {
     res.setHeader("Access-Control-Allow-Origin", "*");
     res.json(store.blinks.map((blink) => ({
         ...blink,
-        blink_url: createBlinkUrl(blink.id)
+        blink_url: createBlinkUrl(blink.id, req)
     })));
 });
 
@@ -731,7 +742,7 @@ app.post("/api/blinks", createBlinkLimiter, upload.fields([
     store.blinks.unshift(newBlink);
     saveStore();
     logWebhookEvent({ type: "blink_created", blink_id: newBlink.id });
-    res.status(201).json({ ...newBlink, blink_url: createBlinkUrl(id) });
+    res.status(201).json({ ...newBlink, blink_url: createBlinkUrl(id, req) });
 });
 
 app.use((error, req, res, next) => {
@@ -771,7 +782,7 @@ app.get("/api/blink/:id", (req, res) => {
             actions: [
                 {
                     label: actionLabel,
-                    href: `${PUBLIC_BASE_URL}/api/blink/${blink.id}`
+                    href: createBlinkUrl(blink.id, req)
                 }
             ]
         },
