@@ -49,9 +49,19 @@ const loadOrCreateAdminSecret = () => {
     if (process.env.ADMIN_SECRET) {
         return String(process.env.ADMIN_SECRET).trim();
     }
+
+    // If running against a real public host, require ADMIN_SECRET to be set
+    const runningPublic = String(PUBLIC_BASE_URL || "").includes("http") && !PUBLIC_BASE_URL.includes("localhost") && !PUBLIC_BASE_URL.includes("127.0.0.1");
+    if (runningPublic && !fs.existsSync(ADMIN_SECRET_PATH)) {
+        console.error("FATAL: ADMIN_SECRET is not set in environment and no admin-secret.txt exists. For production, set ADMIN_SECRET (do not commit it).");
+        process.exit(1);
+    }
+
     if (fs.existsSync(ADMIN_SECRET_PATH)) {
         return fs.readFileSync(ADMIN_SECRET_PATH, "utf-8").trim();
     }
+
+    // Development fallback: generate a local admin secret and store it with restrictive perms
     const generated = crypto.randomBytes(24).toString("hex");
     fs.writeFileSync(ADMIN_SECRET_PATH, `${generated}\n`, { mode: 0o600 });
     return generated;

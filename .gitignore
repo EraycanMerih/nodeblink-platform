@@ -9,6 +9,8 @@
 !public/
 !public/**
 
+!.env.example
+
 # Keep the backend source and repo metadata tracked.
 !.github/
 !.github/workflows/
