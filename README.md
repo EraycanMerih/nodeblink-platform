@@ -1,6 +1,9 @@
 # NodeBlink Creator Studio
 
-NodeBlink is a production-ready, non-custodial checkout platform for creators. It delivers one-second purchases inside social feeds with Solana-native settlement.
+NodeBlink is a production-ready, non-custodial checkout platform for creators. The repository now contains two runtimes:
+
+- the legacy Express API and static dashboard used by the current production deployment
+- a Next.js App Router + Solana Actions scaffold for native `actions.json` discovery and creator checkout flows
 
 ## What is included
 
@@ -11,6 +14,9 @@ NodeBlink is a production-ready, non-custodial checkout platform for creators. I
 - Optional banner image uploads for richer Blink previews
 - Real Solana transaction assembly for SOL and USDC
 - Persistent storage in `data/store.json`
+- Native Solana Actions endpoints for creator checkout
+- Mobile deep-link handoff for creator pages
+- Prisma schema for users, creator profiles, digital assets, and transactions
 
 ## Quick start
 
@@ -21,6 +27,14 @@ npm start
 ```
 
 Open `http://localhost:8080` in your browser.
+
+To build the Next.js scaffold locally:
+
+```bash
+npm run build:next
+```
+
+The Next app routes live under `app/`, including `actions.json`, `/api/v1/actions/creator/[username]`, and `/creator/[username]`.
 
 ## DigitalOcean backend deployment
 
@@ -62,6 +76,8 @@ Do not choose `main/root` or `main/docs` for this setup. The workflow publishes 
 
 - `index.html` — landing page
 - `dashboard.html` — creator dashboard source file
+- `app/` — Next.js App Router + Solana Actions scaffold
+- `prisma/schema.prisma` — database schema for creators and transactions
 - `server.js` — production server with Solana transaction logic
 - `data/store.json` — persisted metrics and Blink records
 - `uploads/` — digital asset uploads
@@ -95,6 +111,13 @@ All endpoints are served at `http://localhost:8080/api`.
 - `PUT /wallet-profiles/:id` — update wallet profile
 - `GET /fees` — protocol fee configuration
 - `PUT /fees` — blocked by policy (returns 403, fee is immutable)
+
+## Next.js Actions routes
+
+- `GET /actions.json` — native Actions discovery document
+- `GET /api/v1/actions/creator/:username` — creator action metadata
+- `POST /api/v1/actions/creator/:username` — creator transaction payload
+- `GET /creator/:username` — mobile-friendly creator checkout page
 
 ## Environment variables
 
