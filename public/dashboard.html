@@ -168,11 +168,53 @@
             font-size: 14px;
         }
 
+        .mobile-nav-toggle,
+        .section-toggle {
+            display: none;
+        }
+
+        .mobile-nav-panel {
+            display: none;
+        }
+
+        .collapsible-content {
+            overflow: hidden;
+            transition: max-height 220ms ease, opacity 180ms ease, transform 180ms ease;
+        }
+
+        .section-collapsed .collapsible-content {
+            max-height: 0 !important;
+            opacity: 0;
+            transform: translateY(-4px);
+            pointer-events: none;
+        }
+
         @media (max-width: 860px) {
             .desktop-nav { display: none; }
+            .mobile-nav-toggle,
+            .section-toggle {
+                display: inline-flex;
+            }
+            .mobile-nav-panel {
+                display: grid;
+                gap: 10px;
+                width: 100%;
+                padding: 0 16px 16px;
+            }
+            .mobile-nav-panel a {
+                display: block;
+                width: 100%;
+                padding: 12px 14px;
+                border-radius: 12px;
+                border: 1px solid rgba(148, 163, 184, 0.18);
+                background: rgba(248, 250, 252, 0.96);
+                color: #0f172a;
+                font-weight: 600;
+            }
         }
         @media (max-width: 640px) {
             .panel { border-radius: 12px; padding: 14px; }
+            .section-collapsed .collapsible-content { display: none; }
             .toast { left: 12px; right: 12px; bottom: 12px; }
             .btn-primary, .btn-secondary { width: 100%; justify-content: center; padding: 11px 12px; font-size: 14px; }
             .input { font-size: 16px; }
@@ -260,7 +302,7 @@
     <div id="dashboard" class="hidden">
         <nav class="sticky top-0 z-40 border-b border-slate-200/80 bg-white/85 backdrop-blur">
             <div class="max-w-7xl mx-auto px-4 sm:px-6 py-4 flex items-center justify-between gap-4">
-                <div class="flex items-center gap-6">
+                <div class="flex items-center gap-6 w-full">
                     <div>
                         <div class="text-xl font-semibold leading-none">NodeBlink</div>
                         <div class="text-xs muted">Simple commerce operations</div>
@@ -272,10 +314,17 @@
                         <a class="hover:text-blue-700" href="#operations">Operations</a>
                     </div>
                 </div>
-                <div class="flex items-center gap-3">
+                <div class="flex items-center gap-3 ml-auto">
+                    <button id="mobileNavToggle" class="btn-secondary mobile-nav-toggle" type="button" aria-expanded="false" aria-controls="mobileNavPanel">Menu</button>
                     <span class="chip" id="walletDisplay">Not connected</span>
                     <button id="disconnectButton" class="btn-secondary">Disconnect</button>
                 </div>
+            </div>
+            <div id="mobileNavPanel" class="mobile-nav-panel hidden">
+                <a href="#overview">Overview</a>
+                <a href="#create">Create</a>
+                <a href="#blinks">Blinks</a>
+                <a href="#operations">Operations</a>
             </div>
         </nav>
 
@@ -313,13 +362,19 @@
             </section>
 
             <section id="create" class="grid grid-cols-1 xl:grid-cols-3 gap-6 items-start">
-                <div class="panel p-6 xl:col-span-2 space-y-6">
+                <div class="panel p-6 xl:col-span-2 space-y-6" data-collapsible-section="create">
                     <div>
-                        <p class="uppercase text-xs tracking-[0.25em] muted mb-2">Create Blink</p>
-                        <h2 class="text-3xl font-semibold">Create a new checkout link</h2>
-                        <!-- brief info removed per request -->
+                        <div class="flex items-start justify-between gap-3">
+                            <div>
+                                <p class="uppercase text-xs tracking-[0.25em] muted mb-2">Create Blink</p>
+                                <h2 class="text-3xl font-semibold">Create a new checkout link</h2>
+                                <!-- brief info removed per request -->
+                            </div>
+                            <button class="btn-secondary section-toggle" type="button" data-collapse-toggle="create" aria-expanded="true">Collapse</button>
+                        </div>
                     </div>
 
+                    <div class="collapsible-content">
                     <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
                         <div>
                             <label class="text-sm font-semibold">Title</label>
@@ -381,50 +436,58 @@
                         <button class="btn-primary" id="createBlinkButton">Deploy Blink</button>
                         <p id="createStatus" class="text-sm muted"></p>
                     </div>
+                    </div>
                 </div>
 
-                <div class="panel p-6 space-y-4 sticky top-24">
-                    <div class="flex items-center justify-between">
-                        <p class="uppercase text-xs tracking-[0.25em] muted">Preview</p>
-                        <span class="chip">Live</span>
+                <div class="panel p-6 space-y-4 sticky top-24" data-collapsible-section="preview">
+                    <div class="flex items-start justify-between gap-3">
+                        <div>
+                            <p class="uppercase text-xs tracking-[0.25em] muted">Preview</p>
+                            <span class="chip">Live</span>
+                        </div>
+                        <button class="btn-secondary section-toggle" type="button" data-collapse-toggle="preview" aria-expanded="true">Collapse</button>
                     </div>
-                    <div class="preview-banner">
-                        <p id="previewBannerHint" class="text-xs muted px-3 text-center">Banner preview will appear here</p>
-                        <img id="previewBannerImage" alt="Banner preview">
-                    </div>
-                    <div class="space-y-3">
-                        <p class="text-lg font-semibold" id="previewTitle">Premium Creator Bundle</p>
-                        <div class="flex items-center justify-between text-sm">
-                            <span class="muted">Price</span>
-                            <span id="previewPrice">0.25 SOL</span>
+                    <div class="collapsible-content">
+                        <div class="preview-banner">
+                            <p id="previewBannerHint" class="text-xs muted px-3 text-center">Banner preview will appear here</p>
+                            <img id="previewBannerImage" alt="Banner preview">
                         </div>
-                        <div class="flex items-center justify-between text-sm">
-                            <span class="muted">Category</span>
-                            <span id="previewCategory">Digital asset</span>
-                        </div>
-                        <div class="flex items-center justify-between text-sm">
-                            <span class="muted">Delivery</span>
-                            <span id="previewDelivery">Secure download</span>
-                        </div>
-                        <div class="flex items-center justify-between text-sm">
-                            <span class="muted">Stock</span>
-                            <span id="previewStock">100 units</span>
+                        <div class="space-y-3">
+                            <p class="text-lg font-semibold" id="previewTitle">Premium Creator Bundle</p>
+                            <div class="flex items-center justify-between text-sm">
+                                <span class="muted">Price</span>
+                                <span id="previewPrice">0.25 SOL</span>
+                            </div>
+                            <div class="flex items-center justify-between text-sm">
+                                <span class="muted">Category</span>
+                                <span id="previewCategory">Digital asset</span>
+                            </div>
+                            <div class="flex items-center justify-between text-sm">
+                                <span class="muted">Delivery</span>
+                                <span id="previewDelivery">Secure download</span>
+                            </div>
+                            <div class="flex items-center justify-between text-sm">
+                                <span class="muted">Stock</span>
+                                <span id="previewStock">100 units</span>
+                            </div>
                         </div>
                     </div>
                 </div>
             </section>
 
-            <section id="blinks" class="panel overflow-hidden">
+            <section id="blinks" class="panel overflow-hidden" data-collapsible-section="blinks">
                 <div class="p-6 border-b border-white/10 flex items-center justify-between gap-3 flex-wrap">
                     <div>
                         <p class="uppercase text-xs tracking-[0.25em] muted mb-2">Blinks</p>
                         <h2 class="text-2xl font-semibold">Your checkout links</h2>
                     </div>
                     <div class="flex items-center gap-2">
+                        <button class="btn-secondary section-toggle" type="button" data-collapse-toggle="blinks" aria-expanded="true">Collapse</button>
                         <span class="chip" id="pageIndicator">Page 1</span>
                         <button class="btn-secondary" id="refreshBlinks">Refresh</button>
                     </div>
                 </div>
+                <div class="collapsible-content">
                 <div class="overflow-x-auto">
                     <table class="table">
                         <thead>
@@ -452,21 +515,27 @@
                         <button class="btn-secondary" id="nextPageButton">Next</button>
                     </div>
                 </div>
+                </div>
             </section>
 
             <section id="operations" class="grid grid-cols-1 gap-6 items-start">
-                <div class="panel p-6">
-                    <div class="flex items-center justify-between mb-4">
+                <div class="panel p-6" data-collapsible-section="operations">
+                    <div class="flex items-center justify-between mb-4 gap-3">
                         <div>
                             <p class="uppercase text-xs tracking-[0.25em] muted mb-2">Activity</p>
                             <h3 class="text-xl font-semibold">Recent events</h3>
                         </div>
-                        <button class="btn-secondary" id="refreshActivity">Refresh</button>
+                        <div class="flex items-center gap-2">
+                            <button class="btn-secondary section-toggle" type="button" data-collapse-toggle="operations" aria-expanded="true">Collapse</button>
+                            <button class="btn-secondary" id="refreshActivity">Refresh</button>
+                        </div>
                     </div>
+                    <div class="collapsible-content">
                     <div id="activityFeed" class="space-y-3 text-sm muted">
                         <p>No activity yet.</p>
                     </div>
                     <!-- explanatory copy removed per request -->
+                    </div>
                 </div>
 
             </section>
@@ -502,6 +571,8 @@
             dashboard: document.getElementById("dashboard"),
             walletDisplay: document.getElementById("walletDisplay"),
             disconnectButton: document.getElementById("disconnectButton"),
+            mobileNavToggle: document.getElementById("mobileNavToggle"),
+            mobileNavPanel: document.getElementById("mobileNavPanel"),
             totalRevenue: document.getElementById("totalRevenue"),
             totalSales: document.getElementById("totalSales"),
             totalClicks: document.getElementById("totalClicks"),
@@ -539,6 +610,29 @@
             activityFeed: document.getElementById("activityFeed"),
             refreshActivity: document.getElementById("refreshActivity"),
             toast: document.getElementById("toast")
+        };
+
+        const collapsibleSections = ["create", "preview", "blinks", "operations"];
+
+        const isMobileLayout = () => window.matchMedia("(max-width: 860px)").matches;
+
+        const setSectionCollapsed = (sectionId, collapsed) => {
+            const shell = document.querySelector(`[data-collapsible-section="${sectionId}"]`);
+            const button = document.querySelector(`[data-collapse-toggle="${sectionId}"]`);
+            if (!shell || !button) return;
+            shell.classList.toggle("section-collapsed", collapsed);
+            button.setAttribute("aria-expanded", String(!collapsed));
+            button.textContent = collapsed ? "Expand" : "Collapse";
+        };
+
+        const syncResponsiveLayout = () => {
+            const mobile = isMobileLayout();
+            collapsibleSections.forEach((sectionId) => setSectionCollapsed(sectionId, mobile));
+
+            if (elements.mobileNavPanel && elements.mobileNavToggle) {
+                const menuOpen = !elements.mobileNavPanel.classList.contains("hidden");
+                elements.mobileNavToggle.setAttribute("aria-expanded", String(menuOpen));
+            }
         };
 
         const showToast = (message) => {
@@ -580,6 +674,7 @@
             elements.walletGate.classList.add("hidden");
             elements.dashboard.classList.remove("hidden");
             elements.walletDisplay.textContent = `${address.slice(0, 6)}...${address.slice(-4)}`;
+            syncResponsiveLayout();
         };
 
         const attachProviderListeners = (provider) => {
@@ -910,6 +1005,7 @@
             await updateMetrics();
             await loadBlinks();
             await loadActivity();
+            syncResponsiveLayout();
         };
 
         const startWalletFlow = async () => {
@@ -950,6 +1046,35 @@
             hidePreviewGate();
             await startWalletFlow();
         };
+
+        if (elements.mobileNavToggle && elements.mobileNavPanel) {
+            elements.mobileNavToggle.addEventListener("click", () => {
+                elements.mobileNavPanel.classList.toggle("hidden");
+                elements.mobileNavToggle.setAttribute("aria-expanded", String(!elements.mobileNavPanel.classList.contains("hidden")));
+            });
+
+            elements.mobileNavPanel.querySelectorAll("a").forEach((link) => {
+                link.addEventListener("click", () => {
+                    if (isMobileLayout()) {
+                        elements.mobileNavPanel.classList.add("hidden");
+                        elements.mobileNavToggle.setAttribute("aria-expanded", "false");
+                    }
+                });
+            });
+        }
+
+        document.querySelectorAll("[data-collapse-toggle]").forEach((button) => {
+            button.addEventListener("click", () => {
+                const sectionId = button.getAttribute("data-collapse-toggle");
+                if (!sectionId) return;
+                const shell = document.querySelector(`[data-collapsible-section="${sectionId}"]`);
+                if (!shell) return;
+                const nextCollapsed = !shell.classList.contains("section-collapsed");
+                setSectionCollapsed(sectionId, nextCollapsed);
+            });
+        });
+
+        window.addEventListener("resize", syncResponsiveLayout);
 
         elements.unlockPreviewButton.addEventListener("click", unlockPreview);
         elements.previewPassword.addEventListener("keydown", (event) => {

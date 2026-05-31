@@ -32,7 +32,6 @@ const ASSET_BASE_URL = process.env.ASSET_BASE_URL || PUBLIC_BASE_URL;
 const DOWNLOAD_SECRET = process.env.DOWNLOAD_SECRET || crypto.randomBytes(32).toString("hex");
 const DATA_DIR = path.join(__dirname, "data");
 const DATA_PATH = path.join(DATA_DIR, "store.json");
-const ADMIN_SECRET_PATH = path.join(DATA_DIR, "admin-secret.txt");
 const UPLOAD_DIR = path.join(__dirname, "uploads");
 const DEFAULT_PROTOCOL_FEE_BPS = Number(process.env.PROTOCOL_FEE_BPS || 150);
 const ADMIN_SESSION_COOKIE = "nodeblink_admin_session";
@@ -50,20 +49,14 @@ const loadOrCreateAdminSecret = () => {
         return String(process.env.ADMIN_SECRET).trim();
     }
 
-    // If running against a real public host, require ADMIN_SECRET to be set
     const runningPublic = String(PUBLIC_BASE_URL || "").includes("http") && !PUBLIC_BASE_URL.includes("localhost") && !PUBLIC_BASE_URL.includes("127.0.0.1");
-    if (runningPublic && !fs.existsSync(ADMIN_SECRET_PATH)) {
-        console.error("FATAL: ADMIN_SECRET is not set in environment and no admin-secret.txt exists. For production, set ADMIN_SECRET (do not commit it).");
+    if (runningPublic) {
+        console.error("FATAL: ADMIN_SECRET is not set in the environment. For production, set ADMIN_SECRET in PM2, systemd, or the shell environment.");
         process.exit(1);
     }
 
-    if (fs.existsSync(ADMIN_SECRET_PATH)) {
-        return fs.readFileSync(ADMIN_SECRET_PATH, "utf-8").trim();
-    }
-
-    // Development fallback: generate a local admin secret and store it with restrictive perms
+    // Development fallback: generate a local admin secret for this process only.
     const generated = crypto.randomBytes(24).toString("hex");
-    fs.writeFileSync(ADMIN_SECRET_PATH, `${generated}\n`, { mode: 0o600 });
     return generated;
 };
 

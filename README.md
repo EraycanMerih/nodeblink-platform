@@ -30,9 +30,9 @@ The backend runs cleanly on a DigitalOcean Ubuntu Droplet behind Nginx.
 2. Point `api.yourdomain.com` to the Droplet IP.
 3. Install `git`, `nginx`, Node.js 20, and `pm2`.
 4. Clone this repo on the Droplet.
-5. Create a production `.env` with `PORT=8080`, `PUBLIC_BASE_URL=https://api.yourdomain.com`, `ASSET_BASE_URL=https://api.yourdomain.com`, `SOLANA_RPC_URL`, `TREASURY_WALLET`, `DEFAULT_CREATOR_WALLET`, `USDC_MINT`, `USDC_DECIMALS`, `ADMIN_SECRET`, and `ADMIN_ENTRY_PATH`.
+5. Create a production `.env` or PM2 environment with `PORT=8080`, `PUBLIC_BASE_URL=https://api.yourdomain.com`, `ASSET_BASE_URL=https://api.yourdomain.com`, `SOLANA_RPC_URL`, `TREASURY_WALLET`, `DEFAULT_CREATOR_WALLET`, `USDC_MINT`, `USDC_DECIMALS`, `DOWNLOAD_SECRET`, `ADMIN_SECRET`, and `ADMIN_ENTRY_PATH`.
 6. Run `npm install`.
-7. Start the backend with `pm2 start server.js --name nodeblink`.
+7. Start the backend with `pm2 start server.js --name nodeblink --update-env`.
 8. Save PM2 with `pm2 save` and enable startup with `pm2 startup`.
 9. Configure Nginx as a reverse proxy from `443` to `localhost:8080`.
 10. Enable HTTPS with Certbot.
@@ -42,7 +42,7 @@ Important DigitalOcean notes:
 
 - `server.js` already respects `PORT`, `PUBLIC_BASE_URL`, and `CORS_ORIGINS`.
 - The app now trusts the proxy, which keeps the admin session cookie working correctly behind Nginx.
-- Keep `ADMIN_SECRET` only on the Droplet.
+- Keep `ADMIN_SECRET` and `DOWNLOAD_SECRET` only in the Droplet environment, PM2 config, or systemd unit.
 
 ## GitHub Pages deployment
 
@@ -108,6 +108,7 @@ You can customize deployment with the following environment variables:
 - `USDC_DECIMALS` — USDC decimals (default: 6)
 - `ASSET_BASE_URL` — asset hosting base URL (default: `PUBLIC_BASE_URL`)
 - `DOWNLOAD_SECRET` — HMAC secret for signed downloads
+- `ADMIN_SECRET` — admin auth secret
 - `CORS_ORIGINS` — comma-separated list of allowed origins
 
 ## Production notes
