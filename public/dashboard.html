@@ -172,12 +172,56 @@
             .desktop-nav { display: none; }
         }
         @media (max-width: 640px) {
-            .panel { border-radius: 12px; padding: 12px; }
-            h1 { font-size: 1.5rem; }
-            h2 { font-size: 1.125rem; }
+            .panel { border-radius: 12px; padding: 14px; }
+            .toast { left: 12px; right: 12px; bottom: 12px; }
+            .btn-primary, .btn-secondary { width: 100%; justify-content: center; padding: 11px 12px; font-size: 14px; }
+            .input { font-size: 16px; }
             .preview-banner img { height: 96px; }
-            .btn-primary, .btn-secondary { padding: 10px; font-size: 14px; }
-            .table th, .table td { padding: 10px; font-size: 13px; }
+            .table { font-size: 13px; }
+            .table th, .table td { padding: 10px 12px; }
+            .table th:nth-child(4), .table td:nth-child(4),
+            .table th:nth-child(5), .table td:nth-child(5) {
+                display: none;
+            }
+            nav .max-w-7xl {
+                flex-direction: column;
+                align-items: flex-start;
+            }
+            nav .flex.items-center.gap-3 {
+                width: 100%;
+                justify-content: space-between;
+                flex-wrap: wrap;
+            }
+            #dashboard main { padding-top: 18px; padding-bottom: 28px; }
+            #walletGate .panel,
+            #openingSoonGate .panel { padding: 18px 16px; }
+            #overview .flex.items-start.justify-between,
+            #create .flex.items-center.gap-4,
+            #blinks .flex.items-center.justify-between,
+            #operations .flex.items-center.justify-between {
+                flex-direction: column;
+                align-items: flex-start;
+            }
+            #create,
+            #overview,
+            #blinks,
+            #operations .panel {
+                scroll-margin-top: 88px;
+            }
+            #create section,
+            #create .grid,
+            #operations,
+            #overview .grid,
+            #dashboard .grid {
+                gap: 14px;
+            }
+            .sticky.top-24 { position: static; }
+            .overflow-x-auto { margin-inline: -14px; padding-inline: 14px; }
+            .overflow-x-auto::-webkit-scrollbar { height: 6px; }
+            .overflow-x-auto::-webkit-scrollbar-thumb { background: rgba(148, 163, 184, 0.35); border-radius: 999px; }
+            #blinks .p-6,
+            #operations .p-6 { padding: 14px; }
+            .chip { font-size: 11px; padding: 4px 8px; }
         }
     </style>
 </head>

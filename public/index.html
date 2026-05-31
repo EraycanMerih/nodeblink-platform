@@ -321,6 +321,31 @@
 
         @media (max-width: 800px) {
             .desktop-nav { display: none; }
+            .container { padding: 0 16px; }
+            .section { padding: 72px 0; }
+            .hero-metrics { grid-template-columns: 1fr; }
+            .panel, .feature-card, .hero-shell { border-radius: 14px; }
+            .hero-shell { padding: 16px; }
+            .btn-primary, .btn-secondary { width: 100%; justify-content: center; }
+            .grid-cards, .balanced-grid { grid-template-columns: 1fr; }
+            nav .container { flex-direction: column; align-items: stretch; }
+            nav .btn-primary { margin-top: 6px; }
+            .section-title h2, h1, h2 { word-break: normal; hyphens: auto; }
+            .section-title h2 { font-size: 2rem; }
+            .hero-shell .flex.items-center.justify-between { flex-direction: column; align-items: flex-start; }
+            .hero-shell .rounded-xl { padding: 14px; }
+        }
+
+        @media (max-width: 520px) {
+            .section { padding: 58px 0; }
+            h1 { font-size: 2.3rem !important; line-height: 1.08; }
+            h2 { font-size: 1.9rem !important; line-height: 1.15; }
+            .copy-block, .section-head p, .section-title p { font-size: 0.98rem; line-height: 1.7; }
+            .badge { font-size: 11px; }
+            .hero-metrics { gap: 10px; }
+            .metric-card { padding: 12px; }
+            .feature-card { padding: 20px; }
+            .container { padding: 0 14px; }
         }
     </style>
 </head>
