@@ -4,32 +4,42 @@ import path from "path";
 import crypto from "crypto";
 import { ProductArchetype, ProductStatus } from "@prisma/client";
 import { encryptBase64 } from "@/lib/crypto";
+import { CreatorAuthError, requireCreatorForUsername } from "@/lib/creator-auth";
+import {
+  buildDefaultVariants,
+  defaultButtonLabel,
+  formatSolFromLamports,
+  solToLamports,
+} from "@/lib/product-builder";
 import { prisma } from "@/lib/db";
 
 export async function POST(req: Request) {
   try {
     const body = await req.json();
-    const { creatorUsername, filename, base64Data, title, priceSol } = body as {
-      creatorUsername?: string;
-      filename?: string;
-      base64Data?: string;
-      title?: string;
-      priceSol?: number;
-    };
+    const { creatorUsername, filename, base64Data, title, priceSol, walletAddress } =
+      body as {
+        creatorUsername?: string;
+        filename?: string;
+        base64Data?: string;
+        title?: string;
+        priceSol?: number;
+        walletAddress?: string;
+      };
 
-    if (!creatorUsername || !filename || !base64Data) {
-      return NextResponse.json({ error: "Missing fields" }, { status: 400 });
+    if (!creatorUsername || !filename || !base64Data || !walletAddress) {
+      return NextResponse.json(
+        { error: "creatorUsername, filename, base64Data, and walletAddress are required" },
+        { status: 400 },
+      );
     }
 
-    const creator = await prisma.creatorProfile.findUnique({
-      where: { username: creatorUsername.toLowerCase() },
-    });
-
-    if (!creator) {
-      return NextResponse.json({ error: "Creator not found" }, { status: 404 });
-    }
+    const creator = await requireCreatorForUsername(creatorUsername, walletAddress);
 
     const buffer = Buffer.from(base64Data, "base64");
+    if (buffer.length > 25 * 1024 * 1024) {
+      return NextResponse.json({ error: "File must be under 25 MB" }, { status: 400 });
+    }
+
     const uploadsDir = path.resolve(process.cwd(), "uploads");
     fs.mkdirSync(uploadsDir, { recursive: true });
     const safeName = `${Date.now()}-${filename.replace(/[^a-zA-Z0-9._-]/g, "_")}`;
@@ -38,27 +48,33 @@ export async function POST(req: Request) {
 
     const assetKey = crypto.randomBytes(32).toString("base64");
     const encryptedKey = encryptBase64(assetKey);
-    const lamports = Math.round((Number(priceSol) || 0.25) * 1_000_000_000);
+    const lamports = solToLamports(Number(priceSol) || 0.25);
+    const productTitle = title?.trim() || filename.replace(/\.[^.]+$/, "");
+    const solLabel = formatSolFromLamports(lamports);
+
+    const maxSort = await prisma.digitalAsset.aggregate({
+      where: { creatorProfileId: creator.id },
+      _max: { sortOrder: true },
+    });
 
     const record = await prisma.digitalAsset.create({
       data: {
         creatorProfileId: creator.id,
         archetype: ProductArchetype.UNLOCK_DOCUMENT,
         status: ProductStatus.ACTIVE,
-        title: title ?? filename,
+        sortOrder: (maxSort._max.sortOrder ?? -1) + 1,
+        title: productTitle,
         description: "Secure download delivered after payment confirmation.",
         currency: "SOL",
-        priceMinorUnits: BigInt(lamports),
+        priceMinorUnits: lamports,
         storageUrl: `/uploads/${safeName}`,
         encryptedKey,
-        buttonLabel: `Unlock for ${(lamports / 1_000_000_000).toFixed(2)} SOL`,
-        variants: [
-          {
-            id: "unlock-now",
-            label: `Unlock ${title ?? filename}`,
-            amountMinorUnits: lamports,
-          },
-        ],
+        buttonLabel: defaultButtonLabel(ProductArchetype.UNLOCK_DOCUMENT, solLabel),
+        variants: buildDefaultVariants(
+          ProductArchetype.UNLOCK_DOCUMENT,
+          productTitle,
+          lamports,
+        ),
       },
     });
 
@@ -67,6 +83,9 @@ export async function POST(req: Request) {
       { status: 201 },
     );
   } catch (err) {
+    if (err instanceof CreatorAuthError) {
+      return NextResponse.json({ error: err.message }, { status: err.status });
+    }
     return NextResponse.json({ error: String(err) }, { status: 500 });
   }
 }

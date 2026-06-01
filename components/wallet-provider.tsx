@@ -17,14 +17,16 @@ type Props = {
 };
 
 export function SolanaWalletProvider({ children, endpoint }: Props) {
-  const wallets = useMemo(
-    () => [new PhantomWalletAdapter(), new SolflareWalletAdapter()],
-    [],
-  );
+  const wallets = useMemo(() => {
+    if (typeof window === "undefined") {
+      return [];
+    }
+    return [new PhantomWalletAdapter(), new SolflareWalletAdapter()];
+  }, []);
 
   return (
     <ConnectionProvider endpoint={endpoint}>
-      <WalletProvider wallets={wallets} autoConnect>
+      <WalletProvider wallets={wallets} autoConnect={false}>
         <WalletModalProvider>{children}</WalletModalProvider>
       </WalletProvider>
     </ConnectionProvider>

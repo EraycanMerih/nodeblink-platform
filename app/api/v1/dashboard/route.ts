@@ -1,4 +1,5 @@
 import { NextResponse } from "next/server";
+import { ProductStatus } from "@prisma/client";
 import { prisma } from "@/lib/db";
 
 export async function GET(request: Request) {
@@ -14,7 +15,10 @@ export async function GET(request: Request) {
     include: {
       creatorProfile: {
         include: {
-          digitalAssets: { orderBy: { sortOrder: "asc" } },
+          digitalAssets: {
+            where: { status: { not: ProductStatus.ARCHIVED } },
+            orderBy: { sortOrder: "asc" },
+          },
           transactions: {
             orderBy: { createdAt: "desc" },
             take: 20,
@@ -42,6 +46,7 @@ export async function GET(request: Request) {
     wallet,
     username: profile.username,
     displayName: profile.displayName,
+    bio: profile.bio,
     checkoutUrl: `/creator/${profile.username}`,
     actionUrl: `/api/v1/actions/creator/${profile.username}`,
     metrics: {

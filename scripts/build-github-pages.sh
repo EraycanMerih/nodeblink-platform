@@ -10,7 +10,7 @@ APP_URL="${NODEBLINK_APP_URL:-https://api.nodeblink.dev}"
 rm -rf "${OUT}"
 mkdir -p "${OUT}"
 
-cp "${ROOT}/index.html" "${ROOT}/dashboard.html" "${OUT}/"
+cp "${ROOT}/static-site/index.html" "${ROOT}/static-site/dashboard.html" "${OUT}/"
 cp -r "${ROOT}/assets" "${OUT}/" 2>/dev/null || true
 cp -r "${ROOT}/public/"* "${OUT}/" 2>/dev/null || true
 
@@ -22,4 +22,4 @@ window.NODEBLINK_CONFIG = {
 };
 EOF
 
-echo "Built GitHub Pages bundle in _site (API → ${API_URL})"
+echo "Built GitHub Pages bundle in _site (app → ${APP_URL})"

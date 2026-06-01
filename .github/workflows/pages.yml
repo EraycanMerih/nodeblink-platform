@@ -6,6 +6,7 @@ on:
       - main
       - upgrade/solana-and-next
     paths:
+      - "static-site/**"
       - "index.html"
       - "dashboard.html"
       - "assets/**"

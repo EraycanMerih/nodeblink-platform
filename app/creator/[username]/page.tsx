@@ -1,7 +1,8 @@
 import { headers } from "next/headers";
 import { notFound } from "next/navigation";
-import { PremiumCheckout } from "@/components/premium-checkout";
-import { SolanaWalletProvider } from "@/components/wallet-provider";
+import { CreatorCheckoutShell } from "@/components/creator-checkout-shell";
+import { SiteFooter } from "@/components/site-footer";
+import { SiteHeader } from "@/components/site-header";
 import { getCreatorProfile } from "@/lib/creator-actions";
 import { SOLANA_RPC_URL } from "@/lib/env";
 import { getRequestOrigin } from "@/lib/request-origin";
@@ -30,8 +31,15 @@ export default async function CreatorPage({ params }: PageProps) {
   }
 
   return (
-    <SolanaWalletProvider endpoint={SOLANA_RPC_URL}>
-      <PremiumCheckout creator={profile} actionApiUrl={actionApiUrl} mobile={mobile} />
-    </SolanaWalletProvider>
+    <>
+      <SiteHeader />
+      <CreatorCheckoutShell
+        creator={profile}
+        actionApiUrl={actionApiUrl}
+        mobile={mobile}
+        rpcUrl={SOLANA_RPC_URL}
+      />
+      <SiteFooter />
+    </>
   );
 }

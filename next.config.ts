@@ -9,6 +9,21 @@ const nextConfig: NextConfig = {
     "@solana/wallet-adapter-phantom",
     "@solana/wallet-adapter-solflare",
   ],
+  async headers() {
+    return [
+      {
+        source: "/api/:path*",
+        headers: [
+          { key: "Access-Control-Allow-Origin", value: "https://nodeblink.dev" },
+          {
+            key: "Access-Control-Allow-Methods",
+            value: "GET, POST, PATCH, DELETE, OPTIONS",
+          },
+          { key: "Access-Control-Allow-Headers", value: "Content-Type" },
+        ],
+      },
+    ];
+  },
 };
 
 export default nextConfig;
