@@ -5,6 +5,18 @@ NodeBlink is a production-ready, non-custodial checkout platform for creators. T
 - the legacy Express API and static dashboard used by the current production deployment
 - a Next.js App Router + Solana Actions scaffold for native `actions.json` discovery and creator checkout flows
 
+## Production layout
+
+| Component | Host |
+|-----------|------|
+| Static frontend (`index.html`, `dashboard.html`) | **GitHub Pages** → `nodeblink.dev` |
+| Express + Next.js API | **DigitalOcean** → `api.nodeblink.dev` (`165.245.222.21`) |
+| PostgreSQL | **Supabase** (Session pooler from the droplet) |
+
+See **[docs/DEPLOYMENT.md](docs/DEPLOYMENT.md)**, **[docs/LAUNCH_CHECKLIST.md](docs/LAUNCH_CHECKLIST.md)**, and **[SECURITY.md](SECURITY.md)**. Secrets live only in `.env` on the server — never in git.
+
+**Supabase region:** `ap-northeast-2` — use `aws-0-ap-northeast-2.pooler.supabase.com` on the droplet.
+
 ## What is included
 
 - Premium landing page with enterprise-grade layout and typography
@@ -18,23 +30,34 @@ NodeBlink is a production-ready, non-custodial checkout platform for creators. T
 - Mobile deep-link handoff for creator pages
 - Prisma schema for users, creator profiles, digital assets, and transactions
 
-## Quick start
+## Quick start (Next.js — recommended)
 
 ```bash
-cd /Users/eraycan/Desktop/NodeBlink
 npm install
+docker compose up -d
+cp .env.example .env
+# Set DATABASE_URL=postgresql://nodeblink:nodeblink@localhost:5432/nodeblink
+# Set SOLANA_RPC_URL, TREASURY_WALLET, NODEBLINK_ENC_KEY
+
+npx prisma migrate dev
+npm run prisma:seed
+npm run dev
+```
+
+Open:
+
+- `http://localhost:3000` — marketing site
+- `http://localhost:3000/dashboard` — Creator Studio
+- `http://localhost:3000/creator/demo` — live checkout demo
+- `http://localhost:3000/actions.json` — Solana Actions discovery
+
+## Legacy Express API (optional)
+
+```bash
 npm start
 ```
 
-Open `http://localhost:8080` in your browser.
-
-To build the Next.js scaffold locally:
-
-```bash
-npm run build:next
-```
-
-The Next app routes live under `app/`, including `actions.json`, `/api/v1/actions/creator/[username]`, and `/creator/[username]`.
+Open `http://localhost:8080` for the original static dashboard + Express API.
 
 ## DigitalOcean backend deployment
 

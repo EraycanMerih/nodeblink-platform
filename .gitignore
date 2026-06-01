@@ -1,26 +1,36 @@
-# Keep the GitHub repo public-only by default.
-# Everything is ignored unless it is explicitly allowed below.
-/*
+# Dependencies
+node_modules/
 
-# Keep the ignore rules themselves.
-!.gitignore
+# Next.js
+.next/
+out/
 
-# Keep the public GitHub Pages payload.
-!public/
-!public/**
-
+# Environment & secrets (never commit)
+.env
+.env.local
+.env.*.local
 !.env.example
+!.env.local.example
 
-# Keep the backend source and repo metadata tracked.
-!.github/
-!.github/workflows/
-!.github/workflows/pages.yml
-!README.md
-!package.json
-!package-lock.json
-!server.js
-!admin.html
-!index.html
-!dashboard.html
-!assets/
-!assets/**
+# Local databases & uploads
+prisma/**/*.db
+prisma/**/*.db-journal
+uploads/
+data/
+
+# Logs & OS
+*.log
+.DS_Store
+Thumbs.db
+
+# IDE / tooling
+.idea/
+.vscode/
+*.tsbuildinfo
+
+# Test / coverage
+coverage/
+
+# Misc
+.vercel
+_site/

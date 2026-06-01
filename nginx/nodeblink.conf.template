@@ -1,0 +1,32 @@
+# api.nodeblink.dev → DigitalOcean droplet (165.245.222.21)
+# Install: sudo cp nginx/nodeblink.conf.template /etc/nginx/sites-available/nodeblink
+#          sudo ln -sf /etc/nginx/sites-available/nodeblink /etc/nginx/sites-enabled/
+#          sudo certbot --nginx -d api.nodeblink.dev
+
+server {
+    listen 80;
+    server_name api.nodeblink.dev;
+
+    client_max_body_size 110M;
+
+    # Legacy Express API (dashboard on GitHub Pages)
+    location /api/ {
+        proxy_pass http://127.0.0.1:8080;
+        proxy_http_version 1.1;
+        proxy_set_header Host $host;
+        proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
+        proxy_set_header X-Forwarded-Proto $scheme;
+    }
+
+    # Next.js — Solana Actions, v1 API, creator checkout, uploads
+    location / {
+        proxy_pass http://127.0.0.1:3000;
+        proxy_http_version 1.1;
+        proxy_set_header Upgrade $http_upgrade;
+        proxy_set_header Connection "upgrade";
+        proxy_set_header Host $host;
+        proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
+        proxy_set_header X-Forwarded-Proto $scheme;
+        proxy_cache_bypass $http_upgrade;
+    }
+}
