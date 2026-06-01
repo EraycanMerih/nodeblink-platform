@@ -32,7 +32,7 @@ if [ ! -f .env ]; then
 fi
 
 echo "==> Installing dependencies and building"
-npm ci
+npm ci --ignore-scripts
 npx prisma generate
 npx prisma migrate deploy
 npm run prisma:seed || true
