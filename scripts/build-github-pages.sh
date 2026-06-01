@@ -5,6 +5,7 @@ ROOT="$(cd "$(dirname "$0")/.." && pwd)"
 OUT="${ROOT}/_site"
 API_URL="${NODEBLINK_API_URL:-https://api.nodeblink.dev}"
 SITE_URL="${NODEBLINK_SITE_URL:-https://nodeblink.dev}"
+APP_URL="${NODEBLINK_APP_URL:-https://api.nodeblink.dev}"
 
 rm -rf "${OUT}"
 mkdir -p "${OUT}"
@@ -17,6 +18,7 @@ cat > "${OUT}/config.js" <<EOF
 window.NODEBLINK_CONFIG = {
   apiUrl: "${API_URL}",
   siteUrl: "${SITE_URL}",
+  appUrl: "${APP_URL}",
 };
 EOF
 

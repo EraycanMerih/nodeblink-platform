@@ -5,7 +5,7 @@ module.exports = {
       cwd: "./",
       script: "npm",
       args: "run start:next",
-      env: {
+      env_production: {
         NODE_ENV: "production",
         PORT: "3000",
       },
@@ -14,7 +14,7 @@ module.exports = {
       name: "nodeblink-api",
       cwd: "./",
       script: "server.js",
-      env: {
+      env_production: {
         NODE_ENV: "production",
         PORT: "8080",
       },

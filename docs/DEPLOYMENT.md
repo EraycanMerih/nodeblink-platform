@@ -1,93 +1,96 @@
-# NodeBlink deployment
-
-Split layout: **static frontend on GitHub Pages**, **API + Solana Actions on DigitalOcean**, **database on Supabase**.
+# NodeBlink — production deployment (launch)
 
 ## Architecture
 
-| Layer | Host | Purpose |
-|-------|------|---------|
-| Marketing + legacy dashboard UI | GitHub Pages (`nodeblink.dev`) | `index.html`, `dashboard.html` |
-| Express API + uploads | DigitalOcean `165.245.222.21` | `/api/*` (blinks, metrics) — port **8080** |
-| Next.js (Actions, checkout, studio) | Same droplet | `/actions.json`, `/api/v1/*`, `/creator/*` — port **3000** |
-| PostgreSQL | Supabase | Pooled connection from droplet |
+| Layer | URL / host | Role |
+|-------|------------|------|
+| Marketing + legacy dashboard | `https://nodeblink.dev` (GitHub Pages) | Static `index.html`, `dashboard.html` |
+| API + Solana Actions + checkout | `https://api.nodeblink.dev` → **165.245.222.21** | Next.js `:3000` + Express `:8080` |
+| Database | Supabase **ap-northeast-2** | PostgreSQL via Session pooler |
 
-DNS (recommended):
+## 1. Supabase (ap-northeast-2)
 
-- `nodeblink.dev` → GitHub Pages
-- `api.nodeblink.dev` → `165.245.222.21` (A record)
+From Supabase → **Project Settings → Database → Connection string**:
 
-## Secrets (never commit)
-
-Set only on the **droplet** (PM2, systemd, or `/opt/nodeblink/.env`):
-
-- `DATABASE_URL` — Supabase **Session pooler** (IPv4-safe for DO)
-- `DIRECT_URL` — Supabase direct host (for `prisma migrate deploy` only)
-- `SOLANA_RPC_URL`, `NODEBLINK_ENC_KEY`, `TREASURY_WALLET`, `ADMIN_SECRET`, `DOWNLOAD_SECRET`
-
-Copy from `.env.example` and fill in values locally.
-
-### Supabase from DigitalOcean
-
-Direct host `db.ozthlvybyerymvyytknx.supabase.co` is often **not IPv4-compatible**. Use the **Session pooler** string from:
-
-Supabase → Project Settings → Database → **Connection string** → **Session pooler**
-
-Example shape (replace `REGION` and password):
+**Runtime on DigitalOcean (Session pooler, IPv4):**
 
 ```txt
-DATABASE_URL=postgresql://postgres.ozthlvybyerymvyytknx:YOUR_PASSWORD@aws-0-REGION.pooler.supabase.com:5432/postgres?pgbouncer=true
+DATABASE_URL=postgresql://postgres.ozthlvybyerymvyytknx:YOUR_PASSWORD@aws-0-ap-northeast-2.pooler.supabase.com:5432/postgres?pgbouncer=true
+```
+
+**Migrations (direct):**
+
+```txt
 DIRECT_URL=postgresql://postgres:YOUR_PASSWORD@db.ozthlvybyerymvyytknx.supabase.co:5432/postgres
 ```
 
-Run migrations from your PC or CI with `DIRECT_URL` set, then run the app on the droplet with `DATABASE_URL` (pooler).
+Apply schema (pick one):
 
-## GitHub Pages (frontend)
+**Option A — Supabase SQL Editor (works from any network):**
 
-Workflow: `.github/workflows/pages.yml`
+1. Open Supabase → **SQL** → New query  
+2. Paste contents of `scripts/supabase-init.sql` → Run  
+3. On the droplet: `npm run prisma:seed`
 
-- Builds `_site/` from `index.html`, `dashboard.html`, `assets/`, `public/`
-- Injects `config.js` with `apiUrl: https://api.nodeblink.dev` (no secrets)
-- Publishes to branch `gh-pages`
-
-In GitHub → Settings → Pages → Source: **Deploy from branch** → `gh-pages` / root.
-
-## DigitalOcean (backend)
-
-On the droplet (Ubuntu 22.04+):
+**Option B — from the droplet (if `DIRECT_URL` is reachable):**
 
 ```bash
-# Node 20, nginx, pm2
-sudo apt update && sudo apt install -y nginx
-curl -fsSL https://deb.nodesource.com/setup_20.x | sudo -E bash -
-sudo apt install -y nodejs
-sudo npm install -g pm2
-
-git clone https://github.com/EraycanMerih/nodeblink-platform.git /opt/nodeblink
-cd /opt/nodeblink
-cp .env.example .env   # edit with real secrets
-npm ci
 npx prisma migrate deploy
 npm run prisma:seed
-npm run build:next
-
-pm2 start ecosystem.config.js --update-env
-pm2 start server.js --name nodeblink-api --update-env
-pm2 save
 ```
 
-Nginx (`nginx/nodeblink.conf.template`): proxy `api.nodeblink.dev` to Next `:3000` and Express `:8080` under `/api` for legacy routes.
+## 2. DigitalOcean droplet (165.245.222.21)
 
-## CORS
-
-`CORS_ORIGINS` must include your Pages origin, e.g.:
-
-```txt
-CORS_ORIGINS=https://nodeblink.dev,https://eraycanmerih.github.io
+```bash
+# On the server
+git clone https://github.com/EraycanMerih/nodeblink-platform.git /opt/nodeblink/repo
+cd /opt/nodeblink/repo
+git checkout main
+cp .env.example .env   # fill secrets — see SECURITY.md
+bash scripts/setup-droplet.sh
 ```
 
-## Verify
+Nginx: copy `nginx/nodeblink.conf.template` → `/etc/nginx/sites-available/nodeblink`, enable site, then:
 
-- https://nodeblink.dev — landing (Pages)
-- https://nodeblink.dev/dashboard.html — creator dashboard → calls `https://api.nodeblink.dev/api`
-- https://api.nodeblink.dev/actions.json — Solana Actions discovery
-- https://api.nodeblink.dev/creator/demo — checkout
+```bash
+sudo certbot --nginx -d api.nodeblink.dev
+```
+
+**Health checks**
+
+- `https://api.nodeblink.dev/api/health` — Next.js + database
+- `http://127.0.0.1:8080/api/health` — Express (on server)
+
+## 3. GitHub Pages (nodeblink.dev)
+
+Merge to `main` → workflow publishes `_site/` to `gh-pages`.
+
+GitHub → **Settings → Pages** → branch `gh-pages`, folder `/`.
+
+`config.js` points the dashboard at `https://api.nodeblink.dev`.
+
+## 4. DNS
+
+| Name | Type | Value |
+|------|------|--------|
+| `nodeblink.dev` | CNAME/A | GitHub Pages |
+| `api.nodeblink.dev` | A | `165.245.222.21` |
+
+## 5. Pre-launch verification
+
+```bash
+npm run production:check
+npm run build
+curl https://api.nodeblink.dev/api/health
+curl https://api.nodeblink.dev/actions.json
+curl https://nodeblink.dev/
+```
+
+## Creator surfaces
+
+| URL | Use |
+|-----|-----|
+| `https://nodeblink.dev` | Marketing |
+| `https://nodeblink.dev/dashboard.html` | Legacy blink dashboard (Express API) |
+| `https://api.nodeblink.dev/dashboard` | Creator Studio (Next.js + Supabase) |
+| `https://api.nodeblink.dev/creator/demo` | Solana Actions checkout demo |

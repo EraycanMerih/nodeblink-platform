@@ -1,3 +1,4 @@
+require("dotenv").config();
 const crypto = require("crypto");
 const fs = require("fs");
 const path = require("path");
@@ -316,7 +317,7 @@ const escapeHtml = (value) => String(value)
     .replace(/\"/g, "&quot;")
     .replace(/'/g, "&#39;");
 
-const corsOrigins = (process.env.CORS_ORIGINS || `${PUBLIC_BASE_URL},https://dial.to`)
+const corsOrigins = (process.env.CORS_ORIGINS || `${PUBLIC_BASE_URL},https://nodeblink.dev,https://dial.to`)
     .split(",")
     .map((origin) => origin.trim())
     .filter(Boolean)
@@ -337,6 +338,14 @@ app.use((req, res, next) => {
     next();
 });
 app.use(express.json({ limit: "2mb" }));
+
+app.get("/health", (req, res) => {
+    res.json({ status: "ok", service: "nodeblink-express", timestamp: new Date().toISOString() });
+});
+
+app.get("/api/health", (req, res) => {
+    res.json({ status: "ok", service: "nodeblink-express-api", timestamp: new Date().toISOString() });
+});
 
 const sendAdminPage = (req, res) => {
     res.setHeader("Cache-Control", "no-store, no-cache, must-revalidate, proxy-revalidate");

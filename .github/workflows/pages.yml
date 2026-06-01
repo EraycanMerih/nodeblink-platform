@@ -4,6 +4,7 @@ on:
   push:
     branches:
       - main
+      - upgrade/solana-and-next
     paths:
       - "index.html"
       - "dashboard.html"

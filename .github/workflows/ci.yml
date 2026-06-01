@@ -2,15 +2,15 @@ name: CI
 
 on:
   push:
-    branches: [ main ]
+    branches: [ main, upgrade/solana-and-next ]
   pull_request:
-    branches: [ main ]
+    branches: [ main, upgrade/solana-and-next ]
 
 jobs:
   build:
     runs-on: ubuntu-latest
     env:
-      DATABASE_URL: postgresql://ci:ci@localhost:5432/nodeblink?pgbouncer=true
+      DATABASE_URL: postgresql://ci:ci@localhost:5432/nodeblink
       DIRECT_URL: postgresql://ci:ci@localhost:5432/nodeblink
       PUBLIC_BASE_URL: https://nodeblink.dev
       SOLANA_RPC_URL: https://api.mainnet-beta.solana.com
