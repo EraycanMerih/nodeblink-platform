@@ -38,9 +38,13 @@ npx prisma migrate deploy
 npm run prisma:seed || true
 npm run build:next
 
-echo "==> Starting PM2 processes"
-pm2 delete nodeblink-next nodeblink-api 2>/dev/null || true
+echo "==> Starting PM2 (Next.js only)"
+pm2 delete nodeblink nodeblink-next nodeblink-api 2>/dev/null || true
 pm2 start ecosystem.config.js --update-env
 pm2 save
 
-echo "==> Done. Configure nginx (api.nodeblink.dev) and run: curl http://127.0.0.1:3000/api/health"
+if command -v nginx >/dev/null 2>&1; then
+  bash scripts/install-nginx.sh
+fi
+
+echo "==> Done. Verify: curl http://127.0.0.1:3000/api/health"

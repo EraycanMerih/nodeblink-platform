@@ -1,7 +1,7 @@
 export const PUBLIC_BASE_URL =
   process.env.PUBLIC_BASE_URL?.replace(/\/$/, "") ||
   process.env.NEXT_PUBLIC_BASE_URL?.replace(/\/$/, "") ||
-  "https://nodeblink.dev";
+  "https://api.nodeblink.dev";
 
 export const SOLANA_RPC_URL =
   process.env.SOLANA_RPC_URL ||

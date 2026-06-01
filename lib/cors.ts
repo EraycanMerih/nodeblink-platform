@@ -1,18 +1,15 @@
-import { ACTIONS_CORS_HEADERS } from "@solana/actions";
-import { NextResponse } from "next/server";
+import { ACTIONS_CORS_HEADERS } from "@/lib/actions-constants";
 
-export function jsonWithActionsCors<T>(body: T, init?: ResponseInit) {
-  return NextResponse.json(body, {
-    ...init,
-    headers: {
-      ...ACTIONS_CORS_HEADERS,
-      ...(init?.headers ?? {}),
-    },
-  });
+export function jsonWithActionsCors(data: unknown, init?: ResponseInit) {
+  const headers = new Headers(init?.headers);
+  for (const [key, value] of Object.entries(ACTIONS_CORS_HEADERS)) {
+    headers.set(key, value);
+  }
+  return Response.json(data, { ...init, headers });
 }
 
 export function emptyOptionsResponse() {
-  return new NextResponse(null, {
+  return new Response(null, {
     status: 204,
     headers: ACTIONS_CORS_HEADERS,
   });

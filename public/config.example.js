@@ -1,6 +1,5 @@
 /**
- * GitHub Pages sets window.NODEBLINK_CONFIG at deploy time (see .github/workflows/pages.yml).
- * Local: copy to config.js or rely on dashboard.html localhost detection.
+ * GitHub Pages sets window.NODEBLINK_CONFIG at deploy time (see scripts/build-github-pages.sh).
  */
 window.NODEBLINK_CONFIG = {
   apiUrl: "https://api.nodeblink.dev",

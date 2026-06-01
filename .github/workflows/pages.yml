@@ -1,14 +1,11 @@
-name: Deploy GitHub Pages (frontend only)
+name: Deploy GitHub Pages (marketing site)
 
 on:
   push:
     branches:
       - main
-      - upgrade/solana-and-next
     paths:
       - "static-site/**"
-      - "index.html"
-      - "dashboard.html"
       - "assets/**"
       - "public/**"
       - "scripts/build-github-pages.sh"
@@ -28,6 +25,7 @@ jobs:
     env:
       NODEBLINK_API_URL: https://api.nodeblink.dev
       NODEBLINK_SITE_URL: https://nodeblink.dev
+      NODEBLINK_APP_URL: https://api.nodeblink.dev
     steps:
       - name: Checkout repository
         uses: actions/checkout@v4

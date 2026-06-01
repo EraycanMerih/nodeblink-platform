@@ -19,6 +19,7 @@ RUN npm run build:next
 FROM node:20-slim AS runner
 WORKDIR /usr/src/app
 ENV NODE_ENV=production
+ENV PORT=3000
 
 RUN apt-get update && apt-get install -y openssl ca-certificates && rm -rf /var/lib/apt/lists/*
 
@@ -30,7 +31,6 @@ COPY --from=builder /usr/src/app/node_modules/@prisma ./node_modules/@prisma
 COPY --from=builder /usr/src/app/.next ./.next
 COPY --from=builder /usr/src/app/public ./public
 COPY --from=builder /usr/src/app/prisma ./prisma
-COPY --from=builder /usr/src/app/server.js ./server.js
 COPY --from=builder /usr/src/app/lib ./lib
 COPY --from=builder /usr/src/app/app ./app
 COPY --from=builder /usr/src/app/components ./components
@@ -39,7 +39,7 @@ COPY --from=builder /usr/src/app/next.config.ts ./next.config.ts
 COPY --from=builder /usr/src/app/instrumentation.ts ./instrumentation.ts
 COPY --from=builder /usr/src/app/tsconfig.json ./tsconfig.json
 
-RUN mkdir -p uploads data
+RUN mkdir -p uploads
 
-EXPOSE 3000 8080
+EXPOSE 3000
 CMD ["npm", "run", "start:next"]

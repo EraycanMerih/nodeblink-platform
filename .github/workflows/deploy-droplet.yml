@@ -5,12 +5,6 @@ on:
   push:
     branches:
       - main
-    paths-ignore:
-      - "**.md"
-      - "public/**"
-      - "assets/**"
-      - "index.html"
-      - "dashboard.html"
 
 concurrency:
   group: deploy-droplet
@@ -55,8 +49,10 @@ jobs:
             npx prisma migrate deploy || true
             npm run prisma:seed || true
             npm run build:next
-            pm2 delete nodeblink-next nodeblink-api 2>/dev/null || true
+            pm2 delete nodeblink nodeblink-next nodeblink-api 2>/dev/null || true
             pm2 start ecosystem.config.js --env production --update-env
             pm2 save
+            bash scripts/install-nginx.sh
             echo "Deploy complete"
-            curl -sf http://127.0.0.1:3000/api/health || echo "Health check pending — configure nginx for api.nodeblink.dev"
+            curl -sf http://127.0.0.1:3000/api/health
+            curl -sfI http://127.0.0.1:3000/creator/demo | head -1
