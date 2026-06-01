@@ -13,7 +13,9 @@ NodeBlink is a production-ready, non-custodial checkout platform for creators. T
 | Express + Next.js API | **DigitalOcean** → `api.nodeblink.dev` (`165.245.222.21`) |
 | PostgreSQL | **Supabase** (Session pooler from the droplet) |
 
-See **[docs/DEPLOYMENT.md](docs/DEPLOYMENT.md)** and **[SECURITY.md](SECURITY.md)**. Secrets live only in `.env` on the server — never in git.
+See **[docs/DEPLOYMENT.md](docs/DEPLOYMENT.md)**, **[docs/LAUNCH_CHECKLIST.md](docs/LAUNCH_CHECKLIST.md)**, and **[SECURITY.md](SECURITY.md)**. Secrets live only in `.env` on the server — never in git.
+
+**Supabase region:** `ap-northeast-2` — use `aws-0-ap-northeast-2.pooler.supabase.com` on the droplet.
 
 ## What is included
 
