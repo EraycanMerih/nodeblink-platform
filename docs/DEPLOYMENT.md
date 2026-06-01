@@ -15,7 +15,7 @@ From Supabase → **Project Settings → Database → Connection string**:
 **Runtime on DigitalOcean (Session pooler, IPv4):**
 
 ```txt
-DATABASE_URL=postgresql://postgres.ozthlvybyerymvyytknx:YOUR_PASSWORD@aws-0-ap-northeast-2.pooler.supabase.com:5432/postgres?pgbouncer=true
+DATABASE_URL=postgresql://postgres.ozthlvybyerymvyytknx:YOUR_PASSWORD@aws-1-ap-northeast-2.pooler.supabase.com:5432/postgres?pgbouncer=true
 ```
 
 **Migrations (direct):**

@@ -33,9 +33,9 @@ for (const key of required) {
   console.log(`OK ${key}`);
 }
 
-if (!process.env.DATABASE_URL?.includes("ap-northeast-2.pooler.supabase.com")) {
+if (!process.env.DATABASE_URL?.includes("aws-1-ap-northeast-2.pooler.supabase.com")) {
   console.warn(
-    "WARN DATABASE_URL should use aws-0-ap-northeast-2.pooler.supabase.com for DigitalOcean",
+    "WARN DATABASE_URL should use aws-1-ap-northeast-2.pooler.supabase.com for DigitalOcean",
   );
 }
 

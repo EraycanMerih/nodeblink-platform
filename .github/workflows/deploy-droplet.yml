@@ -1,0 +1,63 @@
+name: Deploy to DigitalOcean
+
+on:
+  workflow_dispatch:
+  push:
+    branches:
+      - main
+    paths-ignore:
+      - "**.md"
+      - "public/**"
+      - "assets/**"
+      - "index.html"
+      - "dashboard.html"
+
+concurrency:
+  group: deploy-droplet
+  cancel-in-progress: true
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    if: ${{ secrets.DO_SSH_PRIVATE_KEY != '' }}
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Deploy over SSH
+        uses: appleboy/ssh-action@v1.2.0
+        with:
+          host: ${{ secrets.DO_HOST }}
+          username: ${{ secrets.DO_USER }}
+          key: ${{ secrets.DO_SSH_PRIVATE_KEY }}
+          port: ${{ secrets.DO_SSH_PORT || 22 }}
+          script_stop: true
+          script: |
+            set -euo pipefail
+            APP_DIR="/opt/nodeblink/repo"
+            mkdir -p /opt/nodeblink
+            if [ -d "$APP_DIR/.git" ]; then
+              cd "$APP_DIR"
+              git fetch origin
+              git checkout main
+              git reset --hard origin/main
+            else
+              git clone https://github.com/EraycanMerih/nodeblink-platform.git "$APP_DIR"
+              cd "$APP_DIR"
+              git checkout main
+            fi
+            echo "${{ secrets.DO_ENV_FILE }}" | base64 -d > .env
+            chmod 600 .env
+            export NODE_ENV=production
+            command -v node >/dev/null || (curl -fsSL https://deb.nodesource.com/setup_20.x | bash - && apt-get install -y nodejs)
+            command -v pm2 >/dev/null || npm install -g pm2
+            npm ci
+            npx prisma generate
+            npx prisma migrate deploy || true
+            npm run prisma:seed || true
+            npm run build:next
+            pm2 delete nodeblink-next nodeblink-api 2>/dev/null || true
+            pm2 start ecosystem.config.js --env production --update-env
+            pm2 save
+            echo "Deploy complete"
+            curl -sf http://127.0.0.1:3000/api/health || echo "Health check pending — configure nginx for api.nodeblink.dev"

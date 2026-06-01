@@ -15,7 +15,7 @@ NodeBlink is a production-ready, non-custodial checkout platform for creators. T
 
 See **[docs/DEPLOYMENT.md](docs/DEPLOYMENT.md)**, **[docs/LAUNCH_CHECKLIST.md](docs/LAUNCH_CHECKLIST.md)**, and **[SECURITY.md](SECURITY.md)**. Secrets live only in `.env` on the server — never in git.
 
-**Supabase region:** `ap-northeast-2` — use `aws-0-ap-northeast-2.pooler.supabase.com` on the droplet.
+**Supabase region:** `ap-northeast-2` — use `aws-1-ap-northeast-2.pooler.supabase.com` on the droplet (Session pooler).
 
 ## What is included
 

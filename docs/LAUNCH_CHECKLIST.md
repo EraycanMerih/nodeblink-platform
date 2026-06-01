@@ -2,7 +2,7 @@
 
 ## Secrets (droplet `.env` only)
 
-- [ ] `DATABASE_URL` — `aws-0-ap-northeast-2.pooler.supabase.com`
+- [ ] `DATABASE_URL` — `aws-1-ap-northeast-2.pooler.supabase.com`
 - [ ] `DIRECT_URL` — `db.ozthlvybyerymvyytknx.supabase.co`
 - [ ] `SOLANA_RPC_URL` — Alchemy mainnet key
 - [ ] `NODEBLINK_ENC_KEY` — 32-byte base64 AES key

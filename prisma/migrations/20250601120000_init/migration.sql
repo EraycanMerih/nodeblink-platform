@@ -116,4 +116,3 @@ ALTER TABLE "DigitalAsset" ADD CONSTRAINT "DigitalAsset_creatorProfileId_fkey" F
 
 -- AddForeignKey
 ALTER TABLE "Transaction" ADD CONSTRAINT "Transaction_creatorProfileId_fkey" FOREIGN KEY ("creatorProfileId") REFERENCES "CreatorProfile"("id") ON DELETE SET NULL ON UPDATE CASCADE;
-

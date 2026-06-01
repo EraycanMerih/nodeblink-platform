@@ -7,7 +7,8 @@ export const SUPABASE_PROJECT_REF = "ozthlvybyerymvyytknx";
 export const SUPABASE_REGION = "ap-northeast-2";
 
 /** Session pooler host (IPv4-compatible from DigitalOcean) */
-export const SUPABASE_POOLER_HOST = `aws-0-${SUPABASE_REGION}.pooler.supabase.com`;
+/** Session pooler host for ap-northeast-2 (use aws-1, not aws-0). */
+export const SUPABASE_POOLER_HOST = `aws-1-${SUPABASE_REGION}.pooler.supabase.com`;
 
 /** Direct database host (migrations / Prisma Studio) */
 export const SUPABASE_DB_HOST = `db.${SUPABASE_PROJECT_REF}.supabase.co`;
