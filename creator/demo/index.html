@@ -1,0 +1,19 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta http-equiv="refresh" content="0;url=https://api.nodeblink.dev/creator/demo">
+  <link rel="canonical" href="https://api.nodeblink.dev/creator/demo">
+  <title>NodeBlink Demo Checkout</title>
+  <script src="/config.js"></script>
+  <script>
+    (function () {
+      var app = (window.NODEBLINK_CONFIG && window.NODEBLINK_CONFIG.appUrl) || "https://api.nodeblink.dev";
+      window.location.replace(app.replace(/\/$/, "") + "/creator/demo");
+    })();
+  </script>
+</head>
+<body>
+  <p>Opening demo checkout… <a href="https://api.nodeblink.dev/creator/demo">Continue</a></p>
+</body>
+</html>
