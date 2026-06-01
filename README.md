@@ -5,6 +5,16 @@ NodeBlink is a production-ready, non-custodial checkout platform for creators. T
 - the legacy Express API and static dashboard used by the current production deployment
 - a Next.js App Router + Solana Actions scaffold for native `actions.json` discovery and creator checkout flows
 
+## Production layout
+
+| Component | Host |
+|-----------|------|
+| Static frontend (`index.html`, `dashboard.html`) | **GitHub Pages** → `nodeblink.dev` |
+| Express + Next.js API | **DigitalOcean** → `api.nodeblink.dev` (`165.245.222.21`) |
+| PostgreSQL | **Supabase** (Session pooler from the droplet) |
+
+See **[docs/DEPLOYMENT.md](docs/DEPLOYMENT.md)** and **[SECURITY.md](SECURITY.md)**. Secrets live only in `.env` on the server — never in git.
+
 ## What is included
 
 - Premium landing page with enterprise-grade layout and typography

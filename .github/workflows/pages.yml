@@ -1,11 +1,15 @@
-name: Deploy NodeBlink Pages Branch
+name: Deploy GitHub Pages (frontend only)
 
 on:
   push:
     branches:
       - main
     paths:
+      - "index.html"
+      - "dashboard.html"
+      - "assets/**"
       - "public/**"
+      - "scripts/build-github-pages.sh"
       - ".github/workflows/pages.yml"
   workflow_dispatch:
 
@@ -19,13 +23,19 @@ concurrency:
 jobs:
   deploy:
     runs-on: ubuntu-latest
+    env:
+      NODEBLINK_API_URL: https://api.nodeblink.dev
+      NODEBLINK_SITE_URL: https://nodeblink.dev
     steps:
       - name: Checkout repository
         uses: actions/checkout@v4
 
-      - name: Publish public folder to gh-pages branch
+      - name: Build static frontend bundle
+        run: bash scripts/build-github-pages.sh
+
+      - name: Publish to gh-pages branch
         uses: peaceiris/actions-gh-pages@v4
         with:
           github_token: ${{ secrets.GITHUB_TOKEN }}
           publish_branch: gh-pages
-          publish_dir: ./public
+          publish_dir: ./_site
