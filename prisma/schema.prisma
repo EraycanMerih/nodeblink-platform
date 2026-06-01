@@ -1,0 +1,109 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+enum ProductArchetype {
+  TIP
+  UNLOCK_DOCUMENT
+  MINT_NFT
+  ACCESS_PASS
+}
+
+enum ProductStatus {
+  ACTIVE
+  DRAFT
+  ARCHIVED
+}
+
+enum AssetCurrency {
+  SOL
+  USDC
+}
+
+enum TransactionStatus {
+  PENDING
+  CONFIRMED
+  FAILED
+}
+
+model User {
+  id            String          @id @default(cuid())
+  walletAddress String          @unique
+  username      String          @unique
+  email         String?
+  createdAt     DateTime        @default(now())
+  updatedAt     DateTime        @updatedAt
+  creatorProfile CreatorProfile?
+}
+
+model CreatorProfile {
+  id                   String         @id @default(cuid())
+  userId               String         @unique
+  user                 User           @relation(fields: [userId], references: [id], onDelete: Cascade)
+  username             String         @unique
+  displayName          String
+  bio                  String?
+  avatarUrl            String?
+  coverUrl             String?
+  publicKey            String
+  treasuryWallet       String?
+  platformFeeBps       Int            @default(200)
+  websiteUrl           String?
+  discordWebhookUrl    String?
+  accessWebhookUrl     String?
+  totalVolumeProcessed Decimal        @default(0)
+  totalTransactions    Int            @default(0)
+  digitalAssets        DigitalAsset[]
+  transactions         Transaction[]
+  createdAt            DateTime       @default(now())
+  updatedAt            DateTime       @updatedAt
+}
+
+model DigitalAsset {
+  id               String           @id @default(cuid())
+  creatorProfileId String
+  creatorProfile   CreatorProfile   @relation(fields: [creatorProfileId], references: [id], onDelete: Cascade)
+  archetype        ProductArchetype @default(TIP)
+  status           ProductStatus    @default(ACTIVE)
+  sortOrder        Int              @default(0)
+  title            String
+  description      String?
+  currency         AssetCurrency    @default(SOL)
+  priceMinorUnits  BigInt
+  buttonLabel      String?
+  mintName         String?
+  symbol           String?
+  maxSupply        Int?
+  currentSupply    Int              @default(0)
+  accessTerm       String?
+  storageUrl       String?
+  encryptedKey     String?
+  metadataUrl      String?
+  deliveryUrl      String?
+  webhookUrl       String?
+  variants         Json?
+  createdAt        DateTime         @default(now())
+  updatedAt        DateTime         @updatedAt
+}
+
+model Transaction {
+  id                String            @id @default(cuid())
+  signature         String?           @unique
+  creatorProfileId  String?
+  creatorProfile    CreatorProfile?   @relation(fields: [creatorProfileId], references: [id], onDelete: SetNull)
+  productId         String?
+  senderWallet      String
+  recipientWallet   String
+  grossAmount       Decimal
+  feeAmount         Decimal
+  currency          AssetCurrency     @default(SOL)
+  status            TransactionStatus @default(PENDING)
+  metadata          Json?
+  createdAt         DateTime          @default(now())
+  confirmedAt       DateTime?
+}

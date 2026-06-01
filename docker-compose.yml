@@ -1,0 +1,15 @@
+services:
+  postgres:
+    image: postgres:16-alpine
+    restart: unless-stopped
+    environment:
+      POSTGRES_USER: nodeblink
+      POSTGRES_PASSWORD: nodeblink
+      POSTGRES_DB: nodeblink
+    ports:
+      - "5432:5432"
+    volumes:
+      - nodeblink_pg:/var/lib/postgresql/data
+
+volumes:
+  nodeblink_pg:

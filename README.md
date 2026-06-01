@@ -18,23 +18,34 @@ NodeBlink is a production-ready, non-custodial checkout platform for creators. T
 - Mobile deep-link handoff for creator pages
 - Prisma schema for users, creator profiles, digital assets, and transactions
 
-## Quick start
+## Quick start (Next.js — recommended)
 
 ```bash
-cd /Users/eraycan/Desktop/NodeBlink
 npm install
+docker compose up -d
+cp .env.example .env
+# Set DATABASE_URL=postgresql://nodeblink:nodeblink@localhost:5432/nodeblink
+# Set SOLANA_RPC_URL, TREASURY_WALLET, NODEBLINK_ENC_KEY
+
+npx prisma migrate dev
+npm run prisma:seed
+npm run dev
+```
+
+Open:
+
+- `http://localhost:3000` — marketing site
+- `http://localhost:3000/dashboard` — Creator Studio
+- `http://localhost:3000/creator/demo` — live checkout demo
+- `http://localhost:3000/actions.json` — Solana Actions discovery
+
+## Legacy Express API (optional)
+
+```bash
 npm start
 ```
 
-Open `http://localhost:8080` in your browser.
-
-To build the Next.js scaffold locally:
-
-```bash
-npm run build:next
-```
-
-The Next app routes live under `app/`, including `actions.json`, `/api/v1/actions/creator/[username]`, and `/creator/[username]`.
+Open `http://localhost:8080` for the original static dashboard + Express API.
 
 ## DigitalOcean backend deployment
 
