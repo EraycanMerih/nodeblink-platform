@@ -31,28 +31,31 @@ const steps = [
   },
 ];
 
-const faqs = [
-  {
-    q: "Do you hold my funds?",
-    a: "No. NodeBlink is non-custodial. Payments move directly on Solana from the buyer to your wallet and the protocol treasury.",
-  },
-  {
-    q: "What is the protocol fee?",
-    a: `The live deployment uses a ${stats.platformFeePercent}% platform fee (configurable between ${stats.feeRangeLabel}). Creators receive about ${stats.creatorSharePercent}% of each payment.`,
-  },
-  {
-    q: "How do gated PDFs work?",
-    a: "Files are stored encrypted. After on-chain confirmation, buyers receive a secure download key through the confirmation API.",
-  },
-  {
-    q: "Do I need a mint signer key?",
-    a: stats.mintFulfillmentEnabled
-      ? "Server-side NFT minting is enabled for this deployment."
-      : "Not required. Mint products collect payment on-chain; automatic NFT minting can be enabled later by adding a mint signer key to your server environment.",
-  },
-];
+function getFaqs(stats: PublicProtocolStats) {
+  return [
+    {
+      q: "Do you hold my funds?",
+      a: "No. NodeBlink is non-custodial. Payments move directly on Solana from the buyer to your wallet and the protocol treasury.",
+    },
+    {
+      q: "What is the protocol fee?",
+      a: `The live deployment uses a ${stats.platformFeePercent}% platform fee (configurable between ${stats.feeRangeLabel}). Creators receive about ${stats.creatorSharePercent}% of each payment.`,
+    },
+    {
+      q: "How do gated PDFs work?",
+      a: "Files are stored encrypted. After on-chain confirmation, buyers receive a secure download key through the confirmation API.",
+    },
+    {
+      q: "Do I need a mint signer key?",
+      a: stats.mintFulfillmentEnabled
+        ? "Server-side NFT minting is enabled for this deployment."
+        : "Not required. Mint products collect payment on-chain; automatic NFT minting can be enabled later by adding a mint signer key to your server environment.",
+    },
+  ];
+}
 
 export function LandingPage({ stats }: Props) {
+  const faqs = getFaqs(stats);
   const volumeLabel =
     stats.volumeSol > 0
       ? `${stats.volumeSol.toFixed(2)} SOL`
