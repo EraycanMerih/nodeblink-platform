@@ -57,15 +57,20 @@ jobs:
               cd "${APP_DIR}"
               git checkout main
             fi
-            if [ -n "${{ secrets.DO_ENV_FILE }}" ]; then
+            if [ -n "${{ secrets.DO_ENV_RAW }}" ]; then
+              cat > .env <<'__NODEBLINK_ENV_RAW__'
+            ${{ secrets.DO_ENV_RAW }}
+            __NODEBLINK_ENV_RAW__
+              perl -pi -e 's/\r$//' .env || true
+            elif [ -n "${{ secrets.DO_ENV_FILE }}" ]; then
               cat > /tmp/nodeblink_env.b64 <<'__NODEBLINK_ENV_B64__'
             ${{ secrets.DO_ENV_FILE }}
             __NODEBLINK_ENV_B64__
-              tr -d '\r\n ' < /tmp/nodeblink_env.b64 | base64 -d > .env || (echo "Failed to decode DO_ENV_FILE (base64). Recreate the secret using the exact output of your base64 command, with no extra quotes/spaces." && exit 1)
+              tr -d '\r\n ' < /tmp/nodeblink_env.b64 | base64 -d > .env || (echo "Failed to decode DO_ENV_FILE (base64). Prefer setting DO_ENV_RAW to the literal .env contents instead." && exit 1)
               rm -f /tmp/nodeblink_env.b64
             fi
             if [ ! -f .env ]; then
-              echo "Missing ${APP_DIR}/.env on droplet (or DO_ENV_FILE secret not set)"
+              echo "Missing ${APP_DIR}/.env on droplet (or DO_ENV_RAW/DO_ENV_FILE secret not set)"
               exit 1
             fi
             chmod 600 .env
