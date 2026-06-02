@@ -21,9 +21,11 @@ bash scripts/setup-droplet.sh
 Nginx (all traffic → Next.js):
 
 ```bash
-bash scripts/install-nginx.sh
-sudo certbot --nginx -d api.nodeblink.dev
+sudo bash scripts/install-nginx.sh
+sudo bash scripts/setup-ssl.sh
 ```
+
+HTTPS is required for production links (`https://api.nodeblink.dev`). HTTP on port 80 works without SSL, but browsers default to HTTPS and will show “connection refused” until `setup-ssl.sh` runs successfully.
 
 **Health checks**
 

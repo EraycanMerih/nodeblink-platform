@@ -59,8 +59,11 @@ jobs:
             bash scripts/pm2-restart.sh
             if sudo -n true 2>/dev/null || [ "$(id -u)" -eq 0 ]; then
               sudo bash scripts/install-nginx.sh
+              echo "==> Enabling HTTPS (Let's Encrypt)"
+              export CERTBOT_EMAIL="${{ secrets.CERTBOT_EMAIL }}"
+              sudo -E bash scripts/setup-ssl.sh || echo "Certbot failed — site still works on http://api.nodeblink.dev"
             else
-              echo "Skipping nginx install: no sudo permission for deploy user"
+              echo "Skipping nginx/SSL install: no sudo permission for deploy user"
             fi
             echo "Deploy complete"
             READY=0
