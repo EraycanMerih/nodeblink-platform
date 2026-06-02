@@ -58,7 +58,11 @@ jobs:
             pm2 delete nodeblink nodeblink-next nodeblink-api 2>/dev/null || true
             pm2 start ecosystem.config.js --env production --update-env
             pm2 save
-            bash scripts/install-nginx.sh
+            if sudo -n true 2>/dev/null || [ "$(id -u)" -eq 0 ]; then
+              bash scripts/install-nginx.sh
+            else
+              echo "Skipping nginx install: no sudo permission for deploy user"
+            fi
             echo "Deploy complete"
             curl -sf http://127.0.0.1:3000/api/health
             curl -sfI http://127.0.0.1:3000/creator/demo | head -1

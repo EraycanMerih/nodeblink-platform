@@ -51,7 +51,11 @@ pm2 start ecosystem.config.js --update-env
 pm2 save
 
 if command -v nginx >/dev/null 2>&1; then
-  bash scripts/install-nginx.sh
+  if sudo -n true 2>/dev/null || [ "$(id -u)" -eq 0 ]; then
+    bash scripts/install-nginx.sh
+  else
+    echo "Skipping nginx install: no sudo permission for current user"
+  fi
 fi
 
 echo "==> Done. Verify: curl http://127.0.0.1:3000/api/health"
