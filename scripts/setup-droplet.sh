@@ -47,6 +47,11 @@ fi
 
 echo "==> Starting PM2 (Next.js only)"
 pm2 delete nodeblink nodeblink-next nodeblink-api 2>/dev/null || true
+if command -v fuser >/dev/null 2>&1; then
+  fuser -k 3000/tcp 2>/dev/null || true
+else
+  lsof -ti:3000 | xargs -r kill -9 2>/dev/null || true
+fi
 pm2 start ecosystem.config.js --update-env
 pm2 save
 
