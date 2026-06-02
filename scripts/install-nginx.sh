@@ -12,6 +12,19 @@ else
   SUDO=""
 fi
 
+if ! command -v nginx >/dev/null 2>&1; then
+  ${SUDO} apt-get update -qq
+  ${SUDO} apt-get install -y nginx
+  ${SUDO} systemctl enable nginx
+  ${SUDO} systemctl start nginx
+fi
+
+if command -v ufw >/dev/null 2>&1; then
+  if ${SUDO} ufw status 2>/dev/null | grep -q "Status: active"; then
+    ${SUDO} ufw allow "Nginx Full" >/dev/null 2>&1 || true
+  fi
+fi
+
 ${SUDO} cp "${ROOT}/nginx/nodeblink.conf.template" "${TARGET}"
 ${SUDO} ln -sf "${TARGET}" "${ENABLED_DIR}/nodeblink"
 ${SUDO} rm -f "${ENABLED_DIR}/default" 2>/dev/null || true

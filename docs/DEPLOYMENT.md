@@ -51,5 +51,4 @@ NODEBLINK_PORT=3001
 PUBLIC_BASE_URL=https://nodeblink.dev
 NEXT_PUBLIC_BASE_URL=https://nodeblink.dev
 DATABASE_URL=postgresql://...@aws-1-ap-northeast-2.pooler.supabase.com:5432/postgres?pgbouncer=true
-ADMIN_WALLETS=YOUR_WALLET_1,YOUR_WALLET_2
 ```

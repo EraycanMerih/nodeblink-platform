@@ -27,44 +27,72 @@ jobs:
           script_stop: true
           script: |
             set -euo pipefail
-            APP_DIR="/opt/nodeblink/repo"
-            mkdir -p /opt/nodeblink
-            if [ -d "$APP_DIR/.git" ]; then
-              cd "$APP_DIR"
+            SUDO=""
+            if [ "$(id -u)" -eq 0 ]; then
+              SUDO=""
+            elif command -v sudo >/dev/null 2>&1 && sudo -n true 2>/dev/null; then
+              SUDO="sudo"
+            fi
+
+            BASE_DIR="/opt/nodeblink"
+            if [ -z "${SUDO}" ] && [ "$(id -u)" -ne 0 ]; then
+              BASE_DIR="${HOME}/nodeblink"
+            fi
+
+            if [ "${BASE_DIR}" = "/opt/nodeblink" ]; then
+              ${SUDO} mkdir -p "${BASE_DIR}"
+              ${SUDO} chown -R "$(id -un)":"$(id -gn)" "${BASE_DIR}" || true
+            else
+              mkdir -p "${BASE_DIR}"
+            fi
+
+            APP_DIR="${BASE_DIR}/repo"
+            if [ -d "${APP_DIR}/.git" ]; then
+              cd "${APP_DIR}"
               git fetch origin
               git checkout main
               git reset --hard origin/main
             else
-              git clone https://github.com/EraycanMerih/nodeblink-platform.git "$APP_DIR"
-              cd "$APP_DIR"
+              git clone https://github.com/EraycanMerih/nodeblink-platform.git "${APP_DIR}"
+              cd "${APP_DIR}"
               git checkout main
             fi
             if [ -n "${{ secrets.DO_ENV_FILE }}" ]; then
-              echo "${{ secrets.DO_ENV_FILE }}" | base64 -d > .env
+              cat > /tmp/nodeblink_env.b64 <<'__NODEBLINK_ENV_B64__'
+            ${{ secrets.DO_ENV_FILE }}
+            __NODEBLINK_ENV_B64__
+              tr -d '\r\n ' < /tmp/nodeblink_env.b64 | base64 -d > .env || (echo "Failed to decode DO_ENV_FILE (base64). Recreate the secret using the exact output of your base64 command, with no extra quotes/spaces." && exit 1)
+              rm -f /tmp/nodeblink_env.b64
             fi
             if [ ! -f .env ]; then
-              echo "Missing /opt/nodeblink/repo/.env on droplet (or DO_ENV_FILE secret not set)"
+              echo "Missing ${APP_DIR}/.env on droplet (or DO_ENV_FILE secret not set)"
               exit 1
             fi
             chmod 600 .env
             export NODE_ENV=production
-            command -v node >/dev/null || (curl -fsSL https://deb.nodesource.com/setup_20.x | bash - && apt-get install -y nodejs)
-            command -v pm2 >/dev/null || npm install -g pm2
+            command -v node >/dev/null || (curl -fsSL https://deb.nodesource.com/setup_20.x | ${SUDO} bash - && ${SUDO} apt-get install -y nodejs)
+            command -v pm2 >/dev/null || ${SUDO} npm install -g pm2
             npm ci --ignore-scripts
             npx prisma generate
             npx prisma migrate deploy || true
             npm run prisma:seed || true
             npm run build:next
-            systemctl stop nodeblink 2>/dev/null || true
-            systemctl disable nodeblink 2>/dev/null || true
+            ${SUDO} systemctl stop nodeblink 2>/dev/null || true
+            ${SUDO} systemctl disable nodeblink 2>/dev/null || true
             export NODEBLINK_PORT=3001
             bash scripts/pm2-restart.sh
             if sudo -n true 2>/dev/null || [ "$(id -u)" -eq 0 ]; then
               sudo bash scripts/install-nginx.sh
               echo "==> Enabling HTTPS (Let's Encrypt)"
               export CERTBOT_EMAIL="${{ secrets.CERTBOT_EMAIL }}"
-              export NODEBLINK_DOMAINS="nodeblink.dev www.nodeblink.dev api.nodeblink.dev"
-              sudo -E bash scripts/setup-ssl.sh || echo "Certbot failed — site still works on http://api.nodeblink.dev"
+              export NODEBLINK_DOMAINS="${{ secrets.NODEBLINK_DOMAINS }}"
+              if [ -z "${NODEBLINK_DOMAINS}" ]; then
+                export NODEBLINK_DOMAINS="nodeblink.dev www.nodeblink.dev api.nodeblink.dev"
+              fi
+              if ! sudo -E bash scripts/setup-ssl.sh; then
+                echo "Certbot failed. Fix DNS (A records to 165.245.222.21) and ensure ports 80/443 are open, then re-run deploy."
+                exit 1
+              fi
             else
               echo "Skipping nginx/SSL install: no sudo permission for deploy user"
             fi

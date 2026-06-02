@@ -2,7 +2,7 @@
 
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { BarChart3, LayoutGrid, Settings, Shield } from "lucide-react";
+import { BarChart3, LayoutGrid, Settings } from "lucide-react";
 import { WalletConnectButton } from "@/components/wallet-connect-button";
 import { ThemeToggle } from "@/components/theme-toggle";
 
@@ -16,7 +16,6 @@ const NAV: NavItem[] = [
   { href: "/dashboard", label: "Studio", icon: <LayoutGrid size={16} /> },
   { href: "/dashboard/analytics", label: "Analytics", icon: <BarChart3 size={16} /> },
   { href: "/dashboard/settings", label: "Settings", icon: <Settings size={16} /> },
-  { href: "/dashboard/admin", label: "Admin", icon: <Shield size={16} /> },
 ];
 
 export function DashboardShell({ children }: { children: React.ReactNode }) {

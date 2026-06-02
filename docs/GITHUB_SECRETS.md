@@ -5,12 +5,15 @@ To let GitHub deploy to your droplet automatically, add these **Repository secre
 
 | Secret | Example value |
 |--------|----------------|
-| `DO_SSH_PRIVATE_KEY` | Full private key for `root@165.245.222.21` |
+| `DO_SSH_PRIVATE_KEY` | Full private key for `deploy@165.245.222.21` (or `root@...`) |
 | `DO_HOST` | `165.245.222.21` |
-| `DO_USER` | `root` |
+| `DO_USER` | `deploy` (recommended) or `root` |
 | `DO_SSH_PORT` | `22` (optional) |
 | `DO_ENV_FILE` | Base64 of your `.env` file (see below) |
-| `CERTBOT_EMAIL` | Email used by Let's Encrypt for SSL cert issuance |
+| `NODEBLINK_DOMAINS` | `nodeblink.dev www.nodeblink.dev api.nodeblink.dev` (optional) |
+| `CERTBOT_EMAIL` | Email used by Let's Encrypt for SSL cert issuance (optional) |
+
+If you use `DO_USER=deploy`, the user must have **passwordless sudo** (so the workflow can install system packages and configure nginx/SSL).
 
 ## Create `DO_ENV_FILE`
 
