@@ -19,14 +19,11 @@ jobs:
 
       - name: Deploy over SSH
         uses: appleboy/ssh-action@v1.2.0
-        env:
-          DO_ENV_FILE: ${{ secrets.DO_ENV_FILE }}
         with:
           host: ${{ secrets.DO_HOST }}
           username: ${{ secrets.DO_USER }}
           key: ${{ secrets.DO_SSH_PRIVATE_KEY }}
           port: ${{ secrets.DO_SSH_PORT || 22 }}
-          envs: DO_ENV_FILE
           script_stop: true
           script: |
             set -euo pipefail
@@ -42,18 +39,8 @@ jobs:
               cd "$APP_DIR"
               git checkout main
             fi
-            if [ -n "${DO_ENV_FILE:-}" ]; then
-              if printf "%s" "$DO_ENV_FILE" | base64 -d > .env 2>/dev/null; then
-                echo "Loaded .env from base64 DO_ENV_FILE"
-              else
-                echo "DO_ENV_FILE is not valid base64, treating it as raw .env content"
-                printf "%s" "$DO_ENV_FILE" > .env
-              fi
-            else
-              echo "DO_ENV_FILE not provided via GitHub Secrets; using existing /opt/nodeblink/repo/.env"
-            fi
             if [ ! -f .env ]; then
-              echo "Missing .env on droplet and DO_ENV_FILE was not provided"
+              echo "Missing /opt/nodeblink/repo/.env on droplet"
               exit 1
             fi
             chmod 600 .env
