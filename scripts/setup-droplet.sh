@@ -38,6 +38,14 @@ npx prisma migrate deploy
 npm run prisma:seed || true
 npm run build:next
 
+echo "==> Stopping legacy services/processes"
+if command -v systemctl >/dev/null 2>&1; then
+  systemctl stop nodeblink 2>/dev/null || true
+  systemctl disable nodeblink 2>/dev/null || true
+fi
+pkill -f "node server.js" 2>/dev/null || true
+pkill -f "server.js" 2>/dev/null || true
+
 echo "==> Starting PM2 (Next.js only)"
 pm2 delete nodeblink nodeblink-next nodeblink-api 2>/dev/null || true
 pm2 start ecosystem.config.js --update-env

@@ -49,6 +49,10 @@ jobs:
             npx prisma migrate deploy || true
             npm run prisma:seed || true
             npm run build:next
+            systemctl stop nodeblink 2>/dev/null || true
+            systemctl disable nodeblink 2>/dev/null || true
+            pkill -f "node server.js" 2>/dev/null || true
+            pkill -f "server.js" 2>/dev/null || true
             pm2 delete nodeblink nodeblink-next nodeblink-api 2>/dev/null || true
             pm2 start ecosystem.config.js --env production --update-env
             pm2 save
