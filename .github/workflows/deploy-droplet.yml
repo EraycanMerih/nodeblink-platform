@@ -39,14 +39,25 @@ jobs:
               cd "$APP_DIR"
               git checkout main
             fi
-            echo "${{ secrets.DO_ENV_FILE }}" | base64 -d > .env
+            if echo "${{ secrets.DO_ENV_FILE }}" | base64 -d > .env 2>/dev/null; then
+              echo "Loaded .env from base64 DO_ENV_FILE"
+            else
+              echo "DO_ENV_FILE is not valid base64, treating it as raw .env content"
+              printf "%s" "${{ secrets.DO_ENV_FILE }}" > .env
+            fi
             chmod 600 .env
             export NODE_ENV=production
             command -v node >/dev/null || (curl -fsSL https://deb.nodesource.com/setup_20.x | bash - && apt-get install -y nodejs)
             command -v pm2 >/dev/null || npm install -g pm2
             npm ci --ignore-scripts
             npx prisma generate
-            if grep -q '^DIRECT_URL=' .env && grep -q '^DATABASE_URL=' .env; then
+            set +e
+            grep -Eq '^DIRECT_URL=.+' .env
+            HAS_DIRECT_URL=$?
+            grep -Eq '^DATABASE_URL=.+' .env
+            HAS_DATABASE_URL=$?
+            set -e
+            if [ "$HAS_DIRECT_URL" -eq 0 ] && [ "$HAS_DATABASE_URL" -eq 0 ]; then
               npx prisma migrate deploy || true
               npm run prisma:seed || true
             else

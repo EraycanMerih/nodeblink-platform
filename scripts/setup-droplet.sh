@@ -34,7 +34,13 @@ fi
 echo "==> Installing dependencies and building"
 npm ci --ignore-scripts
 npx prisma generate
-if grep -q '^DIRECT_URL=' .env && grep -q '^DATABASE_URL=' .env; then
+set +e
+grep -Eq '^DIRECT_URL=.+' .env
+HAS_DIRECT_URL=$?
+grep -Eq '^DATABASE_URL=.+' .env
+HAS_DATABASE_URL=$?
+set -e
+if [ "$HAS_DIRECT_URL" -eq 0 ] && [ "$HAS_DATABASE_URL" -eq 0 ]; then
   npx prisma migrate deploy || true
   npm run prisma:seed || true
 else
