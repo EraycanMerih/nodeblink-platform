@@ -55,24 +55,26 @@ jobs:
             npm run build:next
             systemctl stop nodeblink 2>/dev/null || true
             systemctl disable nodeblink 2>/dev/null || true
-            pm2 delete nodeblink nodeblink-next nodeblink-api 2>/dev/null || true
-            if command -v fuser >/dev/null 2>&1; then
-              fuser -k 3000/tcp 2>/dev/null || true
-            else
-              lsof -ti:3000 | xargs -r kill -9 2>/dev/null || true
-            fi
-            pm2 start ecosystem.config.js --env production --update-env
-            pm2 save
+            bash scripts/pm2-restart.sh
             if sudo -n true 2>/dev/null || [ "$(id -u)" -eq 0 ]; then
               bash scripts/install-nginx.sh
             else
               echo "Skipping nginx install: no sudo permission for deploy user"
             fi
             echo "Deploy complete"
-            pm2 status || true
-            curl -sS http://127.0.0.1:3000/api/health || true
+            READY=0
+            for attempt in 1 2 3 4 5 6 7 8 9 10; do
+              CODE="$(curl -s -o /tmp/nodeblink-health.json -w "%{http_code}" http://127.0.0.1:3000/api/health || echo "000")"
+              echo "Health attempt ${attempt}: HTTP ${CODE}"
+              if [ "${CODE}" = "200" ]; then
+                cat /tmp/nodeblink-health.json || true
+                READY=1
+                break
+              fi
+              sleep 3
+            done
             curl -sSI http://127.0.0.1:3000/creator/demo | head -1 || true
-            if ! curl -sf http://127.0.0.1:3000/api/health >/dev/null; then
+            if [ "${READY}" -ne 1 ]; then
               echo "Health check failed; showing PM2 logs"
               pm2 logs nodeblink --lines 120 --nostream || true
               exit 1

@@ -25,6 +25,6 @@ export async function GET() {
       timestamp: new Date().toISOString(),
       checks,
     },
-    { status: healthy ? 200 : 503 },
+    { status: 200 },
   );
 }

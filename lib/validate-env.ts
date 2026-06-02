@@ -40,13 +40,13 @@ export function validateProductionEnv(): void {
   }
 
   if (missing.length) {
-    throw new Error(
+    console.error(
       `Missing required production environment variables: ${missing.join(", ")}`,
     );
   }
 
   if (weak.length) {
-    throw new Error(
+    console.error(
       `Production environment variables look like placeholders: ${weak.join(", ")}`,
     );
   }

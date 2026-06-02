@@ -45,15 +45,7 @@ if command -v systemctl >/dev/null 2>&1; then
   systemctl disable nodeblink 2>/dev/null || true
 fi
 
-echo "==> Starting PM2 (Next.js only)"
-pm2 delete nodeblink nodeblink-next nodeblink-api 2>/dev/null || true
-if command -v fuser >/dev/null 2>&1; then
-  fuser -k 3000/tcp 2>/dev/null || true
-else
-  lsof -ti:3000 | xargs -r kill -9 2>/dev/null || true
-fi
-pm2 start ecosystem.config.js --update-env
-pm2 save
+bash scripts/pm2-restart.sh
 
 if command -v nginx >/dev/null 2>&1; then
   if sudo -n true 2>/dev/null || [ "$(id -u)" -eq 0 ]; then
