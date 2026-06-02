@@ -64,5 +64,11 @@ jobs:
               echo "Skipping nginx install: no sudo permission for deploy user"
             fi
             echo "Deploy complete"
-            curl -sf http://127.0.0.1:3000/api/health
-            curl -sfI http://127.0.0.1:3000/creator/demo | head -1
+            pm2 status || true
+            curl -sS http://127.0.0.1:3000/api/health || true
+            curl -sSI http://127.0.0.1:3000/creator/demo | head -1 || true
+            if ! curl -sf http://127.0.0.1:3000/api/health >/dev/null; then
+              echo "Health check failed; showing PM2 logs"
+              pm2 logs nodeblink --lines 120 --nostream || true
+              exit 1
+            fi

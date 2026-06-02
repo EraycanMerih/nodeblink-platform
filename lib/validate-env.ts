@@ -1,11 +1,14 @@
 const REQUIRED_PRODUCTION = [
   "DATABASE_URL",
-  "DIRECT_URL",
   "SOLANA_RPC_URL",
-  "NODEBLINK_ENC_KEY",
   "TREASURY_WALLET",
-  "DOWNLOAD_SECRET",
   "PUBLIC_BASE_URL",
+] as const;
+
+const RECOMMENDED_PRODUCTION = [
+  "DIRECT_URL",
+  "NODEBLINK_ENC_KEY",
+  "DOWNLOAD_SECRET",
 ] as const;
 
 const PLACEHOLDER_PATTERNS = [
@@ -45,6 +48,15 @@ export function validateProductionEnv(): void {
   if (weak.length) {
     throw new Error(
       `Production environment variables look like placeholders: ${weak.join(", ")}`,
+    );
+  }
+
+  const missingRecommended = RECOMMENDED_PRODUCTION.filter(
+    (key) => !process.env[key]?.trim(),
+  );
+  if (missingRecommended.length) {
+    console.warn(
+      `Missing recommended production env variables: ${missingRecommended.join(", ")}`,
     );
   }
 
