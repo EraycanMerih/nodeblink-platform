@@ -34,8 +34,12 @@ fi
 echo "==> Installing dependencies and building"
 npm ci --ignore-scripts
 npx prisma generate
-npx prisma migrate deploy
-npm run prisma:seed || true
+if grep -q '^DIRECT_URL=' .env && grep -q '^DATABASE_URL=' .env; then
+  npx prisma migrate deploy || true
+  npm run prisma:seed || true
+else
+  echo "Skipping migrate/seed: DATABASE_URL or DIRECT_URL missing in .env"
+fi
 npm run build:next
 
 echo "==> Stopping legacy services/processes"
@@ -43,8 +47,6 @@ if command -v systemctl >/dev/null 2>&1; then
   systemctl stop nodeblink 2>/dev/null || true
   systemctl disable nodeblink 2>/dev/null || true
 fi
-pkill -f "node server.js" 2>/dev/null || true
-pkill -f "server.js" 2>/dev/null || true
 
 echo "==> Starting PM2 (Next.js only)"
 pm2 delete nodeblink nodeblink-next nodeblink-api 2>/dev/null || true
