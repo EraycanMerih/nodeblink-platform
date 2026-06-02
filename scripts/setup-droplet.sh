@@ -55,4 +55,4 @@ if command -v nginx >/dev/null 2>&1; then
   fi
 fi
 
-echo "==> Done. Verify: curl http://127.0.0.1:3000/api/health"
+echo "==> Done. Verify: curl http://127.0.0.1:3001/api/health"

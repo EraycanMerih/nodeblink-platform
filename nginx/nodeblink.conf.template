@@ -1,5 +1,5 @@
-# api.nodeblink.dev — Next.js only (no legacy Express)
-# Install: bash scripts/install-nginx.sh
+# api.nodeblink.dev — Next.js (internal port 3001)
+# Install: sudo bash scripts/install-nginx.sh
 
 server {
     listen 80;
@@ -8,7 +8,7 @@ server {
     client_max_body_size 110M;
 
     location / {
-        proxy_pass http://127.0.0.1:3000;
+        proxy_pass http://127.0.0.1:3001;
         proxy_http_version 1.1;
         proxy_set_header Upgrade $http_upgrade;
         proxy_set_header Connection "upgrade";

@@ -5,7 +5,7 @@
 | URL | Host | App |
 |-----|------|-----|
 | `https://nodeblink.dev` | GitHub Pages | Marketing site (`static-site/`) — links to app |
-| `https://api.nodeblink.dev` | DigitalOcean **165.245.222.21** | **Next.js only** (port 3000) |
+| `https://api.nodeblink.dev` | DigitalOcean **165.245.222.21** | **Next.js** on internal port **3001** (nginx proxies 80/443 → 3001) |
 
 Everything runs on Next.js: landing, Creator Studio, checkout, Solana Actions, API.
 
@@ -50,7 +50,8 @@ Push to `main` → workflow publishes `static-site/` to `gh-pages`.
 Set on the droplet `.env`:
 
 ```txt
-PORT=3000
+PORT=3001
+NODEBLINK_PORT=3001
 PUBLIC_BASE_URL=https://api.nodeblink.dev
 NEXT_PUBLIC_BASE_URL=https://api.nodeblink.dev
 DATABASE_URL=postgresql://...@aws-1-ap-northeast-2.pooler.supabase.com:5432/postgres?pgbouncer=true

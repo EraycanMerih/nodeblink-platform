@@ -55,16 +55,17 @@ jobs:
             npm run build:next
             systemctl stop nodeblink 2>/dev/null || true
             systemctl disable nodeblink 2>/dev/null || true
+            export NODEBLINK_PORT=3001
             bash scripts/pm2-restart.sh
             if sudo -n true 2>/dev/null || [ "$(id -u)" -eq 0 ]; then
-              bash scripts/install-nginx.sh
+              sudo bash scripts/install-nginx.sh
             else
               echo "Skipping nginx install: no sudo permission for deploy user"
             fi
             echo "Deploy complete"
             READY=0
             for attempt in 1 2 3 4 5 6 7 8 9 10; do
-              CODE="$(curl -s -o /tmp/nodeblink-health.json -w "%{http_code}" http://127.0.0.1:3000/api/health || echo "000")"
+              CODE="$(curl -s -o /tmp/nodeblink-health.json -w "%{http_code}" http://127.0.0.1:3001/api/health || echo "000")"
               echo "Health attempt ${attempt}: HTTP ${CODE}"
               if [ "${CODE}" = "200" ]; then
                 cat /tmp/nodeblink-health.json || true
@@ -73,7 +74,7 @@ jobs:
               fi
               sleep 3
             done
-            curl -sSI http://127.0.0.1:3000/creator/demo | head -1 || true
+            curl -sSI http://127.0.0.1:3001/creator/demo | head -1 || true
             if [ "${READY}" -ne 1 ]; then
               echo "Health check failed; showing PM2 logs"
               pm2 logs nodeblink --lines 120 --nostream || true
