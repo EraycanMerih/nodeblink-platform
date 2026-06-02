@@ -19,11 +19,14 @@ jobs:
 
       - name: Deploy over SSH
         uses: appleboy/ssh-action@v1.2.0
+        env:
+          DO_ENV_FILE: ${{ secrets.DO_ENV_FILE }}
         with:
           host: ${{ secrets.DO_HOST }}
           username: ${{ secrets.DO_USER }}
           key: ${{ secrets.DO_SSH_PRIVATE_KEY }}
           port: ${{ secrets.DO_SSH_PORT || 22 }}
+          envs: DO_ENV_FILE
           script_stop: true
           script: |
             set -euo pipefail
@@ -39,11 +42,15 @@ jobs:
               cd "$APP_DIR"
               git checkout main
             fi
-            if echo "${{ secrets.DO_ENV_FILE }}" | base64 -d > .env 2>/dev/null; then
+            if [ -z "${DO_ENV_FILE:-}" ]; then
+              echo "DO_ENV_FILE secret is empty"
+              exit 1
+            fi
+            if printf "%s" "$DO_ENV_FILE" | base64 -d > .env 2>/dev/null; then
               echo "Loaded .env from base64 DO_ENV_FILE"
             else
               echo "DO_ENV_FILE is not valid base64, treating it as raw .env content"
-              printf "%s" "${{ secrets.DO_ENV_FILE }}" > .env
+              printf "%s" "$DO_ENV_FILE" > .env
             fi
             chmod 600 .env
             export NODE_ENV=production
