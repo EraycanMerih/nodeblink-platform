@@ -27,6 +27,7 @@ jobs:
           script_stop: true
           script: |
             set -euo pipefail
+            set -x
             APP_DIR="/opt/nodeblink/repo"
             mkdir -p /opt/nodeblink
             if [ -d "$APP_DIR/.git" ]; then
@@ -49,18 +50,8 @@ jobs:
             command -v pm2 >/dev/null || npm install -g pm2
             npm ci --ignore-scripts
             npx prisma generate
-            set +e
-            grep -Eq '^DIRECT_URL=.+' .env
-            HAS_DIRECT_URL=$?
-            grep -Eq '^DATABASE_URL=.+' .env
-            HAS_DATABASE_URL=$?
-            set -e
-            if [ "$HAS_DIRECT_URL" -eq 0 ] && [ "$HAS_DATABASE_URL" -eq 0 ]; then
-              npx prisma migrate deploy || true
-              npm run prisma:seed || true
-            else
-              echo "Skipping migrate/seed: DATABASE_URL or DIRECT_URL missing in .env"
-            fi
+            npx prisma migrate deploy || true
+            npm run prisma:seed || true
             npm run build:next
             systemctl stop nodeblink 2>/dev/null || true
             systemctl disable nodeblink 2>/dev/null || true

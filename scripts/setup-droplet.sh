@@ -1,6 +1,7 @@
 #!/usr/bin/env bash
 # Run ON the DigitalOcean droplet (165.245.222.21) as root or deploy user.
 set -euo pipefail
+set -x
 
 APP_DIR="${APP_DIR:-/opt/nodeblink}"
 REPO_URL="${REPO_URL:-https://github.com/EraycanMerih/nodeblink-platform.git}"
@@ -34,18 +35,8 @@ fi
 echo "==> Installing dependencies and building"
 npm ci --ignore-scripts
 npx prisma generate
-set +e
-grep -Eq '^DIRECT_URL=.+' .env
-HAS_DIRECT_URL=$?
-grep -Eq '^DATABASE_URL=.+' .env
-HAS_DATABASE_URL=$?
-set -e
-if [ "$HAS_DIRECT_URL" -eq 0 ] && [ "$HAS_DATABASE_URL" -eq 0 ]; then
-  npx prisma migrate deploy || true
-  npm run prisma:seed || true
-else
-  echo "Skipping migrate/seed: DATABASE_URL or DIRECT_URL missing in .env"
-fi
+npx prisma migrate deploy || true
+npm run prisma:seed || true
 npm run build:next
 
 echo "==> Stopping legacy services/processes"
