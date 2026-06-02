@@ -92,7 +92,7 @@ jobs:
               export CERTBOT_EMAIL="${{ secrets.CERTBOT_EMAIL }}"
               export NODEBLINK_DOMAINS="${{ secrets.NODEBLINK_DOMAINS }}"
               if [ -z "${NODEBLINK_DOMAINS}" ]; then
-                export NODEBLINK_DOMAINS="nodeblink.dev www.nodeblink.dev api.nodeblink.dev"
+                export NODEBLINK_DOMAINS="api.nodeblink.dev"
               fi
               if ! sudo -E bash scripts/setup-ssl.sh; then
                 echo "Certbot failed. Fix DNS (A records to 165.245.222.21) and ensure ports 80/443 are open, then re-run deploy."
