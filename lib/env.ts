@@ -1,11 +1,32 @@
+function sanitizeUrl(value: string | undefined): string | undefined {
+  if (!value) return undefined;
+  let out = value.trim();
+  out = out.replace(/^`(.+)`$/, "$1");
+  out = out.replace(/^"(.+)"$/, "$1");
+  out = out.replace(/^'(.+)'$/, "$1");
+  out = out.replace(/\/$/, "");
+  return out.trim();
+}
+
 export const PUBLIC_BASE_URL =
-  process.env.PUBLIC_BASE_URL?.replace(/\/$/, "") ||
-  process.env.NEXT_PUBLIC_BASE_URL?.replace(/\/$/, "") ||
-  "https://api.nodeblink.dev";
+  sanitizeUrl(process.env.PUBLIC_BASE_URL) ||
+  sanitizeUrl(process.env.NEXT_PUBLIC_BASE_URL) ||
+  "https://nodeblink.dev";
 
 export const SOLANA_RPC_URL =
-  process.env.SOLANA_RPC_URL ||
-  "https://solana-mainnet.g.alchemy.com/v2/demo";
+  sanitizeUrl(process.env.SOLANA_RPC_URL) ||
+  sanitizeUrl(process.env.NEXT_PUBLIC_SOLANA_RPC_URL) ||
+  "https://api.mainnet-beta.solana.com";
+
+/** RPC endpoint exposed to client wallet components */
+export const CLIENT_RPC_URL =
+  sanitizeUrl(process.env.NEXT_PUBLIC_SOLANA_RPC_URL) ||
+  sanitizeUrl(process.env.SOLANA_RPC_URL) ||
+  "https://api.mainnet-beta.solana.com";
+
+export const MARKETING_SITE_URL =
+  sanitizeUrl(process.env.NEXT_PUBLIC_MARKETING_URL) ||
+  "https://nodeblink.dev";
 
 export const TREASURY_WALLET =
   process.env.TREASURY_WALLET || "11111111111111111111111111111111";

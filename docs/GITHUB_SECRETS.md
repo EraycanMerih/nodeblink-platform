@@ -10,6 +10,7 @@ To let GitHub deploy to your droplet automatically, add these **Repository secre
 | `DO_USER` | `root` |
 | `DO_SSH_PORT` | `22` (optional) |
 | `DO_ENV_FILE` | Base64 of your `.env` file (see below) |
+| `CERTBOT_EMAIL` | Email used by Let's Encrypt for SSL cert issuance |
 
 ## Create `DO_ENV_FILE`
 
@@ -28,6 +29,10 @@ base64 -w0 .env
 ```
 
 Paste the output as the `DO_ENV_FILE` secret.
+
+If `DO_ENV_FILE` is not set, the deploy workflow expects `.env` to already exist on the droplet at:
+
+`/opt/nodeblink/repo/.env`
 
 Your `.env` on the server must include:
 

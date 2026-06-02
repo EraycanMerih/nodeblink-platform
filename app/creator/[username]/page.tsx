@@ -4,7 +4,6 @@ import { CreatorCheckoutShell } from "@/components/creator-checkout-shell";
 import { SiteFooter } from "@/components/site-footer";
 import { SiteHeader } from "@/components/site-header";
 import { getCreatorProfile } from "@/lib/creator-actions";
-import { SOLANA_RPC_URL } from "@/lib/env";
 import { getRequestOrigin } from "@/lib/request-origin";
 
 export const dynamic = "force-dynamic";
@@ -33,12 +32,7 @@ export default async function CreatorPage({ params }: PageProps) {
   return (
     <>
       <SiteHeader />
-      <CreatorCheckoutShell
-        creator={profile}
-        actionApiUrl={actionApiUrl}
-        mobile={mobile}
-        rpcUrl={SOLANA_RPC_URL}
-      />
+      <CreatorCheckoutShell creator={profile} actionApiUrl={actionApiUrl} mobile={mobile} />
       <SiteFooter />
     </>
   );

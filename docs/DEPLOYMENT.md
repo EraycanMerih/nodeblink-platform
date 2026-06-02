@@ -4,8 +4,8 @@
 
 | URL | Host | App |
 |-----|------|-----|
-| `https://nodeblink.dev` | GitHub Pages | Marketing site (`static-site/`) — links to app |
-| `https://api.nodeblink.dev` | DigitalOcean **165.245.222.21** | **Next.js** on internal port **3001** (nginx proxies 80/443 → 3001) |
+| `https://nodeblink.dev` | DigitalOcean **165.245.222.21** | **Next.js** on internal port **3001** (nginx proxies 80/443 → 3001) |
+| `https://api.nodeblink.dev` | DigitalOcean **165.245.222.21** | Domain alias (serves the same Next.js app) |
 
 Everything runs on Next.js: landing, Creator Studio, checkout, Solana Actions, API.
 
@@ -29,22 +29,16 @@ HTTPS is required for production links (`https://api.nodeblink.dev`). HTTP on po
 
 **Health checks**
 
-- `https://api.nodeblink.dev/api/health`
-- `https://api.nodeblink.dev/creator/demo`
-- `https://api.nodeblink.dev/dashboard`
-
-## GitHub Pages (nodeblink.dev)
-
-Push to `main` → workflow publishes `static-site/` to `gh-pages`.
-
-- `/dashboard` → redirects to `https://api.nodeblink.dev/dashboard`
-- `/creator/demo` → redirects to demo checkout
+- `https://nodeblink.dev/api/health`
+- `https://nodeblink.dev/creator/demo`
+- `https://nodeblink.dev/dashboard`
 
 ## DNS
 
 | Name | Type | Value |
 |------|------|--------|
-| `nodeblink.dev` | GitHub Pages | (repo Settings → Pages) |
+| `nodeblink.dev` | A | `165.245.222.21` |
+| `www.nodeblink.dev` | CNAME | `nodeblink.dev` |
 | `api.nodeblink.dev` | A | `165.245.222.21` |
 
 ## Environment
@@ -54,7 +48,8 @@ Set on the droplet `.env`:
 ```txt
 PORT=3001
 NODEBLINK_PORT=3001
-PUBLIC_BASE_URL=https://api.nodeblink.dev
-NEXT_PUBLIC_BASE_URL=https://api.nodeblink.dev
+PUBLIC_BASE_URL=https://nodeblink.dev
+NEXT_PUBLIC_BASE_URL=https://nodeblink.dev
 DATABASE_URL=postgresql://...@aws-1-ap-northeast-2.pooler.supabase.com:5432/postgres?pgbouncer=true
+ADMIN_WALLETS=YOUR_WALLET_1,YOUR_WALLET_2
 ```

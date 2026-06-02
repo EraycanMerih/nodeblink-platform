@@ -1,9 +1,7 @@
-# nodeblink.dev + api.nodeblink.dev — Next.js (internal port 3001)
-# Install: sudo bash scripts/install-nginx.sh
-
+# nodeblink.dev — same Next.js app as api.nodeblink.dev
 server {
     listen 80;
-    server_name nodeblink.dev www.nodeblink.dev api.nodeblink.dev;
+    server_name nodeblink.dev www.nodeblink.dev;
 
     client_max_body_size 110M;
 

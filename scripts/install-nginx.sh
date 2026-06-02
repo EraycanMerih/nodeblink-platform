@@ -31,4 +31,4 @@ done
 ${SUDO} nginx -t
 ${SUDO} systemctl reload nginx
 
-echo "Nginx configured: all traffic -> Next.js :3000"
+echo "Nginx configured: all traffic -> Next.js :3001"

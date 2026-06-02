@@ -6,10 +6,10 @@ Solana creator checkout — tips, gated PDFs, access passes, and collectibles wi
 
 | URL | What |
 |-----|------|
-| [nodeblink.dev](https://nodeblink.dev) | Marketing site (GitHub Pages) |
-| [api.nodeblink.dev](https://api.nodeblink.dev) | Full app — landing, Creator Studio, checkout, API |
-| [api.nodeblink.dev/dashboard](https://api.nodeblink.dev/dashboard) | Creator Studio |
-| [api.nodeblink.dev/creator/demo](https://api.nodeblink.dev/creator/demo) | Demo checkout |
+| [nodeblink.dev](https://nodeblink.dev) | Full app — landing, Creator Studio, checkout, API |
+| [api.nodeblink.dev](https://api.nodeblink.dev) | Domain alias (serves the same app) |
+| [nodeblink.dev/dashboard](https://nodeblink.dev/dashboard) | Creator Studio |
+| [nodeblink.dev/creator/demo](https://nodeblink.dev/creator/demo) | Demo checkout |
 
 ## Local development
 
@@ -21,8 +21,7 @@ npm run dev            # http://localhost:3000
 
 ## Deploy
 
-- **DigitalOcean** — `bash scripts/setup-droplet.sh` (Next.js on port 3000, nginx proxy)
-- **GitHub Pages** — push to `main` updates `static-site/` on `gh-pages`
+- **DigitalOcean** — `bash scripts/setup-droplet.sh` (Next.js on port 3001, nginx proxy)
 
 See [docs/DEPLOYMENT.md](docs/DEPLOYMENT.md).
 

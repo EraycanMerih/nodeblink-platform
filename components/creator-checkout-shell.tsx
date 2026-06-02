@@ -8,12 +8,11 @@ type Props = {
   creator: CreatorProfileView;
   actionApiUrl: string;
   mobile: boolean;
-  rpcUrl: string;
 };
 
-export function CreatorCheckoutShell({ creator, actionApiUrl, mobile, rpcUrl }: Props) {
+export function CreatorCheckoutShell({ creator, actionApiUrl, mobile }: Props) {
   return (
-    <SolanaWalletProvider endpoint={rpcUrl}>
+    <SolanaWalletProvider>
       <PremiumCheckout creator={creator} actionApiUrl={actionApiUrl} mobile={mobile} />
     </SolanaWalletProvider>
   );

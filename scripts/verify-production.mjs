@@ -33,6 +33,16 @@ for (const key of required) {
   console.log(`OK ${key}`);
 }
 
+const publicBase = process.env.PUBLIC_BASE_URL?.trim() ?? "";
+if (publicBase.includes("`") || publicBase.includes('"') || publicBase.includes("'")) {
+  console.error("INVALID PUBLIC_BASE_URL (contains quotes/backticks)");
+  failed++;
+}
+if (publicBase && !publicBase.startsWith("https://")) {
+  console.error("INVALID PUBLIC_BASE_URL (must start with https://)");
+  failed++;
+}
+
 if (!process.env.DATABASE_URL?.includes("aws-1-ap-northeast-2.pooler.supabase.com")) {
   console.warn(
     "WARN DATABASE_URL should use aws-1-ap-northeast-2.pooler.supabase.com for DigitalOcean",
@@ -45,5 +55,29 @@ if (!fs.existsSync("prisma/migrations")) {
 } else {
   console.log("OK prisma/migrations");
 }
+
+const port = process.env.NODEBLINK_PORT || process.env.PORT || "3001";
+const base = `http://127.0.0.1:${port}`;
+
+async function checkJson(path, label) {
+  try {
+    const res = await fetch(`${base}${path}`, {
+      headers: { Accept: "application/json" },
+    });
+    if (!res.ok) {
+      console.error(`FAIL ${label} (HTTP ${res.status})`);
+      failed++;
+      return;
+    }
+    await res.json();
+    console.log(`OK ${label}`);
+  } catch {
+    console.error(`FAIL ${label} (unreachable)`);
+    failed++;
+  }
+}
+
+await checkJson("/api/health", "health endpoint");
+await checkJson("/actions.json", "actions.json");
 
 process.exit(failed ? 1 : 0);

@@ -1,9 +1,8 @@
 import Link from "next/link";
 import { Zap } from "lucide-react";
 import { BRAND_GRADIENT } from "@/lib/brand";
-import { ThemeToggle } from "@/components/theme-toggle";
 
-export function SiteHeader() {
+export function DashboardHeader() {
   return (
     <header className="nav-blur">
       <div
@@ -43,31 +42,16 @@ export function SiteHeader() {
           </span>
           NodeBlink
         </Link>
-        <nav style={{ display: "flex", alignItems: "center", gap: 8, flexWrap: "wrap" }}>
-          <Link href="/#how-it-works" className="btn btn-ghost">
-            How it works
+        <div style={{ display: "flex", alignItems: "center", gap: 10, flexWrap: "wrap" }}>
+          <Link href="/creator/demo" className="btn btn-secondary">
+            Demo checkout
           </Link>
-          <Link href="/#features" className="btn btn-ghost">
-            Features
+          <Link href="/" className="btn btn-ghost">
+            Marketing site
           </Link>
-          <Link href="/#security" className="btn btn-ghost">
-            Security
-          </Link>
-          <Link href="/#unfurl" className="btn btn-ghost">
-            Unfurl
-          </Link>
-          <Link href="/#pricing" className="btn btn-ghost">
-            Fees
-          </Link>
-          <Link href="/dashboard" className="btn btn-secondary">
-            Creator Studio
-          </Link>
-          <Link href="/creator/demo" className="btn btn-primary">
-            Live demo
-          </Link>
-          <ThemeToggle className="btn btn-secondary" />
-        </nav>
+        </div>
       </div>
     </header>
   );
 }
+

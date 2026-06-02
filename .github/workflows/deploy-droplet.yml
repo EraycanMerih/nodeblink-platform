@@ -27,7 +27,6 @@ jobs:
           script_stop: true
           script: |
             set -euo pipefail
-            set -x
             APP_DIR="/opt/nodeblink/repo"
             mkdir -p /opt/nodeblink
             if [ -d "$APP_DIR/.git" ]; then
@@ -40,8 +39,11 @@ jobs:
               cd "$APP_DIR"
               git checkout main
             fi
+            if [ -n "${{ secrets.DO_ENV_FILE }}" ]; then
+              echo "${{ secrets.DO_ENV_FILE }}" | base64 -d > .env
+            fi
             if [ ! -f .env ]; then
-              echo "Missing /opt/nodeblink/repo/.env on droplet"
+              echo "Missing /opt/nodeblink/repo/.env on droplet (or DO_ENV_FILE secret not set)"
               exit 1
             fi
             chmod 600 .env
@@ -61,6 +63,7 @@ jobs:
               sudo bash scripts/install-nginx.sh
               echo "==> Enabling HTTPS (Let's Encrypt)"
               export CERTBOT_EMAIL="${{ secrets.CERTBOT_EMAIL }}"
+              export NODEBLINK_DOMAINS="nodeblink.dev www.nodeblink.dev api.nodeblink.dev"
               sudo -E bash scripts/setup-ssl.sh || echo "Certbot failed — site still works on http://api.nodeblink.dev"
             else
               echo "Skipping nginx/SSL install: no sudo permission for deploy user"

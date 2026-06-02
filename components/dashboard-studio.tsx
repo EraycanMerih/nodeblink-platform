@@ -2,7 +2,6 @@
 
 import { useCallback, useEffect, useMemo, useState } from "react";
 import { useWallet } from "@solana/wallet-adapter-react";
-import { WalletMultiButton } from "@solana/wallet-adapter-react-ui";
 import {
   Copy,
   ExternalLink,
@@ -96,6 +95,19 @@ export function DashboardStudio() {
   });
   const [message, setMessage] = useState<{ type: "ok" | "err"; text: string } | null>(null);
 
+  const readErrorMessage = async (response: Response) => {
+    const contentType = response.headers.get("content-type") ?? "";
+    if (contentType.includes("application/json")) {
+      const json = (await response.json()) as { error?: unknown };
+      const err = json?.error;
+      if (typeof err === "string") return err;
+      if (err) return JSON.stringify(err);
+      return `Request failed (${response.status})`;
+    }
+    const text = await response.text();
+    return text.trim() ? text.slice(0, 200) : `Request failed (${response.status})`;
+  };
+
   const load = useCallback(async () => {
     if (!publicKey) {
       setData(null);
@@ -106,6 +118,9 @@ export function DashboardStudio() {
       const response = await fetch(
         `/api/v1/dashboard?wallet=${encodeURIComponent(publicKey.toBase58())}`,
       );
+      if (!response.ok) {
+        throw new Error(await readErrorMessage(response));
+      }
       const payload = (await response.json()) as DashboardPayload;
       setData(payload);
       if (payload.onboarded) {
@@ -114,6 +129,16 @@ export function DashboardStudio() {
           bio: payload.bio ?? "",
         });
       }
+      setMessage(null);
+    } catch (error) {
+      setData(null);
+      setMessage({
+        type: "err",
+        text:
+          error instanceof Error
+            ? error.message
+            : "Could not load Creator Studio. Check your backend configuration.",
+      });
     } finally {
       setLoading(false);
     }
@@ -296,10 +321,6 @@ export function DashboardStudio() {
           Connect your wallet, claim a username, add products, and share one link. Buyers pay on
           Solana; files and access unlock automatically.
         </p>
-      </div>
-
-      <div className="card" style={{ padding: 20, maxWidth: 380 }}>
-        <WalletMultiButton />
       </div>
 
       {message ? (
@@ -637,7 +658,23 @@ export function DashboardStudio() {
             </div>
           </div>
         </>
-      ) : null}
+      ) : (
+        <div className="panel stack" style={{ padding: 28, maxWidth: 640 }}>
+          <h2 style={{ margin: 0 }}>Studio connected, but data did not load</h2>
+          <p className="muted" style={{ margin: 0, lineHeight: 1.7 }}>
+            Your wallet is connected, but the backend didn’t return your studio payload. This is
+            usually a database configuration issue on the server.
+          </p>
+          <div style={{ display: "flex", gap: 10, flexWrap: "wrap" }}>
+            <button type="button" className="btn btn-primary" onClick={load}>
+              <RefreshCw size={16} /> Retry
+            </button>
+            <a href="/api/health" className="btn btn-secondary" target="_blank" rel="noreferrer">
+              Open health check
+            </a>
+          </div>
+        </div>
+      )}
     </div>
   );
 }

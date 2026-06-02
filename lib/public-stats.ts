@@ -4,7 +4,6 @@ import {
   CREATOR_SPLIT_PERCENT,
   PLATFORM_FEE_BPS,
   PLATFORM_FEE_PERCENT,
-  PUBLIC_BASE_URL,
   SOLANA_RPC_URL,
   HAS_MINT_SIGNER,
 } from "@/lib/env";
@@ -43,7 +42,7 @@ function formatProductPrice(priceMinorUnits: number, currency: string) {
   return `${sol.toFixed(sol < 1 ? 2 : 1)} SOL`;
 }
 
-export async function getPublicProtocolStats(): Promise<PublicProtocolStats> {
+export async function getPublicProtocolStats(origin: string): Promise<PublicProtocolStats> {
   const demoProfile = await getCreatorProfile("demo");
 
   const demoProducts = demoProfile.products.slice(0, 4).map((product) => ({
@@ -87,9 +86,9 @@ export async function getPublicProtocolStats(): Promise<PublicProtocolStats> {
   const currentFee = PLATFORM_FEE_BPS / 100;
 
   return {
-    domain: PUBLIC_BASE_URL.replace(/^https?:\/\//, ""),
-    actionsJsonUrl: `${PUBLIC_BASE_URL}/actions.json`,
-    demoCheckoutUrl: `${PUBLIC_BASE_URL}/creator/demo`,
+    domain: origin.replace(/^https?:\/\//, ""),
+    actionsJsonUrl: `${origin}/actions.json`,
+    demoCheckoutUrl: `${origin}/creator/demo`,
     platformFeeBps: PLATFORM_FEE_BPS,
     platformFeePercent: PLATFORM_FEE_PERCENT,
     creatorSharePercent: CREATOR_SPLIT_PERCENT,

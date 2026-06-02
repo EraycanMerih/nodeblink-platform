@@ -1,13 +1,33 @@
 import type { ActionsJson } from "@solana/actions";
 import { ACTIONS_CORS_HEADERS } from "@solana/actions";
 import { NextResponse } from "next/server";
+import { getRequestOriginFromRequest } from "@/lib/request-origin";
 
-export async function GET() {
+export async function GET(request: Request) {
+  const origin = getRequestOriginFromRequest(request);
+  const host = new URL(origin).host.replace(/^www\./, "");
+
   const document: ActionsJson = {
     rules: [
       {
-        pathPattern: "/creator/:username",
-        apiPath: "/api/v1/actions/creator/:username",
+        pathPattern: "/creator/*",
+        apiPath: "/api/v1/actions/creator/*",
+      },
+      {
+        pathPattern: `${origin}/creator/*`,
+        apiPath: `${origin}/api/v1/actions/creator/*`,
+      },
+      {
+        pathPattern: `https://www.${host}/creator/*`,
+        apiPath: `${origin}/api/v1/actions/creator/*`,
+      },
+      {
+        pathPattern: "https://nodeblink.dev/creator/*",
+        apiPath: `${origin}/api/v1/actions/creator/*`,
+      },
+      {
+        pathPattern: "https://api.nodeblink.dev/creator/*",
+        apiPath: `${origin}/api/v1/actions/creator/*`,
       },
     ],
   };

@@ -4,9 +4,12 @@ const MOBILE_UA =
   /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini|Mobile/i;
 
 function getPublicOrigin(request: NextRequest): string {
+  const origin = request.nextUrl.origin;
   const configured = process.env.PUBLIC_BASE_URL?.replace(/\/$/, "");
-  if (configured) return configured;
-  return request.nextUrl.origin;
+  if (origin.includes("localhost") && configured && !configured.includes("localhost")) {
+    return configured;
+  }
+  return origin;
 }
 
 export function middleware(request: NextRequest) {

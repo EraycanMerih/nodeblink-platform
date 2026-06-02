@@ -1,12 +1,19 @@
 import Link from "next/link";
 import { SUPPORT_EMAIL } from "@/lib/brand";
-import { PUBLIC_BASE_URL } from "@/lib/env";
+import { getRequestOrigin } from "@/lib/request-origin";
 
-export function SiteFooter() {
-  const domain = PUBLIC_BASE_URL.replace(/^https?:\/\//, "");
+export async function SiteFooter() {
+  const origin = await getRequestOrigin();
+  const domain = origin.replace(/^https?:\/\//, "");
 
   return (
-    <footer style={{ marginTop: 80, borderTop: "1px solid var(--color-line)", background: "white" }}>
+    <footer
+      style={{
+        marginTop: 80,
+        borderTop: "1px solid var(--color-line)",
+        background: "var(--color-panel)",
+      }}
+    >
       <div className="shell stack" style={{ padding: "40px 0" }}>
         <div className="grid-2">
           <div className="stack">

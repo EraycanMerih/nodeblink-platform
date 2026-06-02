@@ -2,7 +2,7 @@
 
 import { useCallback, useEffect, useMemo, useState } from "react";
 import { useConnection, useWallet } from "@solana/wallet-adapter-react";
-import { WalletMultiButton } from "@solana/wallet-adapter-react-ui";
+import { WalletConnectButton } from "@/components/wallet-connect-button";
 import { Transaction, VersionedTransaction } from "@solana/web3.js";
 import {
   ArrowRight,
@@ -141,7 +141,7 @@ export function PremiumCheckout({ creator, actionApiUrl, mobile }: Props) {
             </div>
           </div>
           <div className="card stack" style={{ padding: 18, color: "var(--text)" }}>
-            <WalletMultiButton />
+            <WalletConnectButton />
             <p className="muted" style={{ margin: 0, fontSize: 13, lineHeight: 1.6 }}>
               {mobile
                 ? "Opening your wallet app. If nothing happens, connect above and choose a product."

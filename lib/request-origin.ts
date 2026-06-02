@@ -2,10 +2,11 @@ import { headers } from "next/headers";
 import { PUBLIC_BASE_URL } from "@/lib/env";
 
 export function getRequestOriginFromRequest(request: Request): string {
-  if (PUBLIC_BASE_URL) {
+  const origin = new URL(request.url).origin;
+  if (PUBLIC_BASE_URL && !PUBLIC_BASE_URL.includes("localhost")) {
     return PUBLIC_BASE_URL;
   }
-  return new URL(request.url).origin;
+  return origin;
 }
 
 export async function getRequestOrigin() {

@@ -8,6 +8,9 @@ import {
   ShieldCheck,
   Smartphone,
   Wallet,
+  Sparkles,
+  Server,
+  Shield,
 } from "lucide-react";
 import type { PublicProtocolStats } from "@/lib/public-stats";
 import { SUPPORT_EMAIL } from "@/lib/brand";
@@ -15,21 +18,6 @@ import { SUPPORT_EMAIL } from "@/lib/brand";
 type Props = {
   stats: PublicProtocolStats;
 };
-
-const steps = [
-  {
-    title: "Claim your creator link",
-    copy: "Connect a wallet in Creator Studio and register your username. Your public page becomes nodeblink.dev/creator/you.",
-  },
-  {
-    title: "Share one checkout URL",
-    copy: "Post the link on X, Discord, or your site. Wallets read actions.json on nodeblink.dev and unfurl pay buttons—no third-party blink registry.",
-  },
-  {
-    title: "Get paid on Solana",
-    copy: "Buyers sign in Phantom or Solflare. NodeBlink splits each payment: creator wallet + protocol fee, with priority fees for reliable confirmation.",
-  },
-];
 
 function getFaqs(stats: PublicProtocolStats) {
   return [
@@ -60,42 +48,95 @@ export function LandingPage({ stats }: Props) {
     stats.volumeSol > 0
       ? `${stats.volumeSol.toFixed(2)} SOL`
       : "—";
+  const steps = [
+    {
+      title: "Claim your creator link",
+      copy: `Connect a wallet in Creator Studio and register your username. Your public page becomes ${stats.domain}/creator/you.`,
+    },
+    {
+      title: "Share one checkout URL",
+      copy: `Post the link on X, Discord, or your site. Wallets read ${stats.domain}/actions.json and unfurl pay buttons—no third-party registry.`,
+    },
+    {
+      title: "Get paid on Solana",
+      copy: "Buyers sign in Phantom or Solflare. NodeBlink splits each payment: creator wallet + protocol fee, with congestion-safe fees for reliable confirmation.",
+    },
+  ];
 
   return (
     <main>
-      <section className="shell animate-rise" style={{ padding: "64px 0 32px" }}>
-        <div className="stack" style={{ gap: 22, maxWidth: 800 }}>
-          <span className="badge">
-            <Globe2 size={14} /> Live on {stats.network} · {stats.domain}
-          </span>
-          <h1
-            className="display"
-            style={{ fontSize: "clamp(2.4rem, 5.5vw, 4rem)", lineHeight: 1.05, margin: 0 }}
-          >
-            Sell digital products with a link your audience{" "}
-            <span className="text-gradient">already knows how to use</span>.
-          </h1>
-          <p className="muted" style={{ fontSize: 18, lineHeight: 1.75, margin: 0 }}>
-            NodeBlink is checkout infrastructure for Solana creators—tips, PDF unlocks, access passes, and collectibles—with native wallet buttons on social feeds and mobile deep links built in.
-          </p>
-          <div style={{ display: "flex", flexWrap: "wrap", gap: 12 }}>
-            <Link href="/dashboard" className="btn btn-primary">
-              Open Creator Studio <ArrowRight size={16} />
-            </Link>
-            <Link href="/creator/demo" className="btn btn-secondary">
-              Try the live demo
-            </Link>
-          </div>
-          <div className="trust-strip">
-            <span>
-              <BadgeCheck size={14} /> {stats.feeRangeLabel} protocol fee
-            </span>
-            <span>
-              <ShieldCheck size={14} /> Non-custodial
-            </span>
-            <span>
-              <Link2 size={14} /> {stats.actionsJsonUrl.replace("https://", "")}
-            </span>
+      <section className="shell animate-rise" style={{ padding: "56px 0 26px" }}>
+        <div className="hero-mesh">
+          <div className="grid-2" style={{ position: "relative", zIndex: 1, alignItems: "center" }}>
+            <div className="stack" style={{ gap: 18 }}>
+              <span className="badge" style={{ width: "fit-content" }}>
+                <Globe2 size={14} /> Live on {stats.network} · {stats.domain}
+              </span>
+              <h1
+                className="display"
+                style={{
+                  fontSize: "clamp(2.5rem, 5.4vw, 4.1rem)",
+                  lineHeight: 1.02,
+                  margin: 0,
+                }}
+              >
+                Checkout infrastructure for creators—built for{" "}
+                <span style={{ color: "white" }}>wallet-native</span> commerce.
+              </h1>
+              <p style={{ fontSize: 17, lineHeight: 1.8, margin: 0, maxWidth: 620 }}>
+                NodeBlink helps you sell tips, gated files, access passes, and collectibles on Solana.
+                Share one link. Wallets unfurl pay buttons on social feeds and mobile wallets.
+              </p>
+              <div style={{ display: "flex", flexWrap: "wrap", gap: 12 }}>
+                <Link href="/dashboard" className="btn btn-primary">
+                  Open Creator Studio <ArrowRight size={16} />
+                </Link>
+                <Link href="/creator/demo" className="btn btn-secondary">
+                  Try the live demo
+                </Link>
+              </div>
+              <div className="trust-strip">
+                <span>
+                  <BadgeCheck size={14} /> {stats.feeRangeLabel} protocol fee
+                </span>
+                <span>
+                  <ShieldCheck size={14} /> Non-custodial
+                </span>
+                <span>
+                  <Link2 size={14} /> {stats.actionsJsonUrl.replace("https://", "")}
+                </span>
+              </div>
+            </div>
+
+            <div className="stack" style={{ gap: 14 }}>
+              <div className="panel stack" style={{ padding: 22 }}>
+                <p style={{ margin: 0, fontWeight: 700, fontSize: 16 }}>
+                  What your audience sees
+                </p>
+                <p className="muted" style={{ margin: 0, lineHeight: 1.7 }}>
+                  Share a creator link. Wallets read <code>/actions.json</code> and show “Pay” buttons
+                  directly inside the feed.
+                </p>
+                <div className="product-row">
+                  <div>
+                    <strong>Tip jar</strong>
+                    <p className="muted" style={{ margin: "4px 0 0", fontSize: 13 }}>
+                      One click · SOL
+                    </p>
+                  </div>
+                  <span className="badge">Pay</span>
+                </div>
+                <div className="product-row">
+                  <div>
+                    <strong>Gated PDF</strong>
+                    <p className="muted" style={{ margin: "4px 0 0", fontSize: 13 }}>
+                      Encrypted · unlock after confirmation
+                    </p>
+                  </div>
+                  <span className="badge">Unlock</span>
+                </div>
+              </div>
+            </div>
           </div>
         </div>
       </section>
@@ -212,6 +253,118 @@ export function LandingPage({ stats }: Props) {
               Gated files use AES-256-GCM keys released only after confirmation—configured with your <code>NODEBLINK_ENC_KEY</code>.
             </p>
           </article>
+          <article className="card stack" style={{ padding: 22 }}>
+            <Sparkles size={22} color="#02a8b5" />
+            <h3 style={{ margin: 0 }}>Made for sharing</h3>
+            <p className="muted" style={{ margin: 0, lineHeight: 1.65 }}>
+              Each creator page publishes OpenGraph/Twitter metadata and a <code>solana:action</code>{" "}
+              tag so links unfurl cleanly on social networks.
+            </p>
+          </article>
+          <article className="card stack" style={{ padding: 22 }}>
+            <Server size={22} color="#02a8b5" />
+            <h3 style={{ margin: 0 }}>Operator-friendly</h3>
+            <p className="muted" style={{ margin: 0, lineHeight: 1.65 }}>
+              A single Next.js app powers landing, Creator Studio, checkout, Actions API, and health
+              checks. Deploy on one droplet.
+            </p>
+          </article>
+        </div>
+      </section>
+
+      <section id="security" className="shell" style={{ paddingBottom: 56 }}>
+        <div className="panel" style={{ padding: 28 }}>
+          <div className="grid-2" style={{ alignItems: "start" }}>
+            <div className="stack">
+              <p
+                className="muted"
+                style={{ margin: 0, textTransform: "uppercase", letterSpacing: "0.2em", fontSize: 12 }}
+              >
+                Security posture
+              </p>
+              <h2 className="display" style={{ margin: 0, fontSize: 30 }}>
+                Non-custodial by design
+              </h2>
+              <p className="muted" style={{ margin: 0, lineHeight: 1.7 }}>
+                NodeBlink never takes custody of creator funds. Buyers sign a Solana transaction that
+                splits payment to the creator wallet and the protocol treasury. Gated files are
+                encrypted at rest and unlocked only after confirmation.
+              </p>
+            </div>
+            <div className="stack">
+              <div className="card stack" style={{ padding: 20 }}>
+                <div style={{ display: "flex", alignItems: "center", gap: 10 }}>
+                  <Shield size={18} color="#02a8b5" />
+                  <strong>Encrypted file delivery</strong>
+                </div>
+                <p className="muted" style={{ margin: 0, lineHeight: 1.65 }}>
+                  AES-256-GCM encryption keys are released only after on-chain confirmation via the
+                  confirmation API.
+                </p>
+              </div>
+              <div className="card stack" style={{ padding: 20 }}>
+                <div style={{ display: "flex", alignItems: "center", gap: 10 }}>
+                  <ShieldCheck size={18} color="#02a8b5" />
+                  <strong>Wallet-native UX</strong>
+                </div>
+                <p className="muted" style={{ margin: 0, lineHeight: 1.65 }}>
+                  The checkout flow is a standard wallet approve. No custodial accounts, no chargebacks,
+                  no hidden settlement layer.
+                </p>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <section id="unfurl" className="shell stack" style={{ paddingBottom: 56 }}>
+        <h2 className="display" style={{ fontSize: 32, margin: 0 }}>
+          Unfurls on social
+        </h2>
+        <div className="grid-2" style={{ alignItems: "start" }}>
+          <div className="card stack" style={{ padding: 22 }}>
+            <h3 style={{ margin: 0 }}>What wallets need</h3>
+            <p className="muted" style={{ margin: 0, lineHeight: 1.7 }}>
+              Wallets look for <code>{stats.domain}/actions.json</code> and map creator URLs to an
+              Actions API endpoint.
+            </p>
+            <div className="product-row">
+              <code style={{ wordBreak: "break-all" }}>{stats.actionsJsonUrl}</code>
+              <a className="btn btn-secondary" href="/actions.json" target="_blank" rel="noreferrer">
+                Open
+              </a>
+            </div>
+          </div>
+          <div className="card stack" style={{ padding: 22 }}>
+            <h3 style={{ margin: 0 }}>What social networks need</h3>
+            <p className="muted" style={{ margin: 0, lineHeight: 1.7 }}>
+              Twitter / Discord unfurls are driven by OpenGraph + Twitter meta tags. NodeBlink publishes
+              them for the homepage and each creator page.
+            </p>
+            <p className="muted" style={{ margin: 0, lineHeight: 1.7 }}>
+              Best practice: share <code>{stats.domain}/creator/yourname</code> (not the Actions API URL).
+            </p>
+          </div>
+        </div>
+      </section>
+
+      <section className="shell" style={{ paddingBottom: 72 }}>
+        <div className="hero-gradient stack">
+          <h2 className="display" style={{ margin: 0, fontSize: 32, position: "relative", zIndex: 1 }}>
+            Ready to ship today
+          </h2>
+          <p style={{ margin: 0, maxWidth: 620, lineHeight: 1.75, position: "relative", zIndex: 1 }}>
+            Open Creator Studio, claim your username, add your first product, and start sharing a link that
+            wallets can instantly understand.
+          </p>
+          <div style={{ display: "flex", flexWrap: "wrap", gap: 12, position: "relative", zIndex: 1 }}>
+            <Link href="/dashboard" className="btn btn-primary">
+              Open Creator Studio <ArrowRight size={16} />
+            </Link>
+            <Link href="/creator/demo" className="btn btn-secondary">
+              Preview checkout
+            </Link>
+          </div>
         </div>
       </section>
 
