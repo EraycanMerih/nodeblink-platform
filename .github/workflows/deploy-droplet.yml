@@ -42,15 +42,19 @@ jobs:
               cd "$APP_DIR"
               git checkout main
             fi
-            if [ -z "${DO_ENV_FILE:-}" ]; then
-              echo "DO_ENV_FILE secret is empty"
-              exit 1
-            fi
-            if printf "%s" "$DO_ENV_FILE" | base64 -d > .env 2>/dev/null; then
-              echo "Loaded .env from base64 DO_ENV_FILE"
+            if [ -n "${DO_ENV_FILE:-}" ]; then
+              if printf "%s" "$DO_ENV_FILE" | base64 -d > .env 2>/dev/null; then
+                echo "Loaded .env from base64 DO_ENV_FILE"
+              else
+                echo "DO_ENV_FILE is not valid base64, treating it as raw .env content"
+                printf "%s" "$DO_ENV_FILE" > .env
+              fi
             else
-              echo "DO_ENV_FILE is not valid base64, treating it as raw .env content"
-              printf "%s" "$DO_ENV_FILE" > .env
+              echo "DO_ENV_FILE not provided via GitHub Secrets; using existing /opt/nodeblink/repo/.env"
+            fi
+            if [ ! -f .env ]; then
+              echo "Missing .env on droplet and DO_ENV_FILE was not provided"
+              exit 1
             fi
             chmod 600 .env
             export NODE_ENV=production
