@@ -79,7 +79,7 @@ jobs:
             command -v pm2 >/dev/null || ${SUDO} npm install -g pm2
             npm ci --ignore-scripts
             npx prisma generate
-            npx prisma migrate deploy || true
+            npx prisma migrate deploy
             npm run prisma:seed || true
             npm run build:next
             ${SUDO} systemctl stop nodeblink 2>/dev/null || true

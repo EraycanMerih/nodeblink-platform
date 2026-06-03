@@ -6,7 +6,7 @@ export async function GET(request: Request) {
   try {
     const { searchParams } = new URL(request.url);
     const wallet = searchParams.get("wallet") ?? "";
-    requireAdminWallet(wallet);
+    await requireAdminWallet(wallet);
 
     const [creators, products, txAgg] = await Promise.all([
       prisma.creatorProfile.count(),
@@ -30,4 +30,3 @@ export async function GET(request: Request) {
     return NextResponse.json({ error: "Admin backend unavailable" }, { status: 503 });
   }
 }
-

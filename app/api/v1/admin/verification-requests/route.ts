@@ -7,7 +7,7 @@ export async function GET(request: Request) {
   try {
     const { searchParams } = new URL(request.url);
     const wallet = searchParams.get("wallet") ?? "";
-    requireAdminWallet(wallet);
+    await requireAdminWallet(wallet);
 
     const items = await prisma.creatorVerificationRequest.findMany({
       orderBy: { createdAt: "desc" },
@@ -59,7 +59,7 @@ const patchSchema = z.object({
 export async function PATCH(request: Request) {
   try {
     const body = patchSchema.parse(await request.json());
-    requireAdminWallet(body.wallet);
+    await requireAdminWallet(body.wallet);
 
     const req = await prisma.creatorVerificationRequest.findUnique({
       where: { id: body.requestId },

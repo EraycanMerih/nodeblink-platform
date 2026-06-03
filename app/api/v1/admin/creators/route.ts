@@ -7,7 +7,7 @@ export async function GET(request: Request) {
   try {
     const { searchParams } = new URL(request.url);
     const wallet = searchParams.get("wallet") ?? "";
-    requireAdminWallet(wallet);
+    await requireAdminWallet(wallet);
 
     const items = await prisma.creatorProfile.findMany({
       orderBy: { createdAt: "desc" },
@@ -49,7 +49,7 @@ const patchSchema = z.object({
 export async function PATCH(request: Request) {
   try {
     const body = patchSchema.parse(await request.json());
-    requireAdminWallet(body.wallet);
+    await requireAdminWallet(body.wallet);
 
     const updated = await prisma.creatorProfile.update({
       where: { username: body.username.toLowerCase() },

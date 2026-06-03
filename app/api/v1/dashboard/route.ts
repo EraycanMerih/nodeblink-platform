@@ -71,7 +71,8 @@ export async function GET(request: Request) {
         feeAmount: tx.feeAmount.toString(),
       })),
     });
-  } catch {
+  } catch (error) {
+    console.error("dashboard route failed", error);
     return NextResponse.json(
       { error: "Studio backend unavailable. Check DATABASE_URL and migrations." },
       { status: 503 },
