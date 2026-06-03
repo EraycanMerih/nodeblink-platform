@@ -40,8 +40,6 @@ export default async function OpengraphImage({ params, searchParams }: Props) {
       : product
         ? formatPriceMinorUnits(product.priceMinorUnits, product.currency)
         : "";
-    const coverUrl = profile.coverUrl?.trim() || "";
-    const showCover = coverUrl.startsWith("https://") || coverUrl.startsWith("/");
 
     return new ImageResponse(
       (
@@ -54,29 +52,13 @@ export default async function OpengraphImage({ params, searchParams }: Props) {
             justifyContent: "flex-end",
             padding: 72,
             background:
-              "radial-gradient(circle at 15% 20%, rgba(99, 91, 255, 0.55) 0%, rgba(10, 37, 64, 0) 58%), radial-gradient(circle at 85% 80%, rgba(154, 123, 255, 0.45) 0%, rgba(10, 37, 64, 0) 60%), linear-gradient(135deg, #071326 0%, #060a14 70%, #070816 100%)",
-            color: "white",
+              "radial-gradient(circle at 18% 20%, rgba(85, 214, 190, 0.62) 0%, rgba(6, 42, 36, 0) 58%), radial-gradient(circle at 84% 78%, rgba(172, 252, 217, 0.44) 0%, rgba(6, 42, 36, 0) 60%), linear-gradient(135deg, #061a17 0%, #050d0c 70%, #050807 100%)",
+            color: "rgba(243, 246, 255, 0.98)",
             fontFamily: "Inter, system-ui, -apple-system, Segoe UI, sans-serif",
             position: "relative",
             overflow: "hidden",
           }}
         >
-          {showCover ? (
-            <img
-              src={coverUrl}
-              alt=""
-              width={1200}
-              height={630}
-              style={{
-                position: "absolute",
-                inset: 0,
-                width: "100%",
-                height: "100%",
-                objectFit: "cover",
-                opacity: 0.52,
-              }}
-            />
-          ) : null}
           <div
             style={{
               position: "absolute",
@@ -172,8 +154,8 @@ export default async function OpengraphImage({ params, searchParams }: Props) {
             justifyContent: "center",
             padding: 72,
             background:
-              "radial-gradient(circle at 20% 10%, rgba(99, 91, 255, 0.45) 0%, rgba(10, 37, 64, 0) 55%), radial-gradient(circle at 80% 90%, rgba(154, 123, 255, 0.35) 0%, rgba(10, 37, 64, 0) 55%), linear-gradient(135deg, #081a2f 0%, #070e1a 60%, #070816 100%)",
-            color: "white",
+              "radial-gradient(circle at 18% 20%, rgba(85, 214, 190, 0.55) 0%, rgba(6, 42, 36, 0) 55%), radial-gradient(circle at 82% 80%, rgba(172, 252, 217, 0.40) 0%, rgba(6, 42, 36, 0) 58%), linear-gradient(135deg, #061a17 0%, #050d0c 70%, #050807 100%)",
+            color: "rgba(243, 246, 255, 0.98)",
             fontFamily: "Inter, system-ui, -apple-system, Segoe UI, sans-serif",
           }}
         >

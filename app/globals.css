@@ -3,22 +3,17 @@
 @theme {
   --font-sans: "Inter", ui-sans-serif, system-ui, sans-serif;
   --font-display: "Outfit", var(--font-sans);
-  --brand-start: #635bff;
-  --brand-mid: #7a5cff;
-  --brand-end: #9a7bff;
-  --brand-ink: #ffffff;
+  --brand-start: #55d6be;
+  --brand-mid: #7becd0;
+  --brand-end: #acfcd9;
+  --brand-ink: #062a24;
   --shadow-soft:
     0 18px 48px rgba(10, 22, 40, 0.09),
     0 1px 0 rgba(255, 255, 255, 0.85) inset;
   --shadow-card:
     0 12px 32px rgba(10, 22, 40, 0.08),
     0 1px 0 rgba(255, 255, 255, 0.75) inset;
-  --gradient-brand: linear-gradient(
-    135deg,
-    var(--brand-start) 0%,
-    var(--brand-mid) 50%,
-    var(--brand-end) 100%
-  );
+  --gradient-brand: linear-gradient(225deg, var(--brand-start) 32%, var(--brand-end) 84%);
 }
 
 :root {
@@ -71,8 +66,8 @@ body {
   font-family: var(--font-sans);
   color: var(--text);
   background:
-    radial-gradient(900px 520px at 92% 8%, rgba(99, 91, 255, 0.16), transparent 58%),
-    radial-gradient(760px 440px at 8% 0%, rgba(154, 123, 255, 0.14), transparent 60%),
+    radial-gradient(900px 520px at 92% 8%, rgba(85, 214, 190, 0.16), transparent 58%),
+    radial-gradient(760px 440px at 8% 0%, rgba(172, 252, 217, 0.14), transparent 60%),
     radial-gradient(1200px 700px at 50% 120%, rgba(2, 200, 255, 0.1), transparent 60%),
     var(--bg);
   background-size: auto, auto, auto, auto;
@@ -93,7 +88,7 @@ a {
 }
 
 a:focus-visible {
-  outline: 3px solid rgba(99, 91, 255, 0.35);
+  outline: 3px solid rgba(85, 214, 190, 0.42);
   outline-offset: 3px;
   border-radius: 10px;
 }
@@ -102,12 +97,12 @@ code {
   font-size: 0.92em;
   padding: 2px 8px;
   border-radius: 6px;
-  background: rgba(99, 91, 255, 0.12);
+  background: rgba(85, 214, 190, 0.14);
   color: rgba(10, 37, 64, 0.92);
 }
 
 html.dark code {
-  background: rgba(99, 91, 255, 0.18);
+  background: rgba(85, 214, 190, 0.22);
   color: rgba(243, 246, 255, 0.92);
 }
 
@@ -207,14 +202,14 @@ html.dark code {
 }
 
 .btn:focus-visible {
-  outline: 3px solid rgba(99, 91, 255, 0.35);
+  outline: 3px solid rgba(85, 214, 190, 0.42);
   outline-offset: 3px;
 }
 
 .btn-primary {
   color: var(--brand-ink);
   background: var(--gradient-brand);
-  box-shadow: 0 10px 26px rgba(99, 91, 255, 0.26);
+  box-shadow: 0 10px 26px rgba(85, 214, 190, 0.24);
 }
 
 .btn-secondary {
@@ -224,7 +219,7 @@ html.dark code {
 }
 
 .btn-secondary:hover {
-  border-color: rgba(99, 91, 255, 0.35);
+  border-color: rgba(85, 214, 190, 0.42);
   box-shadow: 0 10px 28px rgba(10, 22, 40, 0.06);
 }
 
@@ -246,15 +241,15 @@ html.dark code {
   padding: 6px 12px;
   font-size: 12px;
   font-weight: 600;
-  background: rgba(99, 91, 255, 0.12);
+  background: rgba(85, 214, 190, 0.14);
   color: rgba(10, 37, 64, 0.84);
-  border: 1px solid rgba(99, 91, 255, 0.22);
+  border: 1px solid rgba(85, 214, 190, 0.24);
 }
 
 html.dark .badge {
-  background: rgba(99, 91, 255, 0.18);
+  background: rgba(85, 214, 190, 0.2);
   color: rgba(243, 246, 255, 0.92);
-  border: 1px solid rgba(99, 91, 255, 0.28);
+  border: 1px solid rgba(85, 214, 190, 0.26);
 }
 
 .stat-grid {
@@ -319,8 +314,8 @@ html.dark .badge {
 }
 
 .product-row:hover {
-  border-color: rgba(99, 91, 255, 0.28);
-  box-shadow: 0 8px 22px rgba(99, 91, 255, 0.12);
+  border-color: rgba(85, 214, 190, 0.28);
+  box-shadow: 0 8px 22px rgba(85, 214, 190, 0.12);
 }
 
 .wallet-adapter-button {
@@ -348,8 +343,8 @@ html.dark .badge {
   border-radius: 28px;
   padding: 40px 32px;
   background:
-    radial-gradient(820px 480px at 100% 0%, rgba(99, 91, 255, 0.22), transparent 60%),
-    radial-gradient(760px 440px at 16% 10%, rgba(154, 123, 255, 0.14), transparent 62%),
+    radial-gradient(820px 480px at 100% 0%, rgba(85, 214, 190, 0.22), transparent 60%),
+    radial-gradient(760px 440px at 16% 10%, rgba(172, 252, 217, 0.14), transparent 62%),
     linear-gradient(
       180deg,
       color-mix(in srgb, var(--color-panel), transparent 0%),
@@ -380,7 +375,7 @@ html.dark .badge {
   border-radius: 12px;
   display: grid;
   place-items: center;
-  background: rgba(99, 91, 255, 0.12);
+  background: rgba(85, 214, 190, 0.14);
   color: rgba(10, 37, 64, 0.86);
 }
 
@@ -500,8 +495,8 @@ html.dark .badge {
 
 .input:focus {
   outline: none;
-  border-color: rgba(99, 91, 255, 0.45);
-  box-shadow: 0 0 0 3px rgba(99, 91, 255, 0.16);
+  border-color: rgba(85, 214, 190, 0.48);
+  box-shadow: 0 0 0 3px rgba(85, 214, 190, 0.18);
 }
 
 .notice {
@@ -512,8 +507,8 @@ html.dark .badge {
 }
 
 .notice-ok {
-  background: rgba(99, 91, 255, 0.12);
-  border: 1px solid rgba(99, 91, 255, 0.28);
+  background: rgba(85, 214, 190, 0.14);
+  border: 1px solid rgba(85, 214, 190, 0.28);
   color: rgba(10, 37, 64, 0.9);
 }
 
@@ -524,8 +519,8 @@ html.dark .badge {
 }
 
 html.dark .notice-ok {
-  background: rgba(99, 91, 255, 0.14);
-  border: 1px solid rgba(99, 91, 255, 0.32);
+  background: rgba(85, 214, 190, 0.16);
+  border: 1px solid rgba(85, 214, 190, 0.32);
   color: rgba(243, 246, 255, 0.92);
 }
 
@@ -565,8 +560,8 @@ html.dark .notice-err {
 }
 
 .type-card-active {
-  border-color: rgba(99, 91, 255, 0.45);
-  box-shadow: 0 8px 22px rgba(99, 91, 255, 0.12);
+  border-color: rgba(85, 214, 190, 0.48);
+  box-shadow: 0 8px 22px rgba(85, 214, 190, 0.12);
 }
 
 .file-drop {
@@ -576,8 +571,8 @@ html.dark .notice-err {
   gap: 10px;
   padding: 14px;
   border-radius: 12px;
-  border: 1px dashed rgba(99, 91, 255, 0.35);
-  background: rgba(99, 91, 255, 0.06);
+  border: 1px dashed rgba(85, 214, 190, 0.38);
+  background: rgba(85, 214, 190, 0.08);
   font-size: 13px;
   color: var(--muted);
 }

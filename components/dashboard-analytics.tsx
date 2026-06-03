@@ -183,7 +183,7 @@ export function DashboardAnalytics() {
                 <polyline
                   points={volumePoints}
                   fill="none"
-                  stroke="rgba(99, 91, 255, 0.9)"
+                  stroke="var(--brand-start)"
                   strokeWidth="3"
                   strokeLinejoin="round"
                   strokeLinecap="round"
@@ -207,7 +207,7 @@ export function DashboardAnalytics() {
                 <polyline
                   points={countPoints}
                   fill="none"
-                  stroke="rgba(154, 123, 255, 0.9)"
+                  stroke="var(--brand-end)"
                   strokeWidth="3"
                   strokeLinejoin="round"
                   strokeLinecap="round"

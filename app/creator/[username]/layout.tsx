@@ -7,6 +7,18 @@ type Props = {
   children: React.ReactNode;
 };
 
+function resolvePreviewImage(origin: string, coverUrl: string | null | undefined) {
+  const value = (coverUrl ?? "").trim();
+  if (!value) return `${origin}/opengraph-image?v=4`;
+  const lower = value.toLowerCase();
+  if (!(lower.endsWith(".png") || lower.endsWith(".jpg") || lower.endsWith(".jpeg") || lower.endsWith(".gif"))) {
+    return `${origin}/opengraph-image?v=4`;
+  }
+  if (value.startsWith("https://")) return value;
+  if (value.startsWith("/")) return `${origin}${value}`;
+  return `${origin}/opengraph-image?v=4`;
+}
+
 export async function generateMetadata({ params }: Props): Promise<Metadata> {
   const { username } = await params;
   const profile = await getCreatorProfile(username);
@@ -16,11 +28,12 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
     profile.bio ||
     `Pay ${profile.displayName} on Solana with native wallet buttons: tips, unlocks, and digital products.`;
   const pageUrl = `${origin}/creator/${profile.username}`;
-  const previewImage = `${origin}/creator/${profile.username}/opengraph-image?v=${encodeURIComponent(profile.updatedAt)}&og=4`;
+  const previewImage = resolvePreviewImage(origin, profile.coverUrl);
 
   return {
     title,
     description,
+    alternates: { canonical: pageUrl },
     openGraph: {
       title,
       description,

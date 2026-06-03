@@ -23,8 +23,8 @@ export default function OpengraphImage() {
           justifyContent: "center",
           padding: 72,
           background:
-            "radial-gradient(circle at 20% 10%, rgba(99, 91, 255, 0.45) 0%, rgba(10, 37, 64, 0) 55%), radial-gradient(circle at 80% 90%, rgba(154, 123, 255, 0.35) 0%, rgba(10, 37, 64, 0) 55%), linear-gradient(135deg, #081a2f 0%, #070e1a 60%, #070816 100%)",
-          color: "white",
+            "radial-gradient(circle at 18% 20%, rgba(85, 214, 190, 0.55) 0%, rgba(6, 42, 36, 0) 55%), radial-gradient(circle at 82% 80%, rgba(172, 252, 217, 0.40) 0%, rgba(6, 42, 36, 0) 58%), linear-gradient(135deg, #061a17 0%, #050d0c 70%, #050807 100%)",
+          color: "rgba(243, 246, 255, 0.98)",
           fontFamily: "Inter, system-ui, -apple-system, Segoe UI, sans-serif",
         }}
       >

@@ -232,7 +232,7 @@ export function DashboardSettings() {
             <input
               className="input"
               type="file"
-              accept="image/png,image/jpeg,image/webp"
+              accept="image/png,image/jpeg"
               onChange={(e) => setAvatarFile(e.target.files?.[0] ?? null)}
             />
           </label>
@@ -251,7 +251,7 @@ export function DashboardSettings() {
             <input
               className="input"
               type="file"
-              accept="image/png,image/jpeg,image/webp"
+              accept="image/png,image/jpeg"
               onChange={(e) => setPreviewFile(e.target.files?.[0] ?? null)}
             />
           </label>

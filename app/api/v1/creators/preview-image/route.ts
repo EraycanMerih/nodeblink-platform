@@ -5,7 +5,7 @@ import crypto from "crypto";
 import { CreatorAuthError, requireCreatorByWallet } from "@/lib/creator-auth";
 import { prisma } from "@/lib/db";
 
-const ALLOWED_EXT = new Set([".png", ".jpg", ".jpeg", ".webp"]);
+const ALLOWED_EXT = new Set([".png", ".jpg", ".jpeg"]);
 
 export async function POST(request: Request) {
   try {
@@ -29,7 +29,7 @@ export async function POST(request: Request) {
     const ext = path.extname(filename).toLowerCase();
     if (!ALLOWED_EXT.has(ext)) {
       return NextResponse.json(
-        { error: "Preview image must be png, jpg, or webp." },
+        { error: "Preview image must be png or jpg." },
         { status: 400 },
       );
     }
@@ -63,4 +63,3 @@ export async function POST(request: Request) {
     return NextResponse.json({ error: String(error) }, { status: 500 });
   }
 }
-
