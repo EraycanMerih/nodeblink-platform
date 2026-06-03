@@ -83,6 +83,7 @@ export function DashboardStudio() {
   const [savingProduct, setSavingProduct] = useState(false);
   const [form, setForm] = useState({ username: "", displayName: "", bio: "" });
   const [profileForm, setProfileForm] = useState({ displayName: "", bio: "" });
+  const [productSearch, setProductSearch] = useState("");
   const [productForm, setProductForm] = useState({
     archetype: "TIP" as ProductArchetype,
     title: "",
@@ -162,6 +163,16 @@ export function DashboardStudio() {
     if (!checkoutLink) return "";
     return checkoutLink.replace(/\/$/, "");
   }, [checkoutLink]);
+
+  const filteredProducts = useMemo(() => {
+    if (!data) return [];
+    const q = productSearch.trim().toLowerCase();
+    if (!q) return data.products;
+    return data.products.filter((product) => {
+      const haystack = `${product.title} ${product.description ?? ""} ${product.archetype}`.toLowerCase();
+      return haystack.includes(q);
+    });
+  }, [data, productSearch]);
 
   const notify = (type: "ok" | "err", text: string) => setMessage({ type, text });
 
@@ -593,44 +604,54 @@ export function DashboardStudio() {
                     No products yet. Add a tip jar or upload a PDF to get started.
                   </p>
                 ) : (
-                  data.products.map((product) => (
-                    <div key={product.id} className="product-row">
-                      <div>
-                        <strong>{product.title}</strong>
-                        <p className="muted" style={{ margin: "4px 0 0", fontSize: 13 }}>
-                          {formatArchetype(product.archetype)} ·{" "}
-                          {lamportsToSol(product.priceMinorUnits).toFixed(2)} SOL
-                        </p>
-                        {productShareBase ? (
-                          <p className="muted" style={{ margin: "6px 0 0", fontSize: 12 }}>
-                            <code style={{ fontSize: 12, wordBreak: "break-all" }}>
-                              {productShareBase}/product/{product.id}
-                            </code>
-                          </p>
-                        ) : null}
-                      </div>
-                      {productShareBase ? (
-                        <button
-                          type="button"
-                          className="btn btn-secondary"
-                          onClick={() => {
-                            navigator.clipboard.writeText(`${productShareBase}/product/${product.id}`);
-                            notify("ok", "Product link copied.");
-                          }}
-                        >
-                          <Copy size={16} /> Copy
-                        </button>
-                      ) : null}
-                      <button
-                        type="button"
-                        className="btn btn-ghost"
-                        aria-label={`Remove ${product.title}`}
-                        onClick={() => removeProduct(product.id)}
-                      >
-                        <Trash2 size={16} />
-                      </button>
-                    </div>
-                  ))
+                  <>
+                    <label className="field" style={{ marginBottom: 10 }}>
+                      <span>Search products</span>
+                      <input
+                        className="input"
+                        placeholder="Type to filter…"
+                        value={productSearch}
+                        onChange={(e) => setProductSearch(e.target.value)}
+                      />
+                    </label>
+                    {filteredProducts.length === 0 ? (
+                      <p className="muted" style={{ margin: 0, lineHeight: 1.6 }}>
+                        No products match your search.
+                      </p>
+                    ) : (
+                      filteredProducts.map((product) => (
+                        <div key={product.id} className="product-row">
+                          <div>
+                            <strong>{product.title}</strong>
+                            <p className="muted" style={{ margin: "4px 0 0", fontSize: 13 }}>
+                              {formatArchetype(product.archetype)} ·{" "}
+                              {lamportsToSol(product.priceMinorUnits).toFixed(2)} SOL
+                            </p>
+                          </div>
+                          {productShareBase ? (
+                            <button
+                              type="button"
+                              className="btn btn-secondary"
+                              onClick={() => {
+                                navigator.clipboard.writeText(`${productShareBase}/product/${product.id}`);
+                                notify("ok", "Product link copied.");
+                              }}
+                            >
+                              <Copy size={16} /> Copy
+                            </button>
+                          ) : null}
+                          <button
+                            type="button"
+                            className="btn btn-ghost"
+                            aria-label={`Remove ${product.title}`}
+                            onClick={() => removeProduct(product.id)}
+                          >
+                            <Trash2 size={16} />
+                          </button>
+                        </div>
+                      ))
+                    )}
+                  </>
                 )}
               </section>
 

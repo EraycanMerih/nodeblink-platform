@@ -112,17 +112,60 @@ export function LandingPage({ stats }: Props) {
 
             <div className="stack" style={{ gap: 14 }}>
               <div className="panel stack" style={{ padding: 18 }}>
-                <img
-                  src="https://coresg-normal.trae.ai/api/ide/v1/text_to_image?prompt=premium%202026%20fintech%20web%20app%20screenshot%20of%20a%20creator%20checkout%20page%2C%20indigo%20violet%20gradient%20accents%2C%20clean%20typography%2C%20subtle%20shadows%2C%20product%20cards%20with%20pay%20buttons%2C%20modern%20minimal%20UI%2C%20realistic%2C%20high%20detail&image_size=landscape_16_9"
-                  alt="Creator checkout preview"
+                <div
                   style={{
                     width: "100%",
-                    height: "auto",
                     borderRadius: 18,
                     border: "1px solid var(--color-line)",
-                    background: "color-mix(in srgb, var(--color-panel), transparent 8%)",
+                    background:
+                      "radial-gradient(800px 220px at 25% 0%, rgba(99, 91, 255, 0.35), transparent 60%), radial-gradient(700px 240px at 85% 10%, rgba(154, 123, 255, 0.3), transparent 65%), color-mix(in srgb, var(--color-panel), transparent 6%)",
+                    padding: 16,
                   }}
-                />
+                >
+                  <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", gap: 12 }}>
+                    <div style={{ display: "flex", alignItems: "center", gap: 10, minWidth: 0 }}>
+                      <div
+                        aria-hidden
+                        style={{
+                          width: 34,
+                          height: 34,
+                          borderRadius: 10,
+                          background:
+                            "linear-gradient(135deg, var(--brand-start), var(--brand-end))",
+                          boxShadow: "0 12px 30px rgba(99, 91, 255, 0.25)",
+                        }}
+                      />
+                      <div style={{ minWidth: 0 }}>
+                        <strong style={{ display: "block", fontSize: 14 }}>@creator</strong>
+                        <span className="muted" style={{ fontSize: 12 }}>
+                          Secure checkout
+                        </span>
+                      </div>
+                    </div>
+                    <span className="badge">Live</span>
+                  </div>
+
+                  <div className="stack" style={{ gap: 10, marginTop: 14 }}>
+                    <div className="product-row" style={{ padding: 12, borderRadius: 14 }}>
+                      <div>
+                        <strong>Tip jar</strong>
+                        <p className="muted" style={{ margin: "4px 0 0", fontSize: 12 }}>
+                          One-tap SOL payment
+                        </p>
+                      </div>
+                      <span className="badge">0.25 SOL</span>
+                    </div>
+                    <div className="product-row" style={{ padding: 12, borderRadius: 14 }}>
+                      <div>
+                        <strong>Gated PDF</strong>
+                        <p className="muted" style={{ margin: "4px 0 0", fontSize: 12 }}>
+                          Unlock after confirmation
+                        </p>
+                      </div>
+                      <span className="badge">1.00 SOL</span>
+                    </div>
+                  </div>
+                </div>
                 <div className="trust-strip" style={{ justifyContent: "space-between" }}>
                   <span>
                     <Wallet size={14} /> Wallet-native pay
@@ -133,17 +176,59 @@ export function LandingPage({ stats }: Props) {
                 </div>
               </div>
               <div className="panel stack" style={{ padding: 18 }}>
-                <img
-                  src="https://coresg-normal.trae.ai/api/ide/v1/text_to_image?prompt=premium%202026%20creator%20studio%20dashboard%20web%20app%20screenshot%2C%20analytics%20cards%2C%20product%20list%2C%20indigo%20violet%20accents%2C%20clean%20modern%20fintech%20design%2C%20realistic%2C%20high%20detail&image_size=landscape_16_9"
-                  alt="Creator Studio preview"
+                <div
                   style={{
                     width: "100%",
-                    height: "auto",
                     borderRadius: 18,
                     border: "1px solid var(--color-line)",
-                    background: "color-mix(in srgb, var(--color-panel), transparent 8%)",
+                    background:
+                      "radial-gradient(900px 260px at 20% 0%, rgba(99, 91, 255, 0.22), transparent 60%), radial-gradient(800px 240px at 80% 0%, rgba(154, 123, 255, 0.18), transparent 65%), color-mix(in srgb, var(--color-panel), transparent 6%)",
+                    padding: 16,
                   }}
-                />
+                >
+                  <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", gap: 12 }}>
+                    <strong style={{ fontSize: 14 }}>Creator Studio</strong>
+                    <span className="badge">Analytics</span>
+                  </div>
+                  <div className="stat-grid" style={{ marginTop: 12 }}>
+                    <div className="stat">
+                      <span className="muted">Volume</span>
+                      <strong>12.4 SOL</strong>
+                    </div>
+                    <div className="stat">
+                      <span className="muted">Payments</span>
+                      <strong>38</strong>
+                    </div>
+                    <div className="stat">
+                      <span className="muted">Products</span>
+                      <strong>4</strong>
+                    </div>
+                    <div className="stat">
+                      <span className="muted">Confirmed</span>
+                      <strong>36</strong>
+                    </div>
+                  </div>
+                  <div className="stack" style={{ gap: 10, marginTop: 12 }}>
+                    <div className="product-row" style={{ padding: 12, borderRadius: 14 }}>
+                      <div>
+                        <strong>Monthly access</strong>
+                        <p className="muted" style={{ margin: "4px 0 0", fontSize: 12 }}>
+                          access pass
+                        </p>
+                      </div>
+                      <span className="badge">0.75 SOL</span>
+                    </div>
+                    <div className="product-row" style={{ padding: 12, borderRadius: 14 }}>
+                      <div>
+                        <strong>Strategy pack</strong>
+                        <p className="muted" style={{ margin: "4px 0 0", fontSize: 12 }}>
+                          gated pdf
+                        </p>
+                      </div>
+                      <span className="badge">1.25 SOL</span>
+                    </div>
+                  </div>
+                </div>
                 <div className="trust-strip" style={{ justifyContent: "space-between" }}>
                   <span>
                     <Server size={14} /> Products + delivery

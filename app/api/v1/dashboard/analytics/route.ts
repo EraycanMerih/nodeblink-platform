@@ -11,6 +11,7 @@ export async function GET(request: Request) {
   try {
     const { searchParams } = new URL(request.url);
     const wallet = searchParams.get("wallet")?.trim() ?? "";
+    const productId = searchParams.get("productId")?.trim() || null;
 
     const windowDays = 30;
     const now = new Date();
@@ -19,11 +20,22 @@ export async function GET(request: Request) {
 
     const { profile } = await requireCreatorByWallet(wallet);
 
+    if (productId) {
+      const owned = await prisma.digitalAsset.findFirst({
+        where: { id: productId, creatorProfileId: profile.id },
+        select: { id: true },
+      });
+      if (!owned) {
+        return NextResponse.json({ error: "Unknown product" }, { status: 404 });
+      }
+    }
+
     const txs = await prisma.transaction.findMany({
       where: {
         creatorProfileId: profile.id,
         status: TransactionStatus.CONFIRMED,
         createdAt: { gte: start },
+        ...(productId ? { productId } : {}),
       },
       select: {
         createdAt: true,
@@ -92,4 +104,3 @@ export async function GET(request: Request) {
     return NextResponse.json({ error: "Analytics backend unavailable" }, { status: 503 });
   }
 }
-

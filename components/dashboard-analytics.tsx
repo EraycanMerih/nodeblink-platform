@@ -14,6 +14,8 @@ type Payload = {
   topProducts: Array<{ productId: string | null; volume: number; count: number }>;
 };
 
+type ProductOption = { id: string; title: string };
+
 function formatDateLabel(isoDate: string) {
   const [y, m, d] = isoDate.split("-");
   return `${m}/${d}`;
@@ -38,19 +40,44 @@ export function DashboardAnalytics() {
   const [data, setData] = useState<Payload | null>(null);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
+  const [products, setProducts] = useState<ProductOption[]>([]);
+  const [selectedProductId, setSelectedProductId] = useState<string>("");
 
   useEffect(() => {
     const run = async () => {
       if (!publicKey) {
         setData(null);
         setError(null);
+        setProducts([]);
+        setSelectedProductId("");
         return;
       }
-      setLoading(true);
       setError(null);
       try {
         const response = await fetch(
-          `/api/v1/dashboard/analytics?wallet=${encodeURIComponent(publicKey.toBase58())}`,
+          `/api/v1/dashboard?wallet=${encodeURIComponent(publicKey.toBase58())}`,
+        );
+        const payload = (await response.json()) as { products?: ProductOption[]; error?: string };
+        if (!response.ok) throw new Error(payload.error ?? "Analytics unavailable");
+        setProducts(payload.products ?? []);
+      } catch (e) {
+        setProducts([]);
+      }
+    };
+    run();
+  }, [publicKey]);
+
+  useEffect(() => {
+    const run = async () => {
+      if (!publicKey) return;
+      setLoading(true);
+      setError(null);
+      try {
+        const url = new URL("/api/v1/dashboard/analytics", window.location.origin);
+        url.searchParams.set("wallet", publicKey.toBase58());
+        if (selectedProductId) url.searchParams.set("productId", selectedProductId);
+        const response = await fetch(
+          url.toString(),
         );
         const payload = (await response.json()) as Payload & { error?: string };
         if (!response.ok) throw new Error(payload.error ?? "Analytics unavailable");
@@ -63,7 +90,13 @@ export function DashboardAnalytics() {
       }
     };
     run();
-  }, [publicKey]);
+  }, [publicKey, selectedProductId]);
+
+  const productMap = useMemo(() => {
+    const map = new Map<string, string>();
+    for (const p of products) map.set(p.id, p.title);
+    return map;
+  }, [products]);
 
   const volumePoints = useMemo(() => {
     if (!data) return "";
@@ -85,6 +118,23 @@ export function DashboardAnalytics() {
         <p className="muted" style={{ margin: 0, maxWidth: 720, lineHeight: 1.7 }}>
           View recent sales activity and trends from confirmed payments on your creator link.
         </p>
+        {publicKey ? (
+          <label className="field" style={{ maxWidth: 420 }}>
+            <span>Product</span>
+            <select
+              className="input"
+              value={selectedProductId}
+              onChange={(e) => setSelectedProductId(e.target.value)}
+            >
+              <option value="">All products</option>
+              {products.map((product) => (
+                <option key={product.id} value={product.id}>
+                  {product.title}
+                </option>
+              ))}
+            </select>
+          </label>
+        ) : null}
       </div>
 
       {!publicKey ? (
@@ -200,7 +250,11 @@ export function DashboardAnalytics() {
                   {data.topProducts.map((p) => (
                     <div key={p.productId ?? "unknown"} className="product-row">
                       <div>
-                        <strong>{p.productId ? p.productId.slice(0, 8) : "Unknown product"}</strong>
+                        <strong>
+                          {p.productId
+                            ? productMap.get(p.productId) ?? p.productId.slice(0, 8)
+                            : "Unknown product"}
+                        </strong>
                         <p className="muted" style={{ margin: "4px 0 0", fontSize: 13 }}>
                           {p.count} payments
                         </p>
