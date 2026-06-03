@@ -133,7 +133,7 @@ export function DashboardAnalytics() {
                 <polyline
                   points={volumePoints}
                   fill="none"
-                  stroke="rgba(14, 237, 181, 0.9)"
+                  stroke="rgba(99, 91, 255, 0.9)"
                   strokeWidth="3"
                   strokeLinejoin="round"
                   strokeLinecap="round"
@@ -157,7 +157,7 @@ export function DashboardAnalytics() {
                 <polyline
                   points={countPoints}
                   fill="none"
-                  stroke="rgba(2, 232, 239, 0.9)"
+                  stroke="rgba(154, 123, 255, 0.9)"
                   strokeWidth="3"
                   strokeLinejoin="round"
                   strokeLinecap="round"
@@ -217,4 +217,3 @@ export function DashboardAnalytics() {
     </div>
   );
 }
-

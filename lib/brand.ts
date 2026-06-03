@@ -1,22 +1,21 @@
-/** NodeBlink brand gradient — #0EEDB5 → #07EBD5 → #02E8EF */
 export const BRAND_GRADIENT =
-  "linear-gradient(135deg, #0EEDB5 0%, #07EBD5 50%, #02E8EF 100%)";
+  "linear-gradient(135deg, #635BFF 0%, #7A5CFF 50%, #9A7BFF 100%)";
 
 export const BRAND_GRADIENT_SOFT =
-  "linear-gradient(135deg, rgba(14, 237, 181, 0.18) 0%, rgba(2, 232, 239, 0.12) 100%)";
+  "linear-gradient(135deg, rgba(99, 91, 255, 0.16) 0%, rgba(154, 123, 255, 0.12) 100%)";
 
 export const BRAND_COLORS = {
-  start: "#0EEDB5",
-  mid: "#07EBD5",
-  end: "#02E8EF",
-  ink: "#0a1628",
-  muted: "#5b6b7f",
+  start: "#635BFF",
+  mid: "#7A5CFF",
+  end: "#9A7BFF",
+  ink: "#ffffff",
+  muted: "rgba(10, 37, 64, 0.7)",
 } as const;
 
 export const SUPPORT_EMAIL = "support@nodeblink.dev";
 
 const OG_PROMPT =
-  "ultra high end SaaS product hero image for NodeBlink, Solana creator checkout platform, clean premium tech aesthetic, dark navy background with teal to aqua gradient accents, subtle glow lines suggesting transactions flowing from buyers to creators, minimal wallet and link motifs, photoreal studio lighting, no logos, no text, marketing banner";
+  "ultra high end SaaS product hero image for NodeBlink, Solana creator checkout platform, clean premium tech aesthetic, deep navy background with indigo to violet gradient accents, subtle glow lines suggesting transactions flowing from buyers to creators, minimal wallet and link motifs, photoreal studio lighting, no logos, no text, marketing banner";
 
 const OG_PROMPT_ENCODED = encodeURIComponent(OG_PROMPT);
 

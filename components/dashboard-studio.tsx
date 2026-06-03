@@ -438,7 +438,7 @@ export function DashboardStudio() {
           <div className="grid-2" style={{ alignItems: "start" }}>
             <section className="panel stack" style={{ padding: 24 }}>
               <div style={{ display: "flex", alignItems: "center", gap: 10 }}>
-                <Package size={20} color="#02a8b5" />
+                <Package size={20} color="var(--brand-start)" />
                 <h2 style={{ margin: 0, fontSize: 22 }}>Step 2 — Add a product</h2>
               </div>
               <p className="muted" style={{ margin: 0, lineHeight: 1.6 }}>

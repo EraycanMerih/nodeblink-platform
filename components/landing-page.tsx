@@ -106,6 +106,11 @@ export function LandingPage({ stats }: Props) {
                   <Link2 size={14} /> {stats.actionsJsonUrl.replace("https://", "")}
                 </span>
               </div>
+              <div className="logo-strip" aria-label="Supported wallets">
+                <span className="logo-chip">Phantom</span>
+                <span className="logo-chip">Solflare</span>
+                <span className="logo-chip">Solana Actions</span>
+              </div>
             </div>
 
             <div className="stack" style={{ gap: 14 }}>
@@ -226,35 +231,35 @@ export function LandingPage({ stats }: Props) {
         </h2>
         <div style={{ display: "grid", gap: 16, gridTemplateColumns: "repeat(auto-fit,minmax(240px,1fr))" }}>
           <article className="card stack" style={{ padding: 22 }}>
-            <Globe2 size={22} color="#02a8b5" />
+            <Globe2 size={22} color="var(--brand-start)" />
             <h3 style={{ margin: 0 }}>actions.json on your domain</h3>
             <p className="muted" style={{ margin: 0, lineHeight: 1.65 }}>
               Wallets discover <code>{stats.domain}/actions.json</code> and map creator pages to the Actions API—no Dial-style middleman.
             </p>
           </article>
           <article className="card stack" style={{ padding: 22 }}>
-            <Smartphone size={22} color="#02a8b5" />
+            <Smartphone size={22} color="var(--brand-start)" />
             <h3 style={{ margin: 0 }}>Mobile wallet handoff</h3>
             <p className="muted" style={{ margin: 0, lineHeight: 1.65 }}>
               In-app browsers redirect to <code>solana-action:</code> links and Phantom browse fallback so mobile buyers are not stuck on a dead page.
             </p>
           </article>
           <article className="card stack" style={{ padding: 22 }}>
-            <Wallet size={22} color="#02a8b5" />
+            <Wallet size={22} color="var(--brand-start)" />
             <h3 style={{ margin: 0 }}>SOL & USDC checkout</h3>
             <p className="muted" style={{ margin: 0, lineHeight: 1.65 }}>
               Split payments in one transaction: creator payout, protocol fee, optional memo, and congestion-safe priority fees.
             </p>
           </article>
           <article className="card stack" style={{ padding: 22 }}>
-            <FileKey size={22} color="#02a8b5" />
+            <FileKey size={22} color="var(--brand-start)" />
             <h3 style={{ margin: 0 }}>Encrypted delivery</h3>
             <p className="muted" style={{ margin: 0, lineHeight: 1.65 }}>
               Gated files use AES-256-GCM keys released only after confirmation—configured with your <code>NODEBLINK_ENC_KEY</code>.
             </p>
           </article>
           <article className="card stack" style={{ padding: 22 }}>
-            <Sparkles size={22} color="#02a8b5" />
+            <Sparkles size={22} color="var(--brand-start)" />
             <h3 style={{ margin: 0 }}>Made for sharing</h3>
             <p className="muted" style={{ margin: 0, lineHeight: 1.65 }}>
               Each creator page publishes OpenGraph/Twitter metadata and a <code>solana:action</code>{" "}
@@ -262,7 +267,7 @@ export function LandingPage({ stats }: Props) {
             </p>
           </article>
           <article className="card stack" style={{ padding: 22 }}>
-            <Server size={22} color="#02a8b5" />
+            <Server size={22} color="var(--brand-start)" />
             <h3 style={{ margin: 0 }}>Operator-friendly</h3>
             <p className="muted" style={{ margin: 0, lineHeight: 1.65 }}>
               A single Next.js app powers landing, Creator Studio, checkout, Actions API, and health
@@ -294,7 +299,7 @@ export function LandingPage({ stats }: Props) {
             <div className="stack">
               <div className="card stack" style={{ padding: 20 }}>
                 <div style={{ display: "flex", alignItems: "center", gap: 10 }}>
-                  <Shield size={18} color="#02a8b5" />
+                  <Shield size={18} color="var(--brand-start)" />
                   <strong>Encrypted file delivery</strong>
                 </div>
                 <p className="muted" style={{ margin: 0, lineHeight: 1.65 }}>
@@ -304,7 +309,7 @@ export function LandingPage({ stats }: Props) {
               </div>
               <div className="card stack" style={{ padding: 20 }}>
                 <div style={{ display: "flex", alignItems: "center", gap: 10 }}>
-                  <ShieldCheck size={18} color="#02a8b5" />
+                  <ShieldCheck size={18} color="var(--brand-start)" />
                   <strong>Wallet-native UX</strong>
                 </div>
                 <p className="muted" style={{ margin: 0, lineHeight: 1.65 }}>

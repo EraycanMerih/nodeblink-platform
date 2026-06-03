@@ -36,7 +36,7 @@ export function SiteHeader() {
               display: "grid",
               placeItems: "center",
               background: BRAND_GRADIENT,
-              color: "#0a1628",
+              color: "white",
             }}
           >
             <Zap size={18} />

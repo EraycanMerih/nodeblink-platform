@@ -44,8 +44,8 @@ export function DashboardShell({ children }: { children: React.ReactNode }) {
                     style={{
                       justifyContent: "flex-start",
                       gap: 10,
-                      borderColor: active ? "rgba(14, 237, 181, 0.55)" : undefined,
-                      boxShadow: active ? "0 10px 28px rgba(14, 237, 181, 0.14)" : undefined,
+                      borderColor: active ? "rgba(99, 91, 255, 0.45)" : undefined,
+                      boxShadow: active ? "0 10px 28px rgba(99, 91, 255, 0.12)" : undefined,
                     }}
                   >
                     {item.icon}
