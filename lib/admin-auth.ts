@@ -27,20 +27,31 @@ export async function requireAdminWallet(walletAddress: string) {
     return wallet;
   }
 
-  const existing = await prisma.adminWallet.findFirst({ select: { walletAddress: true } });
-  if (!existing) {
-    await prisma.adminWallet.create({
-      data: { walletAddress: wallet, role: "OWNER" },
-      select: { id: true },
+  try {
+    const existing = await prisma.adminWallet.findFirst({ select: { walletAddress: true } });
+    if (!existing) {
+      await prisma.adminWallet.create({
+        data: { walletAddress: wallet, role: "OWNER" },
+        select: { id: true },
+      });
+      return wallet;
+    }
+
+    const allowed = await prisma.adminWallet.findUnique({
+      where: { walletAddress: wallet },
+      select: { walletAddress: true },
     });
+
+    if (!allowed) throw new AdminAuthError("Wallet not authorized", 403);
     return wallet;
+  } catch (error) {
+    const message = error instanceof Error ? error.message : String(error);
+    if (/adminWallet/i.test(message) || /AdminWallet/i.test(message) || /does not exist/i.test(message)) {
+      throw new AdminAuthError(
+        "Admin database is not migrated yet. Run: npx prisma migrate deploy",
+        503,
+      );
+    }
+    throw error;
   }
-
-  const allowed = await prisma.adminWallet.findUnique({
-    where: { walletAddress: wallet },
-    select: { walletAddress: true },
-  });
-
-  if (!allowed) throw new AdminAuthError("Wallet not authorized", 403);
-  return wallet;
 }

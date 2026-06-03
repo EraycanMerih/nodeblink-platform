@@ -35,7 +35,10 @@ export async function GET(request: Request) {
     if (error instanceof AdminAuthError) {
       return NextResponse.json({ error: error.message }, { status: error.status });
     }
-    return NextResponse.json({ error: "Admin backend unavailable" }, { status: 503 });
+    return NextResponse.json(
+      { error: "Admin backend unavailable. Check DATABASE_URL and run: npx prisma migrate deploy" },
+      { status: 503 },
+    );
   }
 }
 

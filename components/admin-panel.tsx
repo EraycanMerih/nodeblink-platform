@@ -110,7 +110,7 @@ export function AdminPanel() {
           Protocol controls
         </h1>
         <p className="muted" style={{ margin: 0, maxWidth: 760, lineHeight: 1.7 }}>
-          Read-only protocol overview for operator wallets configured in <code>ADMIN_WALLETS</code>.
+          The first wallet to connect becomes the admin (unless <code>ADMIN_WALLETS</code> is set).
         </p>
       </div>
 
