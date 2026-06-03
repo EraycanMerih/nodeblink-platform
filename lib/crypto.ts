@@ -2,7 +2,7 @@ import crypto from 'crypto'
 
 const MASTER_KEY = process.env.NODEBLINK_ENC_KEY || ''
 if (!MASTER_KEY) {
-  console.warn('NODEBLINK_ENC_KEY not set — asset decryption will not work')
+  console.warn('NODEBLINK_ENC_KEY not set - asset decryption will not work')
 }
 
 export function decryptBase64(encryptedBase64: string): string {

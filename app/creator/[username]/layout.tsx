@@ -1,7 +1,6 @@
 import type { Metadata } from "next";
 import { getCreatorProfile } from "@/lib/creator-actions";
 import { getRequestOrigin } from "@/lib/request-origin";
-import { OG_IMAGE_16_9_URL } from "@/lib/brand";
 
 type Props = {
   params: Promise<{ username: string }>;
@@ -15,12 +14,9 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
   const title = `${profile.displayName} · NodeBlink Checkout`;
   const description =
     profile.bio ||
-    `Pay ${profile.displayName} on Solana with native wallet buttons — tips, unlocks, and digital products.`;
+    `Pay ${profile.displayName} on Solana with native wallet buttons: tips, unlocks, and digital products.`;
   const pageUrl = `${origin}/creator/${profile.username}`;
-  const icon = profile.avatarUrl.startsWith("http")
-    ? profile.avatarUrl
-    : `${origin}${profile.avatarUrl}`;
-  const previewImage = icon.toLowerCase().endsWith(".svg") ? OG_IMAGE_16_9_URL : icon;
+  const previewImage = `${origin}/creator/${profile.username}/opengraph-image`;
 
   return {
     title,
@@ -31,11 +27,7 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
       url: pageUrl,
       siteName: "NodeBlink",
       type: "website",
-      images: [
-        previewImage === OG_IMAGE_16_9_URL
-          ? { url: previewImage, width: 1200, height: 630, alt: profile.displayName }
-          : { url: previewImage, width: 512, height: 512, alt: profile.displayName },
-      ],
+      images: [{ url: previewImage, width: 1200, height: 630, alt: profile.displayName }],
     },
     twitter: {
       card: "summary_large_image",

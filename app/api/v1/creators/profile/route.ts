@@ -59,7 +59,6 @@ export async function PATCH(request: Request) {
     const updated = await prisma.creatorProfile.update({
       where: { id: profile.id },
       data: {
-        displayName: body.displayName,
         bio: body.bio,
         websiteUrl,
         avatarUrl,

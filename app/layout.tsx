@@ -20,7 +20,7 @@ export async function generateMetadata(): Promise<Metadata> {
   const origin = await getRequestOrigin();
   const title = "NodeBlink | Creator checkout on Solana";
   const description =
-    "Sell tips, gated files, access passes, and collectibles on Solana with native Actions discovery.";
+    "Sell tips, files, access passes, and collectibles on Solana. Share one link and get paid instantly.";
   const ogImage = OG_IMAGE_16_9_URL;
 
   return {
@@ -34,7 +34,7 @@ export async function generateMetadata(): Promise<Metadata> {
     openGraph: {
       title: "NodeBlink",
       description:
-        "Non-custodial creator checkout with actions.json discovery and mobile wallet deep links.",
+        "A non-custodial creator checkout link for tips, files, access passes, and collectibles.",
       url: origin,
       siteName: "NodeBlink",
       type: "website",

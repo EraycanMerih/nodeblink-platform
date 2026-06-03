@@ -23,21 +23,19 @@ function getFaqs(stats: PublicProtocolStats) {
   return [
     {
       q: "Do you hold my funds?",
-      a: "No. NodeBlink is non-custodial. Payments move directly on Solana from the buyer to your wallet and the protocol treasury.",
+      a: "No. NodeBlink is non-custodial. Your audience pays on Solana directly to your wallet.",
     },
     {
       q: "What is the protocol fee?",
-      a: `The live deployment uses a ${stats.platformFeePercent}% platform fee (configurable between ${stats.feeRangeLabel}). Creators receive about ${stats.creatorSharePercent}% of each payment.`,
+      a: `A small fee is taken from each payment. On this deployment it is ${stats.platformFeePercent}%. You receive about ${stats.creatorSharePercent}% of each payment.`,
     },
     {
       q: "How do gated PDFs work?",
-      a: "Files are stored encrypted. After on-chain confirmation, buyers receive a secure download key through the confirmation API.",
+      a: "Set a price for a file. After payment is confirmed, buyers can unlock and download it.",
     },
     {
-      q: "Do I need a mint signer key?",
-      a: stats.mintFulfillmentEnabled
-        ? "Server-side NFT minting is enabled for this deployment."
-        : "Not required. Mint products collect payment on-chain; automatic NFT minting can be enabled later by adding a mint signer key to your server environment.",
+      q: "Do I need to code anything?",
+      a: "No. Connect your wallet, add what you want to sell, and share your creator link.",
     },
   ];
 }
@@ -47,19 +45,19 @@ export function LandingPage({ stats }: Props) {
   const volumeLabel =
     stats.volumeSol > 0
       ? `${stats.volumeSol.toFixed(2)} SOL`
-      : "—";
+      : "-";
   const steps = [
     {
       title: "Claim your creator link",
-      copy: `Connect a wallet in Creator Studio and register your username. Your public page becomes ${stats.domain}/creator/you.`,
+      copy: `Connect your wallet, pick a username, and your page goes live at ${stats.domain}/creator/you.`,
     },
     {
-      title: "Share one checkout URL",
-      copy: `Post the link on X, Discord, or your site. Wallets read ${stats.domain}/actions.json and unfurl pay buttons—no third-party registry.`,
+      title: "Share it anywhere",
+      copy: "Post your link on X, Discord, or anywhere your audience hangs out. People see a rich preview and can pay in one tap in supported apps.",
     },
     {
-      title: "Get paid on Solana",
-      copy: "Buyers sign in Phantom or Solflare. NodeBlink splits each payment: creator wallet + protocol fee, with congestion-safe fees for reliable confirmation.",
+      title: "Get paid instantly",
+      copy: "Your audience approves the payment in their wallet (like Phantom or Solflare). Funds go straight to you.",
     },
   ];
 
@@ -80,12 +78,12 @@ export function LandingPage({ stats }: Props) {
                   margin: 0,
                 }}
               >
-                Checkout infrastructure for creators—built for{" "}
-                <span style={{ color: "white" }}>wallet-native</span> commerce.
+                A checkout link for creators, built for <span className="text-gradient">wallet-native</span>{" "}
+                sales.
               </h1>
               <p style={{ fontSize: 17, lineHeight: 1.8, margin: 0, maxWidth: 620 }}>
-                NodeBlink helps you sell tips, gated files, access passes, and collectibles on Solana.
-                Share one link. Wallets unfurl pay buttons on social feeds and mobile wallets.
+                Sell tips, files, access passes, and collectibles on Solana. Share one link and let your
+                audience pay in seconds.
               </p>
               <div style={{ display: "flex", flexWrap: "wrap", gap: 12 }}>
                 <Link href="/dashboard" className="btn btn-primary">
@@ -119,8 +117,8 @@ export function LandingPage({ stats }: Props) {
                   What your audience sees
                 </p>
                 <p className="muted" style={{ margin: 0, lineHeight: 1.7 }}>
-                  Share a creator link. Wallets read <code>/actions.json</code> and show “Pay” buttons
-                  directly inside the feed.
+                  Share your creator link and your audience will see clear pay and unlock buttons right
+                  in the preview.
                 </p>
                 <div className="product-row">
                   <div>
@@ -166,7 +164,7 @@ export function LandingPage({ stats }: Props) {
           </div>
         </div>
         <p className="muted" style={{ marginTop: 12, fontSize: 13 }}>
-          Stats refresh from the NodeBlink database. Before your first sale, counts may read zero—that is expected.
+          Stats refresh from NodeBlink. Before your first sale, counts may read zero. That's expected.
         </p>
       </section>
 
@@ -201,8 +199,7 @@ export function LandingPage({ stats }: Props) {
                 Real products on <code>/creator/demo</code>
               </h2>
               <p className="muted" style={{ margin: 0, lineHeight: 1.7 }}>
-                These are the same items buyers see in wallet unfurls. Each maps to a Solana Action at{" "}
-                <code>/api/v1/actions/creator/demo</code>.
+                This demo shows the same checkout experience your audience sees when they open your link.
               </p>
               <Link href="/creator/demo" className="btn btn-primary" style={{ width: "fit-content" }}>
                 Open demo checkout
@@ -232,46 +229,44 @@ export function LandingPage({ stats }: Props) {
         <div style={{ display: "grid", gap: 16, gridTemplateColumns: "repeat(auto-fit,minmax(240px,1fr))" }}>
           <article className="card stack" style={{ padding: 22 }}>
             <Globe2 size={22} color="var(--brand-start)" />
-            <h3 style={{ margin: 0 }}>actions.json on your domain</h3>
+            <h3 style={{ margin: 0 }}>A creator page that shares well</h3>
             <p className="muted" style={{ margin: 0, lineHeight: 1.65 }}>
-              Wallets discover <code>{stats.domain}/actions.json</code> and map creator pages to the Actions API—no Dial-style middleman.
+              Your creator page is made to look great when shared, with clear buttons to pay or unlock.
             </p>
           </article>
           <article className="card stack" style={{ padding: 22 }}>
             <Smartphone size={22} color="var(--brand-start)" />
-            <h3 style={{ margin: 0 }}>Mobile wallet handoff</h3>
+            <h3 style={{ margin: 0 }}>Mobile-friendly checkout</h3>
             <p className="muted" style={{ margin: 0, lineHeight: 1.65 }}>
-              In-app browsers redirect to <code>solana-action:</code> links and Phantom browse fallback so mobile buyers are not stuck on a dead page.
+              Works smoothly on mobile, so fans can complete checkout without getting stuck in a browser.
             </p>
           </article>
           <article className="card stack" style={{ padding: 22 }}>
             <Wallet size={22} color="var(--brand-start)" />
             <h3 style={{ margin: 0 }}>SOL & USDC checkout</h3>
             <p className="muted" style={{ margin: 0, lineHeight: 1.65 }}>
-              Split payments in one transaction: creator payout, protocol fee, optional memo, and congestion-safe priority fees.
+              Let your audience pay in SOL or USDC, and receive funds directly to your wallet.
             </p>
           </article>
           <article className="card stack" style={{ padding: 22 }}>
             <FileKey size={22} color="var(--brand-start)" />
-            <h3 style={{ margin: 0 }}>Encrypted delivery</h3>
+            <h3 style={{ margin: 0 }}>Instant file unlocks</h3>
             <p className="muted" style={{ margin: 0, lineHeight: 1.65 }}>
-              Gated files use AES-256-GCM keys released only after confirmation—configured with your <code>NODEBLINK_ENC_KEY</code>.
+              Sell a file with a simple unlock flow. After payment, buyers can download what they bought.
             </p>
           </article>
           <article className="card stack" style={{ padding: 22 }}>
             <Sparkles size={22} color="var(--brand-start)" />
-            <h3 style={{ margin: 0 }}>Made for sharing</h3>
+            <h3 style={{ margin: 0 }}>Link previews that convert</h3>
             <p className="muted" style={{ margin: 0, lineHeight: 1.65 }}>
-              Each creator page publishes OpenGraph/Twitter metadata and a <code>solana:action</code>{" "}
-              tag so links unfurl cleanly on social networks.
+              Your link shows a clean preview in supported social apps and wallets, making it easy to buy.
             </p>
           </article>
           <article className="card stack" style={{ padding: 22 }}>
             <Server size={22} color="var(--brand-start)" />
-            <h3 style={{ margin: 0 }}>Operator-friendly</h3>
+            <h3 style={{ margin: 0 }}>Simple setup</h3>
             <p className="muted" style={{ margin: 0, lineHeight: 1.65 }}>
-              A single Next.js app powers landing, Creator Studio, checkout, Actions API, and health
-              checks. Deploy on one droplet.
+              Connect your wallet, add your products, and start sharing. No coding needed.
             </p>
           </article>
         </div>
@@ -291,20 +286,18 @@ export function LandingPage({ stats }: Props) {
                 Non-custodial by design
               </h2>
               <p className="muted" style={{ margin: 0, lineHeight: 1.7 }}>
-                NodeBlink never takes custody of creator funds. Buyers sign a Solana transaction that
-                splits payment to the creator wallet and the protocol treasury. Gated files are
-                encrypted at rest and unlocked only after confirmation.
+                NodeBlink never holds your money. Buyers pay on Solana directly to your wallet. If you
+                sell files, they stay locked until payment is confirmed.
               </p>
             </div>
             <div className="stack">
               <div className="card stack" style={{ padding: 20 }}>
                 <div style={{ display: "flex", alignItems: "center", gap: 10 }}>
                   <Shield size={18} color="var(--brand-start)" />
-                  <strong>Encrypted file delivery</strong>
+                  <strong>Secure file delivery</strong>
                 </div>
                 <p className="muted" style={{ margin: 0, lineHeight: 1.65 }}>
-                  AES-256-GCM encryption keys are released only after on-chain confirmation via the
-                  confirmation API.
+                  Files stay locked and only unlock after payment is confirmed.
                 </p>
               </div>
               <div className="card stack" style={{ padding: 20 }}>
@@ -324,30 +317,26 @@ export function LandingPage({ stats }: Props) {
 
       <section id="unfurl" className="shell stack" style={{ paddingBottom: 56 }}>
         <h2 className="display" style={{ fontSize: 32, margin: 0 }}>
-          Unfurls on social
+          Link previews on social
         </h2>
         <div className="grid-2" style={{ alignItems: "start" }}>
           <div className="card stack" style={{ padding: 22 }}>
-            <h3 style={{ margin: 0 }}>What wallets need</h3>
+            <h3 style={{ margin: 0 }}>What to share</h3>
             <p className="muted" style={{ margin: 0, lineHeight: 1.7 }}>
-              Wallets look for <code>{stats.domain}/actions.json</code> and map creator URLs to an
-              Actions API endpoint.
+              Share your creator page link so people see your profile and products in the preview.
             </p>
             <div className="product-row">
-              <code style={{ wordBreak: "break-all" }}>{stats.actionsJsonUrl}</code>
-              <a className="btn btn-secondary" href="/actions.json" target="_blank" rel="noreferrer">
-                Open
-              </a>
+              <code style={{ wordBreak: "break-all" }}>{stats.domain}/creator/yourname</code>
             </div>
           </div>
           <div className="card stack" style={{ padding: 22 }}>
-            <h3 style={{ margin: 0 }}>What social networks need</h3>
+            <h3 style={{ margin: 0 }}>Where it shows up</h3>
             <p className="muted" style={{ margin: 0, lineHeight: 1.7 }}>
-              Twitter / Discord unfurls are driven by OpenGraph + Twitter meta tags. NodeBlink publishes
-              them for the homepage and each creator page.
+              In supported apps (like X and Discord), your link expands into a preview your audience can
+              tap to pay or unlock.
             </p>
             <p className="muted" style={{ margin: 0, lineHeight: 1.7 }}>
-              Best practice: share <code>{stats.domain}/creator/yourname</code> (not the Actions API URL).
+              Best practice: share your creator page (not individual API or product links).
             </p>
           </div>
         </div>
@@ -376,11 +365,11 @@ export function LandingPage({ stats }: Props) {
       <section id="pricing" className="shell" style={{ paddingBottom: 48 }}>
         <div className="hero-gradient stack">
           <h2 className="display" style={{ margin: 0, fontSize: 32, position: "relative", zIndex: 1 }}>
-            Fees that stay easy to explain
+            A simple fee
           </h2>
           <p style={{ margin: 0, maxWidth: 560, lineHeight: 1.7, position: "relative", zIndex: 1 }}>
-            No monthly platform lock-in. You earn when creators earn. The live fee on this deployment is{" "}
-            <strong>{stats.platformFeePercent}%</strong> per transaction.
+            There is no monthly subscription. A small fee is included in each payment. The live fee on
+            this deployment is <strong>{stats.platformFeePercent}%</strong>.
           </p>
           <div className="stat-grid" style={{ position: "relative", zIndex: 1 }}>
             <div className="stat">

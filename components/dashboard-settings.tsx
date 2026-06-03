@@ -62,7 +62,6 @@ export function DashboardSettings() {
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
           walletAddress: publicKey.toBase58(),
-          displayName: data.displayName,
           bio: data.bio,
           websiteUrl: data.websiteUrl,
           avatarUrl: data.avatarUrl,
@@ -129,7 +128,7 @@ export function DashboardSettings() {
               <input
                 className="input"
                 value={data.displayName ?? ""}
-                onChange={(e) => setData((d) => (d ? { ...d, displayName: e.target.value } : d))}
+                disabled
               />
             </label>
 
@@ -218,4 +217,3 @@ export function DashboardSettings() {
     </div>
   );
 }
-

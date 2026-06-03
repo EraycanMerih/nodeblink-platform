@@ -1,7 +1,7 @@
 {
   "name": "nodeblink",
   "version": "2.0.0",
-  "description": "NodeBlink — Solana creator checkout",
+  "description": "NodeBlink - Solana creator checkout",
   "private": true,
   "scripts": {
     "dev": "next dev",

@@ -191,7 +191,6 @@ export function DashboardStudio() {
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
           walletAddress: publicKey.toBase58(),
-          displayName: profileForm.displayName,
           bio: profileForm.bio,
         }),
       });
@@ -344,7 +343,7 @@ export function DashboardStudio() {
         </div>
       ) : data && !data.onboarded ? (
         <div className="panel stack" style={{ padding: 28, maxWidth: 520 }}>
-          <h2 style={{ margin: 0 }}>Step 1 — Create your profile</h2>
+          <h2 style={{ margin: 0 }}>Step 1: Create your profile</h2>
           <p className="muted" style={{ margin: 0, lineHeight: 1.6 }}>
             Pick a username for your public checkout URL.
           </p>
@@ -439,7 +438,7 @@ export function DashboardStudio() {
             <section className="panel stack" style={{ padding: 24 }}>
               <div style={{ display: "flex", alignItems: "center", gap: 10 }}>
                 <Package size={20} color="var(--brand-start)" />
-                <h2 style={{ margin: 0, fontSize: 22 }}>Step 2 — Add a product</h2>
+                <h2 style={{ margin: 0, fontSize: 22 }}>Step 2: Add a product</h2>
               </div>
               <p className="muted" style={{ margin: 0, lineHeight: 1.6 }}>
                 Choose a type, set a price, and publish to your checkout page instantly.
@@ -637,9 +636,7 @@ export function DashboardStudio() {
                   <input
                     className="input"
                     value={profileForm.displayName}
-                    onChange={(e) =>
-                      setProfileForm((f) => ({ ...f, displayName: e.target.value }))
-                    }
+                    disabled
                   />
                 </label>
                 <label className="field">

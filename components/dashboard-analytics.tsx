@@ -141,12 +141,12 @@ export function DashboardAnalytics() {
               </svg>
               <div style={{ display: "flex", justifyContent: "space-between", gap: 10, flexWrap: "wrap" }}>
                 <span className="muted" style={{ fontSize: 12 }}>
-                  {data.series.length ? formatDateLabel(data.series[0].date) : "—"}
+                  {data.series.length ? formatDateLabel(data.series[0].date) : "-"}
                 </span>
                 <span className="muted" style={{ fontSize: 12 }}>
                   {data.series.length
                     ? formatDateLabel(data.series[data.series.length - 1].date)
-                    : "—"}
+                    : "-"}
                 </span>
               </div>
             </section>
@@ -165,12 +165,12 @@ export function DashboardAnalytics() {
               </svg>
               <div style={{ display: "flex", justifyContent: "space-between", gap: 10, flexWrap: "wrap" }}>
                 <span className="muted" style={{ fontSize: 12 }}>
-                  {data.series.length ? formatDateLabel(data.series[0].date) : "—"}
+                  {data.series.length ? formatDateLabel(data.series[0].date) : "-"}
                 </span>
                 <span className="muted" style={{ fontSize: 12 }}>
                   {data.series.length
                     ? formatDateLabel(data.series[data.series.length - 1].date)
-                    : "—"}
+                    : "-"}
                 </span>
               </div>
             </section>
