@@ -24,7 +24,7 @@
 :root {
   color-scheme: light;
   --color-ink: #0a2540;
-  --color-muted: rgba(10, 37, 64, 0.7);
+  --color-muted: rgba(10, 37, 64, 0.78);
   --color-line: rgba(10, 37, 64, 0.12);
   --color-panel: #ffffff;
   --color-canvas: #f6f9fc;
@@ -42,7 +42,7 @@
 html.dark {
   color-scheme: dark;
   --color-ink: rgba(243, 246, 255, 0.94);
-  --color-muted: rgba(190, 205, 228, 0.72);
+  --color-muted: rgba(190, 205, 228, 0.82);
   --color-line: rgba(255, 255, 255, 0.12);
   --color-panel: rgba(17, 25, 40, 0.88);
   --color-canvas: #060a12;
@@ -273,6 +273,14 @@ code {
   padding: 32px;
   color: var(--brand-ink);
   background: var(--gradient-brand);
+}
+
+.hero-gradient .stat {
+  color: var(--color-ink);
+}
+
+.hero-gradient .stat .muted {
+  color: var(--color-muted);
 }
 
 .checkout-hero::after,

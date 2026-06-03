@@ -197,7 +197,18 @@ export function PremiumCheckout({ creator, actionApiUrl, mobile }: Props) {
         <aside className="stack" style={{ position: "sticky", top: 88 }}>
           <div className="card stack" style={{ padding: 22 }}>
             <div style={{ display: "flex", alignItems: "center", gap: 14 }}>
-              <img src={creator.avatarUrl || "/action-icon.svg"} alt="" width={56} height={56} style={{ borderRadius: 14, objectFit: "cover" }} />
+              <img
+                src={
+                  creator.avatarUrl &&
+                  !creator.avatarUrl.toLowerCase().includes("coresg-normal.trae.ai/api/ide/v1/text_to_image")
+                    ? creator.avatarUrl
+                    : `/creator/${creator.username}/action-icon?v=2`
+                }
+                alt=""
+                width={56}
+                height={56}
+                style={{ borderRadius: 14, objectFit: "cover" }}
+              />
               <div>
                 <strong>@{creator.username}</strong>
                 <p className="muted" style={{ margin: 0, fontSize: 13 }}>Creator wallet verified</p>

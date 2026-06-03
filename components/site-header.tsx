@@ -1,6 +1,4 @@
 import Link from "next/link";
-import { Zap } from "lucide-react";
-import { BRAND_GRADIENT } from "@/lib/brand";
 import { ThemeToggle } from "@/components/theme-toggle";
 
 export function SiteHeader() {
@@ -23,24 +21,11 @@ export function SiteHeader() {
           style={{
             display: "flex",
             alignItems: "center",
-            gap: 10,
-            fontWeight: 700,
-            fontSize: 20,
+            fontWeight: 800,
+            fontSize: 22,
+            letterSpacing: "-0.03em",
           }}
         >
-          <span
-            style={{
-              width: 34,
-              height: 34,
-              borderRadius: 10,
-              display: "grid",
-              placeItems: "center",
-              background: BRAND_GRADIENT,
-              color: "white",
-            }}
-          >
-            <Zap size={18} />
-          </span>
           NodeBlink
         </Link>
         <nav style={{ display: "flex", alignItems: "center", gap: 8, flexWrap: "wrap" }}>

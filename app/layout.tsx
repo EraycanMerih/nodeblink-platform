@@ -21,7 +21,7 @@ export async function generateMetadata(): Promise<Metadata> {
   const title = "NodeBlink | Creator checkout on Solana";
   const description =
     "Sell tips, files, access passes, and collectibles on Solana. Share one link and get paid instantly.";
-  const ogImage = OG_IMAGE_16_9_URL;
+  const ogImage = `${OG_IMAGE_16_9_URL}?v=2`;
 
   return {
     title: {

@@ -23,6 +23,17 @@ import { prisma } from "./db";
 
 const MEMO_PROGRAM_ID = new PublicKey("MemoSq4gqABAXKb96qnH8TysNcWxMyWCqXgDLGmfcHr");
 const DEFAULT_ACTION_ICON = "/action-icon.svg";
+
+function resolveActionIcon(profile: CreatorProfileView, origin: string) {
+  const raw = profile.avatarUrl || DEFAULT_ACTION_ICON;
+  if (raw.toLowerCase().includes("coresg-normal.trae.ai/api/ide/v1/text_to_image")) {
+    return new URL(`/creator/${profile.username}/action-icon?v=2`, origin).toString();
+  }
+  if (raw.toLowerCase().endsWith(".svg")) {
+    return new URL(`/creator/${profile.username}/action-icon?v=2`, origin).toString();
+  }
+  return new URL(raw, origin).toString();
+}
 const MIN_PLATFORM_FEE_BPS = 150;
 const MAX_PLATFORM_FEE_BPS = 250;
 const DEFAULT_USDC_MINT = process.env.NODEBLINK_USDC_MINT ?? process.env.USDC_MINT ?? "EPjFWdd5AufqSSqeM2qN1xzybapC8G4wEGGkZwyTDt1v";
@@ -373,7 +384,7 @@ export function buildActionMetadata(profile: CreatorProfileView, origin: string)
   return {
     type: "action",
     title: `${profile.displayName} on NodeBlink`,
-    icon: new URL(profile.avatarUrl || DEFAULT_ACTION_ICON, origin).toString(),
+    icon: resolveActionIcon(profile, origin),
     description: profile.bio || `Monetize ${profile.displayName} with tips, unlocks, mints, and access passes.`,
     label: "Open creator checkout",
     links: { actions },
@@ -571,7 +582,7 @@ export async function buildActionPostResponse(profile: CreatorProfileView, selec
   const completed: CompletedAction = {
     type: "completed",
     title: `${profile.displayName} purchase complete`,
-    icon: new URL(profile.avatarUrl || DEFAULT_ACTION_ICON, requestUrl.origin).toString(),
+    icon: resolveActionIcon(profile, requestUrl.origin),
     label: "Complete",
     description: `${message}. Transaction confirmed or ready for wallet signing.`,
   };

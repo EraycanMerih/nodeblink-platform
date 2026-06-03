@@ -156,7 +156,7 @@ export function DashboardSettings() {
               <span>Avatar URL</span>
               <input
                 className="input"
-                placeholder="/action-icon.svg or https://"
+                placeholder="https://... (png/jpg recommended)"
                 value={data.avatarUrl ?? ""}
                 onChange={(e) => setData((d) => (d ? { ...d, avatarUrl: e.target.value } : d))}
               />
