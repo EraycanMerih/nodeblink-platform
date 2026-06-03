@@ -12,7 +12,6 @@ import {
   RefreshCw,
   Trash2,
 } from "lucide-react";
-import { buildDialectBlinkUrl } from "@/lib/blink-links";
 
 type ProductArchetype = "TIP" | "UNLOCK_DOCUMENT" | "ACCESS_PASS" | "MINT_NFT";
 
@@ -159,10 +158,10 @@ export function DashboardStudio() {
     return `${window.location.origin}${data.actionUrl}`;
   }, [data?.actionUrl]);
 
-  const xBlinkLink = useMemo(() => {
-    if (!actionApiUrl) return "";
-    return buildDialectBlinkUrl(actionApiUrl);
-  }, [actionApiUrl]);
+  const productShareBase = useMemo(() => {
+    if (!checkoutLink) return "";
+    return checkoutLink.replace(/\/$/, "");
+  }, [checkoutLink]);
 
   const notify = (type: "ok" | "err", text: string) => setMessage({ type, text });
 
@@ -440,25 +439,6 @@ export function DashboardStudio() {
                 <Copy size={16} /> Copy link
               </button>
             </div>
-            {xBlinkLink ? (
-              <div className="product-row">
-                <code style={{ fontSize: 13, wordBreak: "break-all" }}>{xBlinkLink}</code>
-                <button
-                  type="button"
-                  className="btn btn-secondary"
-                  onClick={() => {
-                    navigator.clipboard.writeText(xBlinkLink);
-                    notify("ok", "X Blink link copied.");
-                  }}
-                >
-                  <Copy size={16} /> Copy for X
-                </button>
-              </div>
-            ) : null}
-            <p className="muted" style={{ margin: 0, fontSize: 13 }}>
-              For in-feed buy buttons on X, share the Blink link. Discord only shows a preview, but wallets
-              can open the action and pay.
-            </p>
           </div>
 
           <div className="grid-2" style={{ alignItems: "start" }}>
@@ -621,7 +601,26 @@ export function DashboardStudio() {
                           {formatArchetype(product.archetype)} ·{" "}
                           {lamportsToSol(product.priceMinorUnits).toFixed(2)} SOL
                         </p>
+                        {productShareBase ? (
+                          <p className="muted" style={{ margin: "6px 0 0", fontSize: 12 }}>
+                            <code style={{ fontSize: 12, wordBreak: "break-all" }}>
+                              {productShareBase}/product/{product.id}
+                            </code>
+                          </p>
+                        ) : null}
                       </div>
+                      {productShareBase ? (
+                        <button
+                          type="button"
+                          className="btn btn-secondary"
+                          onClick={() => {
+                            navigator.clipboard.writeText(`${productShareBase}/product/${product.id}`);
+                            notify("ok", "Product link copied.");
+                          }}
+                        >
+                          <Copy size={16} /> Copy
+                        </button>
+                      ) : null}
                       <button
                         type="button"
                         className="btn btn-ghost"

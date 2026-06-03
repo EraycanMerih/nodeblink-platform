@@ -1,6 +1,4 @@
 import Link from "next/link";
-import { Zap } from "lucide-react";
-import { BRAND_GRADIENT } from "@/lib/brand";
 
 export function DashboardHeader() {
   return (
@@ -22,24 +20,10 @@ export function DashboardHeader() {
           style={{
             display: "flex",
             alignItems: "center",
-            gap: 10,
             fontWeight: 700,
             fontSize: 20,
           }}
         >
-          <span
-            style={{
-              width: 34,
-              height: 34,
-              borderRadius: 10,
-              display: "grid",
-              placeItems: "center",
-              background: BRAND_GRADIENT,
-              color: "#0a1628",
-            }}
-          >
-            <Zap size={18} />
-          </span>
           NodeBlink
         </Link>
         <div style={{ display: "flex", alignItems: "center", gap: 10, flexWrap: "wrap" }}>
@@ -54,4 +38,3 @@ export function DashboardHeader() {
     </header>
   );
 }
-

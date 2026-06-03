@@ -37,6 +37,8 @@ export function DashboardSettings() {
   const [requests, setRequests] = useState<VerificationRequest[]>([]);
   const [loading, setLoading] = useState(false);
   const [saving, setSaving] = useState(false);
+  const [uploadingPreview, setUploadingPreview] = useState(false);
+  const [previewFile, setPreviewFile] = useState<File | null>(null);
   const [requesting, setRequesting] = useState(false);
   const [message, setMessage] = useState<{ type: "ok" | "err"; text: string } | null>(null);
   const [apply, setApply] = useState({
@@ -129,6 +131,53 @@ export function DashboardSettings() {
       setMessage({ type: "err", text: e instanceof Error ? e.message : "Save failed" });
     } finally {
       setSaving(false);
+    }
+  };
+
+  const uploadPreview = async () => {
+    if (!publicKey || !data?.onboarded || !previewFile) return;
+    setUploadingPreview(true);
+    setMessage(null);
+    try {
+      if (!previewFile.type.startsWith("image/")) {
+        throw new Error("Choose an image file (png/jpg/webp).");
+      }
+      if (previewFile.size > 6 * 1024 * 1024) {
+        throw new Error("Image must be under 6 MB.");
+      }
+
+      const base64Data = await new Promise<string>((resolve, reject) => {
+        const reader = new FileReader();
+        reader.onload = () => {
+          const result = String(reader.result ?? "");
+          const comma = result.indexOf(",");
+          resolve(comma >= 0 ? result.slice(comma + 1) : result);
+        };
+        reader.onerror = () => reject(new Error("Could not read file."));
+        reader.readAsDataURL(previewFile);
+      });
+
+      const response = await fetch("/api/v1/creators/preview-image", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          walletAddress: publicKey.toBase58(),
+          filename: previewFile.name,
+          base64Data,
+        }),
+      });
+      const payload = (await response.json()) as { ok?: boolean; url?: string; error?: unknown };
+      if (!response.ok || !payload.url) {
+        throw new Error(typeof payload.error === "string" ? payload.error : "Upload failed");
+      }
+      setData((d) => (d ? { ...d, coverUrl: payload.url ?? d.coverUrl } : d));
+      setPreviewFile(null);
+      setMessage({ type: "ok", text: "Preview image uploaded." });
+      await load();
+    } catch (e) {
+      setMessage({ type: "err", text: e instanceof Error ? e.message : "Upload failed" });
+    } finally {
+      setUploadingPreview(false);
     }
   };
 
@@ -260,14 +309,33 @@ export function DashboardSettings() {
             </label>
 
             <label className="field">
-              <span>Cover URL</span>
+              <span>Preview image URL</span>
               <input
                 className="input"
-                placeholder="https://"
+                placeholder="https://... (used for social preview)"
                 value={data.coverUrl ?? ""}
                 onChange={(e) => setData((d) => (d ? { ...d, coverUrl: e.target.value } : d))}
               />
             </label>
+
+            <label className="field">
+              <span>Upload a preview image</span>
+              <input
+                className="input"
+                type="file"
+                accept="image/png,image/jpeg,image/webp"
+                onChange={(e) => setPreviewFile(e.target.files?.[0] ?? null)}
+              />
+            </label>
+
+            <button
+              type="button"
+              className="btn btn-secondary"
+              disabled={uploadingPreview || !previewFile}
+              onClick={uploadPreview}
+            >
+              {uploadingPreview ? <Loader2 size={16} className="animate-spin" /> : "Upload preview image"}
+            </button>
 
             <button type="button" className="btn btn-primary" disabled={saving} onClick={update}>
               {saving ? <Loader2 size={16} className="animate-spin" /> : <Save size={16} />}

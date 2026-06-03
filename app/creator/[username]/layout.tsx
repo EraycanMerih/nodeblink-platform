@@ -16,7 +16,7 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
     profile.bio ||
     `Pay ${profile.displayName} on Solana with native wallet buttons: tips, unlocks, and digital products.`;
   const pageUrl = `${origin}/creator/${profile.username}`;
-  const previewImage = `${origin}/creator/${profile.username}/opengraph-image?v=3`;
+  const previewImage = `${origin}/creator/${profile.username}/opengraph-image?v=${encodeURIComponent(profile.updatedAt)}`;
 
   return {
     title,

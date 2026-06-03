@@ -89,6 +89,7 @@ export interface CreatorProfileView {
   treasuryWallet: string;
   platformFeeBps: number;
   featured: boolean;
+  updatedAt: string;
   websiteUrl: string;
   discordWebhookUrl: string;
   accessWebhookUrl: string;
@@ -255,6 +256,7 @@ function fallbackCreator(username: string): CreatorProfileView {
     treasuryWallet: fallbackTreasuryWallet,
     platformFeeBps: 200,
     featured: false,
+    updatedAt: new Date().toISOString(),
     websiteUrl: "",
     discordWebhookUrl: "",
     accessWebhookUrl: "",
@@ -362,6 +364,7 @@ async function fetchCreatorFromDatabase(username: string) {
       treasuryWallet: record.treasuryWallet ?? fallbackTreasuryWallet,
       platformFeeBps: clampFeeBps(record.platformFeeBps),
       featured: Boolean((record as { featured?: boolean }).featured),
+      updatedAt: record.updatedAt.toISOString(),
       websiteUrl: record.websiteUrl ?? "",
       discordWebhookUrl: record.discordWebhookUrl ?? "",
       accessWebhookUrl: record.accessWebhookUrl ?? "",
@@ -381,13 +384,22 @@ export async function getCreatorProfile(username: string): Promise<CreatorProfil
   return databaseRecord ?? fallbackCreator(username);
 }
 
-export function buildActionMetadata(profile: CreatorProfileView, origin: string): ActionGetResponse {
-  const actions = profile.products.flatMap((product) => buildVariants(product, profile.username, origin)) as any;
+export function buildActionMetadata(
+  profile: CreatorProfileView,
+  origin: string,
+  options: { productId?: string } = {},
+): ActionGetResponse {
+  const selectedProduct =
+    options.productId
+      ? profile.products.find((product) => product.id === options.productId)
+      : undefined;
+  const productList = selectedProduct ? [selectedProduct] : profile.products;
+  const actions = productList.flatMap((product) => buildVariants(product, profile.username, origin)) as any;
   const featuredLabel = profile.featured ? " · Verified" : "";
 
   return {
     type: "action",
-    title: `${profile.displayName}${featuredLabel}`,
+    title: `${selectedProduct ? `${selectedProduct.title} · ` : ""}${profile.displayName}${featuredLabel}`,
     icon: resolveActionIcon(profile, origin),
     description:
       profile.bio ||

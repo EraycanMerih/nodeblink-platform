@@ -19,14 +19,21 @@ type Props = {
   creator: CreatorProfileView;
   actionApiUrl: string;
   mobile: boolean;
+  productId?: string;
 };
 
-export function PremiumCheckout({ creator, actionApiUrl, mobile }: Props) {
+export function PremiumCheckout({ creator, actionApiUrl, mobile, productId }: Props) {
   const { connection } = useConnection();
   const { publicKey, signTransaction } = useWallet();
   const [status, setStatus] = useState<string | null>(null);
   const [busy, setBusy] = useState(false);
   const [transactionId, setTransactionId] = useState<string | null>(null);
+
+  const visibleProducts = useMemo(() => {
+    if (!productId) return creator.products;
+    const match = creator.products.find((product) => product.id === productId);
+    return match ? [match] : creator.products;
+  }, [creator.products, productId]);
 
   const feeLabel = useMemo(
     () => `${(creator.platformFeeBps / 100).toFixed(1)}% protocol fee`,
@@ -173,7 +180,7 @@ export function PremiumCheckout({ creator, actionApiUrl, mobile }: Props) {
 
       <div className="grid-2" style={{ alignItems: "start" }}>
         <div className="stack">
-          {creator.products.map((product) => (
+          {visibleProducts.map((product) => (
             <article key={product.id} className="panel stack" style={{ padding: 22 }}>
               <div>
                 <p className="muted" style={{ margin: 0, fontSize: 12, textTransform: "uppercase", letterSpacing: "0.18em" }}>

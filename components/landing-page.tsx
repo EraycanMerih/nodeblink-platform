@@ -49,15 +49,15 @@ export function LandingPage({ stats }: Props) {
   const steps = [
     {
       title: "Claim your creator link",
-      copy: `Connect your wallet, pick a username, and your page goes live at ${stats.domain}/creator/you.`,
+      copy: `Connect your wallet and pick a username. Your link goes live at ${stats.domain}/creator/you.`,
     },
     {
       title: "Share it anywhere",
-      copy: "Post your link on X, Discord, or anywhere your audience hangs out. People see a clean preview and can pay in seconds.",
+      copy: "Post your link anywhere. People see a clean preview and pay fast.",
     },
     {
       title: "Get paid instantly",
-      copy: "Fans approve the payment in their wallet. Funds go straight to you.",
+      copy: "Fans approve in-wallet. Funds go straight to you.",
     },
   ];
 
@@ -111,31 +111,46 @@ export function LandingPage({ stats }: Props) {
             </div>
 
             <div className="stack" style={{ gap: 14 }}>
-              <div className="panel stack" style={{ padding: 22 }}>
-                <p style={{ margin: 0, fontWeight: 700, fontSize: 16 }}>
-                  What your audience sees
-                </p>
-                <p className="muted" style={{ margin: 0, lineHeight: 1.7 }}>
-                  Share your creator link and your audience will see clear pay and unlock buttons right
-                  in the preview.
-                </p>
-                <div className="product-row">
-                  <div>
-                    <strong>Tip jar</strong>
-                    <p className="muted" style={{ margin: "4px 0 0", fontSize: 13 }}>
-                      One click · SOL
-                    </p>
-                  </div>
-                  <span className="badge">Pay</span>
+              <div className="panel stack" style={{ padding: 18 }}>
+                <img
+                  src="https://coresg-normal.trae.ai/api/ide/v1/text_to_image?prompt=premium%202026%20fintech%20web%20app%20screenshot%20of%20a%20creator%20checkout%20page%2C%20indigo%20violet%20gradient%20accents%2C%20clean%20typography%2C%20subtle%20shadows%2C%20product%20cards%20with%20pay%20buttons%2C%20modern%20minimal%20UI%2C%20realistic%2C%20high%20detail&image_size=landscape_16_9"
+                  alt="Creator checkout preview"
+                  style={{
+                    width: "100%",
+                    height: "auto",
+                    borderRadius: 18,
+                    border: "1px solid var(--color-line)",
+                    background: "color-mix(in srgb, var(--color-panel), transparent 8%)",
+                  }}
+                />
+                <div className="trust-strip" style={{ justifyContent: "space-between" }}>
+                  <span>
+                    <Wallet size={14} /> Wallet-native pay
+                  </span>
+                  <span>
+                    <ShieldCheck size={14} /> Non-custodial
+                  </span>
                 </div>
-                <div className="product-row">
-                  <div>
-                    <strong>Gated PDF</strong>
-                    <p className="muted" style={{ margin: "4px 0 0", fontSize: 13 }}>
-                      Encrypted · unlock after confirmation
-                    </p>
-                  </div>
-                  <span className="badge">Unlock</span>
+              </div>
+              <div className="panel stack" style={{ padding: 18 }}>
+                <img
+                  src="https://coresg-normal.trae.ai/api/ide/v1/text_to_image?prompt=premium%202026%20creator%20studio%20dashboard%20web%20app%20screenshot%2C%20analytics%20cards%2C%20product%20list%2C%20indigo%20violet%20accents%2C%20clean%20modern%20fintech%20design%2C%20realistic%2C%20high%20detail&image_size=landscape_16_9"
+                  alt="Creator Studio preview"
+                  style={{
+                    width: "100%",
+                    height: "auto",
+                    borderRadius: 18,
+                    border: "1px solid var(--color-line)",
+                    background: "color-mix(in srgb, var(--color-panel), transparent 8%)",
+                  }}
+                />
+                <div className="trust-strip" style={{ justifyContent: "space-between" }}>
+                  <span>
+                    <Server size={14} /> Products + delivery
+                  </span>
+                  <span>
+                    <Smartphone size={14} /> Mobile ready
+                  </span>
                 </div>
               </div>
             </div>

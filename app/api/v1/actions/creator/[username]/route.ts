@@ -29,7 +29,9 @@ export async function GET(
   const { username } = await context.params;
   const origin = getRequestOriginFromRequest(request);
   const profile = await getCreatorProfile(username);
-  const payload = buildActionMetadata(profile, origin);
+  const requestUrl = new URL(request.url);
+  const productId = requestUrl.searchParams.get("productId") ?? undefined;
+  const payload = buildActionMetadata(profile, origin, { productId });
   return jsonWithActionsCors(payload);
 }
 
