@@ -25,7 +25,15 @@ export async function GET(_: Request, context: { params: Promise<{ username: str
             fontFamily: "Inter, system-ui, -apple-system, Segoe UI, sans-serif",
           }}
         >
-          <div style={{ fontSize: 42, fontWeight: 850, letterSpacing: "-0.03em", textAlign: "center", padding: "0 40px" }}>
+          <div
+            style={{
+              fontSize: 42,
+              fontWeight: 850,
+              letterSpacing: "-0.03em",
+              textAlign: "center",
+              padding: "0 40px",
+            }}
+          >
             {displayName}
           </div>
           <div style={{ marginTop: 16, fontSize: 24, opacity: 0.86 }}>NodeBlink</div>
