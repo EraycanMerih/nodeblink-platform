@@ -3,6 +3,7 @@ import { Inter, Outfit } from "next/font/google";
 import { getRequestOrigin } from "@/lib/request-origin";
 import { OG_IMAGE_16_9_URL } from "@/lib/brand";
 import { ThemeScript } from "@/components/theme-script";
+import "@solana/wallet-adapter-react-ui/styles.css";
 import "./globals.css";
 
 const inter = Inter({
