@@ -1,6 +1,6 @@
 "use client";
 
-import { useCallback, useEffect, useMemo, useState } from "react";
+import { useCallback, useMemo, useState } from "react";
 import { useConnection, useWallet } from "@solana/wallet-adapter-react";
 import { WalletConnectButton } from "@/components/wallet-connect-button";
 import { Transaction, VersionedTransaction } from "@solana/web3.js";
@@ -21,39 +21,25 @@ type Props = {
   mobile: boolean;
 };
 
-function buildHref(actionApiUrl: string, product: CreatorActionProduct, variantId: string) {
-  const url = new URL(actionApiUrl);
-  url.searchParams.set("productId", product.id);
-  url.searchParams.set("variant", variantId);
-  return url.toString();
-}
-
 export function PremiumCheckout({ creator, actionApiUrl, mobile }: Props) {
   const { connection } = useConnection();
   const { publicKey, signTransaction } = useWallet();
   const [status, setStatus] = useState<string | null>(null);
   const [busy, setBusy] = useState(false);
   const [transactionId, setTransactionId] = useState<string | null>(null);
-  const [deepLinkAttempted, setDeepLinkAttempted] = useState(false);
 
   const feeLabel = useMemo(
     () => `${(creator.platformFeeBps / 100).toFixed(1)}% protocol fee`,
     [creator.platformFeeBps],
   );
 
-  useEffect(() => {
-    if (!mobile || deepLinkAttempted) return;
-    setDeepLinkAttempted(true);
-    const deepLink = `solana-action:${actionApiUrl}`;
-    const timer = window.setTimeout(() => {
-      try {
-        window.location.href = deepLink;
-      } catch {
-        /* fallback UI remains */
-      }
-    }, 400);
-    return () => window.clearTimeout(timer);
-  }, [actionApiUrl, mobile, deepLinkAttempted]);
+  const openInWallet = useCallback(() => {
+    try {
+      window.location.href = `solana-action:${actionApiUrl}`;
+    } catch {
+      setStatus("Unable to open wallet. Please copy the link and open it inside your wallet.");
+    }
+  }, [actionApiUrl]);
 
   const executeCheckout = useCallback(
     async (product: CreatorActionProduct, variantId: string) => {
@@ -126,33 +112,60 @@ export function PremiumCheckout({ creator, actionApiUrl, mobile }: Props) {
 
   return (
     <main className="shell stack animate-rise" style={{ padding: "28px 0 56px" }}>
-      <section className="checkout-hero stack">
+      <section className="hero-mesh stack" style={{ padding: 32 }}>
         <div style={{ display: "flex", gap: 10, flexWrap: "wrap" }}>
           <span className="badge">
             <Sparkles size={14} /> Secure checkout
           </span>
-          {creator.featured ? (
-            <span className="badge">
-              Verified creator
-            </span>
-          ) : null}
+          {creator.featured ? <span className="badge">Verified creator</span> : null}
         </div>
-        <div className="grid-2" style={{ alignItems: "end", position: "relative", zIndex: 1 }}>
+        <div className="grid-2" style={{ alignItems: "start" }}>
           <div className="stack">
-            <h1 style={{ margin: 0, fontSize: "clamp(2rem, 5vw, 3.2rem)" }}>{creator.displayName}</h1>
-            <p style={{ margin: 0, opacity: 0.88, maxWidth: 520, lineHeight: 1.7 }}>{creator.bio}</p>
-            <div className="trust-strip" style={{ color: "var(--color-muted)" }}>
+            <div style={{ display: "flex", alignItems: "center", gap: 16, flexWrap: "wrap" }}>
+              <img
+                src={
+                  creator.avatarUrl &&
+                  !creator.avatarUrl.toLowerCase().includes("coresg-normal.trae.ai/api/ide/v1/text_to_image")
+                    ? creator.avatarUrl
+                    : `/creator/${creator.username}/action-icon?v=2`
+                }
+                alt=""
+                width={56}
+                height={56}
+                style={{
+                  borderRadius: 16,
+                  border: "1px solid color-mix(in srgb, var(--color-line), transparent 20%)",
+                  objectFit: "cover",
+                  background: "rgba(255,255,255,0.4)",
+                }}
+              />
+              <div className="stack" style={{ gap: 6 }}>
+                <h1 style={{ margin: 0, fontSize: "clamp(2rem, 5vw, 3.1rem)", letterSpacing: "-0.02em" }}>
+                  {creator.displayName}
+                </h1>
+                <p className="muted" style={{ margin: 0, fontSize: 14 }}>
+                  @{creator.username}
+                </p>
+              </div>
+            </div>
+            <p style={{ margin: 0, opacity: 0.88, maxWidth: 560, lineHeight: 1.7 }}>{creator.bio}</p>
+            <div className="trust-strip">
               <span><Shield size={14} /> Non-custodial</span>
               <span><Lock size={14} /> Encrypted delivery</span>
               <span>{feeLabel}</span>
             </div>
           </div>
-          <div className="card stack" style={{ padding: 18, color: "var(--text)" }}>
+          <div className="card stack" style={{ padding: 20 }}>
             <WalletConnectButton />
+            {mobile ? (
+              <button type="button" className="btn btn-secondary" onClick={openInWallet} disabled={busy}>
+                Open in wallet
+              </button>
+            ) : null}
             <p className="muted" style={{ margin: 0, fontSize: 13, lineHeight: 1.6 }}>
               {mobile
-                ? "Opening your wallet app. If nothing happens, connect above and choose a product."
-                : "Pay with Phantom or Solflare. Settlement splits instantly between creator and treasury."}
+                ? "If you’re on mobile, open this checkout inside Phantom/Solflare for the smoothest experience."
+                : "Approve the transaction in your wallet. Funds settle instantly."}
             </p>
           </div>
         </div>
@@ -194,9 +207,6 @@ export function PremiumCheckout({ creator, actionApiUrl, mobile }: Props) {
                   </div>
                 ))}
               </div>
-              <p className="muted" style={{ margin: 0, fontSize: 12 }}>
-                Action link: {buildHref(actionApiUrl, product, product.variants[0]?.id ?? "default")}
-              </p>
             </article>
           ))}
         </div>
@@ -204,21 +214,25 @@ export function PremiumCheckout({ creator, actionApiUrl, mobile }: Props) {
         <aside className="stack" style={{ position: "sticky", top: 88 }}>
           <div className="card stack" style={{ padding: 22 }}>
             <div style={{ display: "flex", alignItems: "center", gap: 14 }}>
-              <img
-                src={
-                  creator.avatarUrl &&
-                  !creator.avatarUrl.toLowerCase().includes("coresg-normal.trae.ai/api/ide/v1/text_to_image")
-                    ? creator.avatarUrl
-                    : `/creator/${creator.username}/action-icon?v=2`
-                }
-                alt=""
-                width={56}
-                height={56}
-                style={{ borderRadius: 14, objectFit: "cover" }}
-              />
+              <div
+                style={{
+                  width: 52,
+                  height: 52,
+                  borderRadius: 16,
+                  display: "grid",
+                  placeItems: "center",
+                  background: "rgba(99, 91, 255, 0.12)",
+                  border: "1px solid rgba(99, 91, 255, 0.18)",
+                  color: "rgba(10, 37, 64, 0.86)",
+                }}
+              >
+                <Shield size={22} />
+              </div>
               <div>
-                <strong>@{creator.username}</strong>
-                <p className="muted" style={{ margin: 0, fontSize: 13 }}>Creator wallet verified</p>
+                <strong>Buyer protection</strong>
+                <p className="muted" style={{ margin: 0, fontSize: 13 }}>
+                  You review the recipient + amount in-wallet before signing.
+                </p>
               </div>
             </div>
             <div className="stat-grid">

@@ -3,6 +3,7 @@ import { getCreatorProfile } from "@/lib/creator-actions";
 import { BRAND_COLORS } from "@/lib/brand";
 
 export const runtime = "nodejs";
+export const dynamic = "force-dynamic";
 
 export const size = {
   width: 1200,
@@ -75,6 +76,9 @@ export default async function OpengraphImage({ params }: Props) {
       ),
       {
         ...size,
+        headers: {
+          "Cache-Control": "public, max-age=86400, immutable",
+        },
       },
     );
   } catch {
@@ -107,8 +111,10 @@ export default async function OpengraphImage({ params }: Props) {
       ),
       {
         ...size,
+        headers: {
+          "Cache-Control": "public, max-age=86400, immutable",
+        },
       },
     );
   }
 }
-

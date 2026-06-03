@@ -481,8 +481,13 @@ function memoInstruction(profile: CreatorProfileView, selection: CreatorActionSe
 async function buildSolPaymentInstructions(profile: CreatorProfileView, buyerWallet: PublicKey, selection: CreatorActionSelection) {
   const creatorWallet = new PublicKey(safePublicKeyString(profile.publicKey, fallbackCreatorWallet));
   const treasuryWallet = new PublicKey(safePublicKeyString(profile.treasuryWallet, fallbackTreasuryWallet));
-  const platformFeeBps = clampFeeBps(profile.platformFeeBps);
-  const platformFeeMinorUnits = Math.max(1, Math.round((selection.amountMinorUnits * platformFeeBps) / 10_000));
+  const treasuryInvalid = treasuryWallet.equals(SystemProgram.programId);
+  const feeSplitDisabled = treasuryInvalid || treasuryWallet.equals(creatorWallet);
+  const platformFeeBps = feeSplitDisabled ? 0 : clampFeeBps(profile.platformFeeBps);
+  const platformFeeMinorUnits =
+    platformFeeBps > 0
+      ? Math.max(1, Math.round((selection.amountMinorUnits * platformFeeBps) / 10_000))
+      : 0;
   const creatorPayoutMinorUnits = Math.max(0, selection.amountMinorUnits - platformFeeMinorUnits);
 
   return {
@@ -492,7 +497,9 @@ async function buildSolPaymentInstructions(profile: CreatorProfileView, buyerWal
       ...(creatorPayoutMinorUnits > 0
         ? [SystemProgram.transfer({ fromPubkey: buyerWallet, toPubkey: creatorWallet, lamports: creatorPayoutMinorUnits })]
         : []),
-      SystemProgram.transfer({ fromPubkey: buyerWallet, toPubkey: treasuryWallet, lamports: platformFeeMinorUnits }),
+      ...(platformFeeMinorUnits > 0
+        ? [SystemProgram.transfer({ fromPubkey: buyerWallet, toPubkey: treasuryWallet, lamports: platformFeeMinorUnits })]
+        : []),
     ],
   };
 }
@@ -501,8 +508,13 @@ async function buildUsdcPaymentInstructions(connection: Connection, profile: Cre
   const mint = new PublicKey(DEFAULT_USDC_MINT);
   const creatorWallet = new PublicKey(safePublicKeyString(profile.publicKey, fallbackCreatorWallet));
   const treasuryWallet = new PublicKey(safePublicKeyString(profile.treasuryWallet, fallbackTreasuryWallet));
-  const platformFeeBps = clampFeeBps(profile.platformFeeBps);
-  const platformFeeMinorUnits = Math.max(1, Math.round((selection.amountMinorUnits * platformFeeBps) / 10_000));
+  const treasuryInvalid = treasuryWallet.equals(SystemProgram.programId);
+  const feeSplitDisabled = treasuryInvalid || treasuryWallet.equals(creatorWallet);
+  const platformFeeBps = feeSplitDisabled ? 0 : clampFeeBps(profile.platformFeeBps);
+  const platformFeeMinorUnits =
+    platformFeeBps > 0
+      ? Math.max(1, Math.round((selection.amountMinorUnits * platformFeeBps) / 10_000))
+      : 0;
   const creatorPayoutMinorUnits = Math.max(0, selection.amountMinorUnits - platformFeeMinorUnits);
   const buyerAta = await getAssociatedTokenAddress(mint, buyerWallet);
   const creatorAta = await getAssociatedTokenAddress(mint, creatorWallet);
@@ -512,7 +524,7 @@ async function buildUsdcPaymentInstructions(connection: Connection, profile: Cre
   const [buyerInfo, creatorInfo, treasuryInfo] = await Promise.all([
     connection.getAccountInfo(buyerAta),
     connection.getAccountInfo(creatorAta),
-    connection.getAccountInfo(treasuryAta),
+    platformFeeMinorUnits > 0 ? connection.getAccountInfo(treasuryAta) : Promise.resolve(null),
   ]);
 
   if (!buyerInfo) {
@@ -521,14 +533,16 @@ async function buildUsdcPaymentInstructions(connection: Connection, profile: Cre
   if (!creatorInfo) {
     instructions.push(createAssociatedTokenAccountInstruction(buyerWallet, creatorAta, creatorWallet, mint));
   }
-  if (!treasuryInfo) {
+  if (platformFeeMinorUnits > 0 && !treasuryInfo) {
     instructions.push(createAssociatedTokenAccountInstruction(buyerWallet, treasuryAta, treasuryWallet, mint));
   }
 
   if (creatorPayoutMinorUnits > 0) {
     instructions.push(createTransferCheckedInstruction(buyerAta, mint, creatorAta, buyerWallet, creatorPayoutMinorUnits, DEFAULT_USDC_DECIMALS));
   }
-  instructions.push(createTransferCheckedInstruction(buyerAta, mint, treasuryAta, buyerWallet, platformFeeMinorUnits, DEFAULT_USDC_DECIMALS));
+  if (platformFeeMinorUnits > 0) {
+    instructions.push(createTransferCheckedInstruction(buyerAta, mint, treasuryAta, buyerWallet, platformFeeMinorUnits, DEFAULT_USDC_DECIMALS));
+  }
 
   return {
     platformFeeMinorUnits,

@@ -2,6 +2,7 @@ import { ImageResponse } from "next/og";
 import { getCreatorProfile } from "@/lib/creator-actions";
 
 export const runtime = "nodejs";
+export const dynamic = "force-dynamic";
 
 export async function GET(_: Request, context: { params: Promise<{ username: string }> }) {
   const { username } = await context.params;
@@ -42,6 +43,9 @@ export async function GET(_: Request, context: { params: Promise<{ username: str
       {
         width: 512,
         height: 512,
+        headers: {
+          "Cache-Control": "public, max-age=86400, immutable",
+        },
       },
     );
   } catch {
@@ -67,8 +71,10 @@ export async function GET(_: Request, context: { params: Promise<{ username: str
       {
         width: 512,
         height: 512,
+        headers: {
+          "Cache-Control": "public, max-age=86400, immutable",
+        },
       },
     );
   }
 }
-

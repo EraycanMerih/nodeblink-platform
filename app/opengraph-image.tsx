@@ -1,6 +1,8 @@
 import { ImageResponse } from "next/og";
 import { BRAND_COLORS } from "@/lib/brand";
 
+export const dynamic = "force-dynamic";
+
 export const size = {
   width: 1200,
   height: 630,
@@ -84,7 +86,9 @@ export default function OpengraphImage() {
     ),
     {
       ...size,
+      headers: {
+        "Cache-Control": "public, max-age=86400, immutable",
+      },
     },
   );
 }
-
