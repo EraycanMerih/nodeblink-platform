@@ -20,7 +20,7 @@ export async function generateMetadata(): Promise<Metadata> {
   const title = "NodeBlink | Creator checkout on Solana";
   const description =
     "Sell tips, files, access passes, and collectibles with a wallet checkout your audience can pay in seconds.";
-  const ogImage = "/opengraph-image?v=3";
+  const ogImage = `${origin}/opengraph-image?v=4`;
 
   return {
     title: {

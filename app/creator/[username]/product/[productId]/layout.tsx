@@ -20,7 +20,7 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
     `Pay ${profile.displayName} on Solana with native wallet buttons.`;
 
   const pageUrl = `${origin}/creator/${profile.username}/product/${encodeURIComponent(productId)}`;
-  const previewImage = `${origin}/creator/${profile.username}/opengraph-image?v=${encodeURIComponent(profile.updatedAt)}&product=${encodeURIComponent(productId)}`;
+  const previewImage = `${origin}/creator/${profile.username}/opengraph-image?v=${encodeURIComponent(profile.updatedAt)}&product=${encodeURIComponent(productId)}&og=4`;
   const actionUrl = `${origin}/api/v1/actions/creator/${profile.username}?productId=${encodeURIComponent(productId)}`;
 
   return {
@@ -49,4 +49,3 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
 export default function CreatorProductLayout({ children }: Props) {
   return children;
 }
-

@@ -2,15 +2,13 @@ import Link from "next/link";
 import {
   ArrowRight,
   BadgeCheck,
-  FileKey,
   Globe2,
   Link2,
   ShieldCheck,
   Smartphone,
   Wallet,
-  Sparkles,
   Server,
-  Shield,
+  FileKey,
 } from "lucide-react";
 import type { PublicProtocolStats } from "@/lib/public-stats";
 import { SUPPORT_EMAIL } from "@/lib/brand";
@@ -19,15 +17,11 @@ type Props = {
   stats: PublicProtocolStats;
 };
 
-function getFaqs(stats: PublicProtocolStats) {
+function getFaqs() {
   return [
     {
       q: "Do you hold my funds?",
       a: "No. NodeBlink is non-custodial. Your audience pays on Solana directly to your wallet.",
-    },
-    {
-      q: "What is the protocol fee?",
-      a: `A small fee is taken from each payment. On this deployment it is ${stats.platformFeePercent}%. You receive about ${stats.creatorSharePercent}% of each payment.`,
     },
     {
       q: "How do gated PDFs work?",
@@ -41,7 +35,7 @@ function getFaqs(stats: PublicProtocolStats) {
 }
 
 export function LandingPage({ stats }: Props) {
-  const faqs = getFaqs(stats);
+  const faqs = getFaqs();
   const volumeLabel =
     stats.volumeSol > 0
       ? `${stats.volumeSol.toFixed(2)} SOL`
@@ -82,8 +76,7 @@ export function LandingPage({ stats }: Props) {
                 sales.
               </h1>
               <p style={{ fontSize: 17, lineHeight: 1.8, margin: 0, maxWidth: 620 }}>
-                Sell tips, files, access passes, and collectibles on Solana. Share one link and let your
-                audience pay in seconds.
+                Sell tips, files, and access passes on Solana with a wallet-native checkout.
               </p>
               <div style={{ display: "flex", flexWrap: "wrap", gap: 12 }}>
                 <Link href="/dashboard" className="btn btn-primary">
@@ -111,70 +104,6 @@ export function LandingPage({ stats }: Props) {
             </div>
 
             <div className="stack" style={{ gap: 14 }}>
-              <div className="panel stack" style={{ padding: 18 }}>
-                <div
-                  style={{
-                    width: "100%",
-                    borderRadius: 18,
-                    border: "1px solid var(--color-line)",
-                    background:
-                      "radial-gradient(800px 220px at 25% 0%, rgba(99, 91, 255, 0.35), transparent 60%), radial-gradient(700px 240px at 85% 10%, rgba(154, 123, 255, 0.3), transparent 65%), color-mix(in srgb, var(--color-panel), transparent 6%)",
-                    padding: 16,
-                  }}
-                >
-                  <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", gap: 12 }}>
-                    <div style={{ display: "flex", alignItems: "center", gap: 10, minWidth: 0 }}>
-                      <div
-                        aria-hidden
-                        style={{
-                          width: 34,
-                          height: 34,
-                          borderRadius: 10,
-                          background:
-                            "linear-gradient(135deg, var(--brand-start), var(--brand-end))",
-                          boxShadow: "0 12px 30px rgba(99, 91, 255, 0.25)",
-                        }}
-                      />
-                      <div style={{ minWidth: 0 }}>
-                        <strong style={{ display: "block", fontSize: 14 }}>@creator</strong>
-                        <span className="muted" style={{ fontSize: 12 }}>
-                          Secure checkout
-                        </span>
-                      </div>
-                    </div>
-                    <span className="badge">Live</span>
-                  </div>
-
-                  <div className="stack" style={{ gap: 10, marginTop: 14 }}>
-                    <div className="product-row" style={{ padding: 12, borderRadius: 14 }}>
-                      <div>
-                        <strong>Tip jar</strong>
-                        <p className="muted" style={{ margin: "4px 0 0", fontSize: 12 }}>
-                          One-tap SOL payment
-                        </p>
-                      </div>
-                      <span className="badge">0.25 SOL</span>
-                    </div>
-                    <div className="product-row" style={{ padding: 12, borderRadius: 14 }}>
-                      <div>
-                        <strong>Gated PDF</strong>
-                        <p className="muted" style={{ margin: "4px 0 0", fontSize: 12 }}>
-                          Unlock after confirmation
-                        </p>
-                      </div>
-                      <span className="badge">1.00 SOL</span>
-                    </div>
-                  </div>
-                </div>
-                <div className="trust-strip" style={{ justifyContent: "space-between" }}>
-                  <span>
-                    <Wallet size={14} /> Wallet-native pay
-                  </span>
-                  <span>
-                    <ShieldCheck size={14} /> Non-custodial
-                  </span>
-                </div>
-              </div>
               <div className="panel stack" style={{ padding: 18 }}>
                 <div
                   style={{
@@ -262,9 +191,6 @@ export function LandingPage({ stats }: Props) {
             <strong>{volumeLabel}</strong>
           </div>
         </div>
-        <p className="muted" style={{ marginTop: 12, fontSize: 13 }}>
-          Stats refresh from NodeBlink. Before your first sale, counts may read zero. That's expected.
-        </p>
       </section>
 
       <section id="how-it-works" className="shell stack" style={{ paddingBottom: 48 }}>
@@ -284,55 +210,11 @@ export function LandingPage({ stats }: Props) {
         </div>
       </section>
 
-      <section className="shell" style={{ paddingBottom: 48 }}>
-        <div className="panel" style={{ padding: 28 }}>
-          <div className="grid-2" style={{ alignItems: "start" }}>
-            <div className="stack">
-              <p
-                className="muted"
-                style={{ margin: 0, textTransform: "uppercase", letterSpacing: "0.2em", fontSize: 12 }}
-              >
-                Live demo catalog
-              </p>
-              <h2 className="display" style={{ margin: 0, fontSize: 30 }}>
-                Real products on <code>/creator/demo</code>
-              </h2>
-              <p className="muted" style={{ margin: 0, lineHeight: 1.7 }}>
-                This demo shows the same checkout experience your audience sees when they open your link.
-              </p>
-              <Link href="/creator/demo" className="btn btn-primary" style={{ width: "fit-content" }}>
-                Open demo checkout
-              </Link>
-            </div>
-            <div className="stack">
-              {stats.demoProducts.map((product) => (
-                <div key={product.id} className="product-row">
-                  <div>
-                    <strong>{product.title}</strong>
-                    <p className="muted" style={{ margin: "4px 0 0", fontSize: 13, textTransform: "capitalize" }}>
-                      {product.archetype}
-                    </p>
-                  </div>
-                  <span className="badge">{product.priceLabel}</span>
-                </div>
-              ))}
-            </div>
-          </div>
-        </div>
-      </section>
-
       <section id="features" className="shell stack" style={{ padding: "8px 0 56px" }}>
         <h2 className="display" style={{ fontSize: 32, margin: 0 }}>
           What you get
         </h2>
         <div style={{ display: "grid", gap: 16, gridTemplateColumns: "repeat(auto-fit,minmax(240px,1fr))" }}>
-          <article className="card stack" style={{ padding: 22 }}>
-            <Globe2 size={22} color="var(--brand-start)" />
-            <h3 style={{ margin: 0 }}>A creator page that shares well</h3>
-            <p className="muted" style={{ margin: 0, lineHeight: 1.65 }}>
-              Your creator page is made to look great when shared, with clear buttons to pay or unlock.
-            </p>
-          </article>
           <article className="card stack" style={{ padding: 22 }}>
             <Smartphone size={22} color="var(--brand-start)" />
             <h3 style={{ margin: 0 }}>Mobile-friendly checkout</h3>
@@ -342,9 +224,9 @@ export function LandingPage({ stats }: Props) {
           </article>
           <article className="card stack" style={{ padding: 22 }}>
             <Wallet size={22} color="var(--brand-start)" />
-            <h3 style={{ margin: 0 }}>SOL & USDC checkout</h3>
+            <h3 style={{ margin: 0 }}>Non-custodial payments</h3>
             <p className="muted" style={{ margin: 0, lineHeight: 1.65 }}>
-              Let your audience pay in SOL or USDC, and receive funds directly to your wallet.
+              Fans pay directly to your wallet. NodeBlink never holds funds.
             </p>
           </article>
           <article className="card stack" style={{ padding: 22 }}>
@@ -355,89 +237,12 @@ export function LandingPage({ stats }: Props) {
             </p>
           </article>
           <article className="card stack" style={{ padding: 22 }}>
-            <Sparkles size={22} color="var(--brand-start)" />
-            <h3 style={{ margin: 0 }}>Link previews that convert</h3>
-            <p className="muted" style={{ margin: 0, lineHeight: 1.65 }}>
-              Your link shows a clean preview in supported social apps and wallets, making it easy to buy.
-            </p>
-          </article>
-          <article className="card stack" style={{ padding: 22 }}>
             <Server size={22} color="var(--brand-start)" />
             <h3 style={{ margin: 0 }}>Simple setup</h3>
             <p className="muted" style={{ margin: 0, lineHeight: 1.65 }}>
               Connect your wallet, add your products, and start sharing. No coding needed.
             </p>
           </article>
-        </div>
-      </section>
-
-      <section id="security" className="shell" style={{ paddingBottom: 56 }}>
-        <div className="panel" style={{ padding: 28 }}>
-          <div className="grid-2" style={{ alignItems: "start" }}>
-            <div className="stack">
-              <p
-                className="muted"
-                style={{ margin: 0, textTransform: "uppercase", letterSpacing: "0.2em", fontSize: 12 }}
-              >
-                Security posture
-              </p>
-              <h2 className="display" style={{ margin: 0, fontSize: 30 }}>
-                Non-custodial by design
-              </h2>
-              <p className="muted" style={{ margin: 0, lineHeight: 1.7 }}>
-                NodeBlink never holds your money. Buyers pay on Solana directly to your wallet. If you
-                sell files, they stay locked until payment is confirmed.
-              </p>
-            </div>
-            <div className="stack">
-              <div className="card stack" style={{ padding: 20 }}>
-                <div style={{ display: "flex", alignItems: "center", gap: 10 }}>
-                  <Shield size={18} color="var(--brand-start)" />
-                  <strong>Secure file delivery</strong>
-                </div>
-                <p className="muted" style={{ margin: 0, lineHeight: 1.65 }}>
-                  Files stay locked and only unlock after payment is confirmed.
-                </p>
-              </div>
-              <div className="card stack" style={{ padding: 20 }}>
-                <div style={{ display: "flex", alignItems: "center", gap: 10 }}>
-                  <ShieldCheck size={18} color="var(--brand-start)" />
-                  <strong>Wallet-native UX</strong>
-                </div>
-                <p className="muted" style={{ margin: 0, lineHeight: 1.65 }}>
-                  The checkout flow is a standard wallet approve. No custodial accounts, no chargebacks,
-                  no hidden settlement layer.
-                </p>
-              </div>
-            </div>
-          </div>
-        </div>
-      </section>
-
-      <section id="unfurl" className="shell stack" style={{ paddingBottom: 56 }}>
-        <h2 className="display" style={{ fontSize: 32, margin: 0 }}>
-          Link previews on social
-        </h2>
-        <div className="grid-2" style={{ alignItems: "start" }}>
-          <div className="card stack" style={{ padding: 22 }}>
-            <h3 style={{ margin: 0 }}>What to share</h3>
-            <p className="muted" style={{ margin: 0, lineHeight: 1.7 }}>
-              Share your creator page link so people see your profile and products in the preview.
-            </p>
-            <div className="product-row">
-              <code style={{ wordBreak: "break-all" }}>{stats.domain}/creator/yourname</code>
-            </div>
-          </div>
-          <div className="card stack" style={{ padding: 22 }}>
-            <h3 style={{ margin: 0 }}>Where it shows up</h3>
-            <p className="muted" style={{ margin: 0, lineHeight: 1.7 }}>
-              In supported apps (like X and Discord), your link expands into a preview your audience can
-              tap to pay or unlock.
-            </p>
-            <p className="muted" style={{ margin: 0, lineHeight: 1.7 }}>
-              Best practice: share your creator page (not individual API or product links).
-            </p>
-          </div>
         </div>
       </section>
 
@@ -457,36 +262,6 @@ export function LandingPage({ stats }: Props) {
             <Link href="/creator/demo" className="btn btn-secondary">
               Preview checkout
             </Link>
-          </div>
-        </div>
-      </section>
-
-      <section id="pricing" className="shell" style={{ paddingBottom: 48 }}>
-        <div className="hero-gradient stack">
-          <h2 className="display" style={{ margin: 0, fontSize: 32, position: "relative", zIndex: 1 }}>
-            A simple fee
-          </h2>
-          <p style={{ margin: 0, maxWidth: 560, lineHeight: 1.7, position: "relative", zIndex: 1 }}>
-            There is no monthly subscription. A small fee is included in each payment. The live fee on
-            this deployment is <strong>{stats.platformFeePercent}%</strong>.
-          </p>
-          <div className="stat-grid" style={{ position: "relative", zIndex: 1 }}>
-            <div className="stat">
-              <span className="muted">Protocol fee (now)</span>
-              <strong>{stats.platformFeePercent}%</strong>
-            </div>
-            <div className="stat">
-              <span className="muted">Creator receives</span>
-              <strong>~{stats.creatorSharePercent}%</strong>
-            </div>
-            <div className="stat">
-              <span className="muted">Allowed range</span>
-              <strong>{stats.feeRangeLabel}</strong>
-            </div>
-            <div className="stat">
-              <span className="muted">Settlement</span>
-              <strong>On-chain</strong>
-            </div>
           </div>
         </div>
       </section>

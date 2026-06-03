@@ -1,6 +1,7 @@
 import { ImageResponse } from "next/og";
 import { BRAND_COLORS } from "@/lib/brand";
 
+export const runtime = "nodejs";
 export const dynamic = "force-dynamic";
 
 export const size = {
