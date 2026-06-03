@@ -16,16 +16,42 @@ type SettingsPayload = {
   accessWebhookUrl?: string | null;
 };
 
+type VerificationRequest = {
+  id: string;
+  platform: string;
+  handle: string;
+  followerCount: number | null;
+  proofType: string;
+  proofUrl: string;
+  code: string;
+  requestedFeeBps: number;
+  status: "PENDING" | "APPROVED" | "REJECTED";
+  adminNotes: string | null;
+  createdAt: string;
+  decidedAt: string | null;
+};
+
 export function DashboardSettings() {
   const { publicKey } = useWallet();
   const [data, setData] = useState<SettingsPayload | null>(null);
+  const [requests, setRequests] = useState<VerificationRequest[]>([]);
   const [loading, setLoading] = useState(false);
   const [saving, setSaving] = useState(false);
+  const [requesting, setRequesting] = useState(false);
   const [message, setMessage] = useState<{ type: "ok" | "err"; text: string } | null>(null);
+  const [apply, setApply] = useState({
+    platform: "X",
+    handle: "",
+    followerCount: "",
+    proofType: "tweet" as "tweet" | "bio",
+    proofUrl: "",
+    code: "",
+  });
 
   const load = useCallback(async () => {
     if (!publicKey) {
       setData(null);
+      setRequests([]);
       return;
     }
     setLoading(true);
@@ -37,8 +63,19 @@ export function DashboardSettings() {
       const payload = (await response.json()) as SettingsPayload & { error?: string };
       if (!response.ok) throw new Error(payload.error ?? "Settings unavailable");
       setData(payload);
+
+      const reqRes = await fetch(
+        `/api/v1/creators/verification?wallet=${encodeURIComponent(publicKey.toBase58())}`,
+      );
+      const reqJson = (await reqRes.json()) as { items?: VerificationRequest[]; error?: string };
+      if (reqRes.ok) {
+        setRequests(reqJson.items ?? []);
+      } else {
+        setRequests([]);
+      }
     } catch (e) {
       setData(null);
+      setRequests([]);
       setMessage({
         type: "err",
         text: e instanceof Error ? e.message : "Settings unavailable",
@@ -51,6 +88,18 @@ export function DashboardSettings() {
   useEffect(() => {
     load();
   }, [load]);
+
+  useEffect(() => {
+    if (!publicKey) return;
+    if (apply.code) return;
+    const bytes = new Uint8Array(10);
+    crypto.getRandomValues(bytes);
+    const code = `nodeblink-${Array.from(bytes)
+      .map((b) => b.toString(16).padStart(2, "0"))
+      .join("")
+      .slice(0, 10)}`;
+    setApply((a) => ({ ...a, code }));
+  }, [publicKey, apply.code]);
 
   const update = async () => {
     if (!publicKey || !data?.onboarded) return;
@@ -80,6 +129,54 @@ export function DashboardSettings() {
       setMessage({ type: "err", text: e instanceof Error ? e.message : "Save failed" });
     } finally {
       setSaving(false);
+    }
+  };
+
+  const submitVerification = async () => {
+    if (!publicKey || !data?.onboarded) return;
+    const handle = apply.handle.trim();
+    const proofUrl = apply.proofUrl.trim();
+    if (!handle) {
+      setMessage({ type: "err", text: "Enter your social handle." });
+      return;
+    }
+    if (!proofUrl) {
+      setMessage({ type: "err", text: "Paste a proof link." });
+      return;
+    }
+    setRequesting(true);
+    setMessage(null);
+    try {
+      const followerCount = apply.followerCount.trim()
+        ? Number(apply.followerCount.trim())
+        : undefined;
+      if (followerCount !== undefined && (!Number.isFinite(followerCount) || followerCount < 0)) {
+        throw new Error("Follower count must be a valid number.");
+      }
+
+      const response = await fetch("/api/v1/creators/verification", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          walletAddress: publicKey.toBase58(),
+          platform: apply.platform,
+          handle,
+          followerCount,
+          proofType: apply.proofType,
+          proofUrl,
+          code: apply.code,
+        }),
+      });
+      const payload = (await response.json()) as { ok?: boolean; error?: unknown };
+      if (!response.ok) {
+        throw new Error(typeof payload.error === "string" ? payload.error : "Request failed");
+      }
+      setMessage({ type: "ok", text: "Verification request submitted." });
+      await load();
+    } catch (e) {
+      setMessage({ type: "err", text: e instanceof Error ? e.message : "Request failed" });
+    } finally {
+      setRequesting(false);
     }
   };
 
@@ -211,6 +308,98 @@ export function DashboardSettings() {
             <p className="muted" style={{ margin: 0, fontSize: 13, lineHeight: 1.6 }}>
               Your public URL: <code>/creator/{data.username}</code>
             </p>
+          </section>
+
+          <section className="card stack" style={{ padding: 22 }}>
+            <h2 style={{ marginTop: 0, fontSize: 18 }}>Verified creator</h2>
+            <p className="muted" style={{ margin: 0, lineHeight: 1.7 }}>
+              Apply for a verified badge and a discounted 1.5% protocol fee.
+            </p>
+
+            {requests[0] ? (
+              <div className="panel stack" style={{ padding: 18 }}>
+                <p className="muted" style={{ margin: 0, fontSize: 13 }}>
+                  Latest request: {requests[0].status.toLowerCase()} · {requests[0].platform} · {requests[0].handle}
+                </p>
+                {requests[0].adminNotes ? (
+                  <p className="muted" style={{ margin: 0, fontSize: 13 }}>
+                    Notes: {requests[0].adminNotes}
+                  </p>
+                ) : null}
+              </div>
+            ) : null}
+
+            <label className="field">
+              <span>Platform</span>
+              <select
+                className="input"
+                value={apply.platform}
+                onChange={(e) => setApply((a) => ({ ...a, platform: e.target.value }))}
+              >
+                <option value="X">X</option>
+                <option value="Instagram">Instagram</option>
+                <option value="YouTube">YouTube</option>
+                <option value="TikTok">TikTok</option>
+              </select>
+            </label>
+
+            <label className="field">
+              <span>Handle</span>
+              <input
+                className="input"
+                placeholder="@yourhandle"
+                value={apply.handle}
+                onChange={(e) => setApply((a) => ({ ...a, handle: e.target.value }))}
+              />
+            </label>
+
+            <label className="field">
+              <span>Follower count (optional)</span>
+              <input
+                className="input"
+                type="number"
+                min="0"
+                step="1"
+                value={apply.followerCount}
+                onChange={(e) => setApply((a) => ({ ...a, followerCount: e.target.value }))}
+              />
+            </label>
+
+            <label className="field">
+              <span>Proof method</span>
+              <select
+                className="input"
+                value={apply.proofType}
+                onChange={(e) => setApply((a) => ({ ...a, proofType: e.target.value as "tweet" | "bio" }))}
+              >
+                <option value="tweet">Post a tweet with the code</option>
+                <option value="bio">Put the code in your bio</option>
+              </select>
+            </label>
+
+            <div className="panel stack" style={{ padding: 18 }}>
+              <p className="muted" style={{ margin: 0, fontSize: 13 }}>
+                Verification code:
+              </p>
+              <code style={{ wordBreak: "break-all" }}>{apply.code}</code>
+              <p className="muted" style={{ margin: 0, fontSize: 13, lineHeight: 1.6 }}>
+                Add this code to your post or bio, then paste the link below.
+              </p>
+            </div>
+
+            <label className="field">
+              <span>Proof link</span>
+              <input
+                className="input"
+                placeholder="https://..."
+                value={apply.proofUrl}
+                onChange={(e) => setApply((a) => ({ ...a, proofUrl: e.target.value }))}
+              />
+            </label>
+
+            <button type="button" className="btn btn-primary" disabled={requesting} onClick={submitVerification}>
+              {requesting ? <Loader2 size={16} className="animate-spin" /> : "Submit request"}
+            </button>
           </section>
         </div>
       ) : null}

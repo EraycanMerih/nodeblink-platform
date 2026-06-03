@@ -127,9 +127,16 @@ export function PremiumCheckout({ creator, actionApiUrl, mobile }: Props) {
   return (
     <main className="shell stack animate-rise" style={{ padding: "28px 0 56px" }}>
       <section className="checkout-hero stack">
-        <span className="badge" style={{ background: "rgba(255,255,255,0.55)", color: "#0a1628", borderColor: "rgba(10,22,40,0.12)" }}>
-          <Sparkles size={14} /> Verified NodeBlink checkout
-        </span>
+        <div style={{ display: "flex", gap: 10, flexWrap: "wrap" }}>
+          <span className="badge">
+            <Sparkles size={14} /> Secure checkout
+          </span>
+          {creator.featured ? (
+            <span className="badge">
+              Verified creator
+            </span>
+          ) : null}
+        </div>
         <div className="grid-2" style={{ alignItems: "end", position: "relative", zIndex: 1 }}>
           <div className="stack">
             <h1 style={{ margin: 0, fontSize: "clamp(2rem, 5vw, 3.2rem)" }}>{creator.displayName}</h1>

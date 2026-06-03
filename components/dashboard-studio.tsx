@@ -12,6 +12,7 @@ import {
   RefreshCw,
   Trash2,
 } from "lucide-react";
+import { buildDialectBlinkUrl } from "@/lib/blink-links";
 
 type ProductArchetype = "TIP" | "UNLOCK_DOCUMENT" | "ACCESS_PASS" | "MINT_NFT";
 
@@ -152,6 +153,16 @@ export function DashboardStudio() {
     if (!data?.checkoutUrl || typeof window === "undefined") return "";
     return `${window.location.origin}${data.checkoutUrl}`;
   }, [data?.checkoutUrl]);
+
+  const actionApiUrl = useMemo(() => {
+    if (!data?.actionUrl || typeof window === "undefined") return "";
+    return `${window.location.origin}${data.actionUrl}`;
+  }, [data?.actionUrl]);
+
+  const xBlinkLink = useMemo(() => {
+    if (!actionApiUrl) return "";
+    return buildDialectBlinkUrl(actionApiUrl);
+  }, [actionApiUrl]);
 
   const notify = (type: "ok" | "err", text: string) => setMessage({ type, text });
 
@@ -429,8 +440,24 @@ export function DashboardStudio() {
                 <Copy size={16} /> Copy link
               </button>
             </div>
+            {xBlinkLink ? (
+              <div className="product-row">
+                <code style={{ fontSize: 13, wordBreak: "break-all" }}>{xBlinkLink}</code>
+                <button
+                  type="button"
+                  className="btn btn-secondary"
+                  onClick={() => {
+                    navigator.clipboard.writeText(xBlinkLink);
+                    notify("ok", "X Blink link copied.");
+                  }}
+                >
+                  <Copy size={16} /> Copy for X
+                </button>
+              </div>
+            ) : null}
             <p className="muted" style={{ margin: 0, fontSize: 13 }}>
-              Share this link anywhere. Wallets unfurl pay buttons from your Solana Actions feed.
+              For in-feed buy buttons on X, share the Blink link. Discord only shows a preview, but wallets
+              can open the action and pay.
             </p>
           </div>
 

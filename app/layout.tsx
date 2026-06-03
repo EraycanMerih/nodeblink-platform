@@ -1,7 +1,6 @@
 import type { Metadata } from "next";
 import { Inter, Outfit } from "next/font/google";
 import { getRequestOrigin } from "@/lib/request-origin";
-import { OG_IMAGE_16_9_URL } from "@/lib/brand";
 import { ThemeScript } from "@/components/theme-script";
 import "@solana/wallet-adapter-react-ui/styles.css";
 import "./globals.css";
@@ -20,8 +19,8 @@ export async function generateMetadata(): Promise<Metadata> {
   const origin = await getRequestOrigin();
   const title = "NodeBlink | Creator checkout on Solana";
   const description =
-    "Sell tips, files, access passes, and collectibles on Solana. Share one link and get paid instantly.";
-  const ogImage = `${OG_IMAGE_16_9_URL}?v=2`;
+    "Sell tips, files, access passes, and collectibles with a wallet checkout your audience can pay in seconds.";
+  const ogImage = "/opengraph-image";
 
   return {
     title: {

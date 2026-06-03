@@ -45,7 +45,7 @@ export function LandingPage({ stats }: Props) {
   const volumeLabel =
     stats.volumeSol > 0
       ? `${stats.volumeSol.toFixed(2)} SOL`
-      : "-";
+      : "0 SOL";
   const steps = [
     {
       title: "Claim your creator link",
@@ -53,11 +53,11 @@ export function LandingPage({ stats }: Props) {
     },
     {
       title: "Share it anywhere",
-      copy: "Post your link on X, Discord, or anywhere your audience hangs out. People see a rich preview and can pay in one tap in supported apps.",
+      copy: "Post your link on X, Discord, or anywhere your audience hangs out. People see a clean preview and can pay in seconds.",
     },
     {
       title: "Get paid instantly",
-      copy: "Your audience approves the payment in their wallet (like Phantom or Solflare). Funds go straight to you.",
+      copy: "Fans approve the payment in their wallet. Funds go straight to you.",
     },
   ];
 
@@ -101,13 +101,12 @@ export function LandingPage({ stats }: Props) {
                   <ShieldCheck size={14} /> Non-custodial
                 </span>
                 <span>
-                  <Link2 size={14} /> {stats.actionsJsonUrl.replace("https://", "")}
+                  <Link2 size={14} /> {stats.domain}/creator/you
                 </span>
               </div>
               <div className="logo-strip" aria-label="Supported wallets">
                 <span className="logo-chip">Phantom</span>
                 <span className="logo-chip">Solflare</span>
-                <span className="logo-chip">Solana Actions</span>
               </div>
             </div>
 

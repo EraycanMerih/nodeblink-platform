@@ -88,6 +88,7 @@ export interface CreatorProfileView {
   publicKey: string;
   treasuryWallet: string;
   platformFeeBps: number;
+  featured: boolean;
   websiteUrl: string;
   discordWebhookUrl: string;
   accessWebhookUrl: string;
@@ -253,6 +254,7 @@ function fallbackCreator(username: string): CreatorProfileView {
     publicKey: fallbackCreatorWallet,
     treasuryWallet: fallbackTreasuryWallet,
     platformFeeBps: 200,
+    featured: false,
     websiteUrl: "",
     discordWebhookUrl: "",
     accessWebhookUrl: "",
@@ -359,6 +361,7 @@ async function fetchCreatorFromDatabase(username: string) {
       publicKey: record.publicKey,
       treasuryWallet: record.treasuryWallet ?? fallbackTreasuryWallet,
       platformFeeBps: clampFeeBps(record.platformFeeBps),
+      featured: Boolean((record as { featured?: boolean }).featured),
       websiteUrl: record.websiteUrl ?? "",
       discordWebhookUrl: record.discordWebhookUrl ?? "",
       accessWebhookUrl: record.accessWebhookUrl ?? "",
@@ -380,13 +383,18 @@ export async function getCreatorProfile(username: string): Promise<CreatorProfil
 
 export function buildActionMetadata(profile: CreatorProfileView, origin: string): ActionGetResponse {
   const actions = profile.products.flatMap((product) => buildVariants(product, profile.username, origin)) as any;
+  const featuredLabel = profile.featured ? " · Verified" : "";
 
   return {
     type: "action",
-    title: `${profile.displayName} on NodeBlink`,
+    title: `${profile.displayName}${featuredLabel}`,
     icon: resolveActionIcon(profile, origin),
-    description: profile.bio || `Monetize ${profile.displayName} with tips, unlocks, mints, and access passes.`,
-    label: "Open creator checkout",
+    description:
+      profile.bio ||
+      (profile.featured
+        ? `Pay ${profile.displayName} with a verified creator checkout.`
+        : `Pay ${profile.displayName} with tips, files, access passes, and collectibles.`),
+    label: profile.featured ? "Open verified checkout" : "Open creator checkout",
     links: { actions },
   };
 }
