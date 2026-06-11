@@ -1,7 +1,7 @@
 import { NextResponse } from "next/server";
 import { z } from "zod";
-import { ProductArchetype, ProductStatus } from "@prisma/client";
-import { CreatorAuthError, requireCreatorByWallet } from "@/lib/creator-auth";
+import { AssetCurrency, ProductArchetype, ProductStatus } from "@prisma/client";
+import { CreatorAuthError } from "@/lib/creator-auth";
 import {
   buildDefaultVariants,
   defaultButtonLabel,
@@ -12,24 +12,35 @@ import {
 import { prisma } from "@/lib/db";
 
 const createSchema = z.object({
-  walletAddress: z.string().min(32),
   archetype: z.nativeEnum(ProductArchetype),
   title: z.string().min(2).max(120),
   description: z.string().max(500).optional(),
-  priceSol: z.number().positive().max(1000),
+  priceValue: z.number().positive().max(1000000),
+  currency: z.nativeEnum(AssetCurrency).default("SOL"),
   accessTerm: z.string().max(32).optional(),
   mintName: z.string().max(64).optional(),
   symbol: z.string().max(12).optional(),
+  imageUrl: z.string().url().optional(),
+  walletAddress: z.string().min(32),
 });
 
 export async function POST(request: Request) {
   try {
     const body = createSchema.parse(await request.json());
-    const { profile } = await requireCreatorByWallet(body.walletAddress);
+    
+    const user = await prisma.user.findUnique({
+      where: { walletAddress: body.walletAddress },
+      include: { creatorProfile: true },
+    });
+    const profile = user?.creatorProfile;
+    if (!profile) {
+      return NextResponse.json({ error: "Creator profile not found" }, { status: 404 });
+    }
 
-    const lamports = solToLamports(body.priceSol);
-    const solLabel = formatSolFromLamports(lamports);
-    const variants = buildDefaultVariants(body.archetype, body.title, lamports);
+    const isFiat = body.currency === "USD";
+    const minorUnits = isFiat ? Math.round(body.priceValue * 100) : solToLamports(body.priceValue);
+    const displayLabel = isFiat ? `$${body.priceValue.toFixed(2)}` : formatSolFromLamports(minorUnits.toString());
+    const variants = buildDefaultVariants(body.archetype, body.title, BigInt(minorUnits));
 
     const maxSort = await prisma.digitalAsset.aggregate({
       where: { creatorProfileId: profile.id },
@@ -44,12 +55,13 @@ export async function POST(request: Request) {
         sortOrder: (maxSort._max.sortOrder ?? -1) + 1,
         title: body.title,
         description: body.description ?? defaultDescription(body.archetype),
-        currency: "SOL",
-        priceMinorUnits: lamports,
-        buttonLabel: defaultButtonLabel(body.archetype, solLabel),
+        currency: body.currency,
+        priceMinorUnits: minorUnits,
+        buttonLabel: defaultButtonLabel(body.archetype, displayLabel),
         accessTerm: body.accessTerm,
         mintName: body.mintName,
         symbol: body.symbol,
+        imageUrl: body.imageUrl,
         variants,
       },
     });

@@ -1,6 +1,6 @@
 import { NextResponse } from "next/server";
 import { z } from "zod";
-import { CreatorAuthError, requireCreatorByWallet } from "@/lib/creator-auth";
+import { CreatorAuthError } from "@/lib/creator-auth";
 import { prisma } from "@/lib/db";
 
 function normalizeOptionalString(value: string | null | undefined) {
@@ -29,7 +29,6 @@ function validatePublicUrl(value: string | null | undefined, label: string) {
 }
 
 const patchSchema = z.object({
-  walletAddress: z.string().min(32),
   displayName: z.string().min(2).max(64).optional(),
   bio: z.string().max(280).optional().nullable(),
   websiteUrl: z.string().max(2048).optional().nullable(),
@@ -37,12 +36,19 @@ const patchSchema = z.object({
   coverUrl: z.string().max(2048).optional().nullable(),
   discordWebhookUrl: z.string().max(2048).optional().nullable(),
   accessWebhookUrl: z.string().max(2048).optional().nullable(),
+  walletAddress: z.string().min(32),
 });
 
 export async function PATCH(request: Request) {
   try {
     const body = patchSchema.parse(await request.json());
-    const { profile } = await requireCreatorByWallet(body.walletAddress);
+    
+    const user = await prisma.user.findUnique({
+      where: { walletAddress: body.walletAddress },
+      include: { creatorProfile: true },
+    });
+    const profile = user?.creatorProfile;
+    if (!profile) return NextResponse.json({ error: "Creator not found" }, { status: 404 });
 
     const websiteUrl = normalizeOptionalString(body.websiteUrl);
     const avatarUrl = normalizeOptionalString(body.avatarUrl);

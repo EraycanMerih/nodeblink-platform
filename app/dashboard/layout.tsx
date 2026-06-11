@@ -1,7 +1,7 @@
 import { SiteFooter } from "@/components/site-footer";
 import { DashboardHeader } from "@/components/dashboard-header";
 import { DashboardShell } from "@/components/dashboard-shell";
-import { SolanaWalletProvider } from "@/components/wallet-provider";
+import { UnifiedWalletProvider } from "@/components/unified-wallet-provider";
 
 export const metadata = {
   title: "Dashboard",
@@ -9,11 +9,11 @@ export const metadata = {
 
 export default function DashboardLayout({ children }: { children: React.ReactNode }) {
   return (
-    <SolanaWalletProvider>
+    <UnifiedWalletProvider>
       <DashboardHeader />
       <DashboardShell>{children}</DashboardShell>
       <SiteFooter />
-    </SolanaWalletProvider>
+    </UnifiedWalletProvider>
   );
 }
 

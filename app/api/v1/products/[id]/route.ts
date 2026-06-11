@@ -1,7 +1,7 @@
 import { NextResponse } from "next/server";
 import { z } from "zod";
 import { ProductStatus } from "@prisma/client";
-import { CreatorAuthError, requireCreatorByWallet } from "@/lib/creator-auth";
+import { CreatorAuthError } from "@/lib/creator-auth";
 import {
   buildDefaultVariants,
   defaultButtonLabel,
@@ -11,11 +11,11 @@ import {
 import { prisma } from "@/lib/db";
 
 const patchSchema = z.object({
-  walletAddress: z.string().min(32),
   title: z.string().min(2).max(120).optional(),
   description: z.string().max(500).optional(),
   priceSol: z.number().positive().max(1000).optional(),
   buttonLabel: z.string().max(80).optional(),
+  imageUrl: z.string().optional(),
 });
 
 type RouteContext = { params: Promise<{ id: string }> };
@@ -24,7 +24,16 @@ export async function PATCH(request: Request, context: RouteContext) {
   try {
     const { id } = await context.params;
     const body = patchSchema.parse(await request.json());
-    const { profile } = await requireCreatorByWallet(body.walletAddress);
+    const { searchParams } = new URL(request.url);
+    const walletAddress = searchParams.get("wallet");
+    if (!walletAddress) return NextResponse.json({ error: "wallet required" }, { status: 400 });
+
+    const user = await prisma.user.findUnique({
+      where: { walletAddress },
+      include: { creatorProfile: true },
+    });
+    const profile = user?.creatorProfile;
+    if (!profile) return NextResponse.json({ error: "Creator not found" }, { status: 404 });
 
     const existing = await prisma.digitalAsset.findFirst({
       where: { id, creatorProfileId: profile.id },
@@ -52,6 +61,7 @@ export async function PATCH(request: Request, context: RouteContext) {
           (body.priceSol !== undefined
             ? defaultButtonLabel(existing.archetype, solLabel)
             : undefined),
+        imageUrl: body.imageUrl,
         variants:
           body.priceSol !== undefined || body.title
             ? buildDefaultVariants(existing.archetype, title, lamports)
@@ -78,13 +88,15 @@ export async function DELETE(request: Request, context: RouteContext) {
   try {
     const { id } = await context.params;
     const { searchParams } = new URL(request.url);
-    const wallet = searchParams.get("wallet")?.trim();
+    const walletAddress = searchParams.get("wallet");
+    if (!walletAddress) return NextResponse.json({ error: "wallet required" }, { status: 400 });
 
-    if (!wallet) {
-      return NextResponse.json({ error: "wallet query required" }, { status: 400 });
-    }
-
-    const { profile } = await requireCreatorByWallet(wallet);
+    const user = await prisma.user.findUnique({
+      where: { walletAddress },
+      include: { creatorProfile: true },
+    });
+    const profile = user?.creatorProfile;
+    if (!profile) return NextResponse.json({ error: "Creator not found" }, { status: 404 });
 
     const existing = await prisma.digitalAsset.findFirst({
       where: { id, creatorProfileId: profile.id },

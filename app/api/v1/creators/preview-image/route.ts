@@ -2,7 +2,7 @@ import { NextResponse } from "next/server";
 import fs from "fs";
 import path from "path";
 import crypto from "crypto";
-import { CreatorAuthError, requireCreatorByWallet } from "@/lib/creator-auth";
+import { CreatorAuthError } from "@/lib/creator-auth";
 import { prisma } from "@/lib/db";
 
 const ALLOWED_EXT = new Set([".png", ".jpg", ".jpeg"]);
@@ -10,18 +10,17 @@ const ALLOWED_EXT = new Set([".png", ".jpg", ".jpeg"]);
 export async function POST(request: Request) {
   try {
     const body = (await request.json()) as {
-      walletAddress?: string;
       filename?: string;
       base64Data?: string;
+      walletAddress?: string;
     };
 
-    const walletAddress = body.walletAddress?.trim() ?? "";
     const filename = body.filename?.trim() ?? "";
     const base64Data = body.base64Data?.trim() ?? "";
 
-    if (!walletAddress || !filename || !base64Data) {
+    if (!filename || !base64Data) {
       return NextResponse.json(
-        { error: "walletAddress, filename, and base64Data are required" },
+        { error: "filename and base64Data are required" },
         { status: 400 },
       );
     }
@@ -34,7 +33,13 @@ export async function POST(request: Request) {
       );
     }
 
-    const { profile } = await requireCreatorByWallet(walletAddress);
+    if (!body.walletAddress) return NextResponse.json({ error: "wallet required" }, { status: 400 });
+    const user = await prisma.user.findUnique({
+      where: { walletAddress: body.walletAddress },
+      include: { creatorProfile: true },
+    });
+    const profile = user?.creatorProfile;
+    if (!profile) return NextResponse.json({ error: "Creator not found" }, { status: 404 });
 
     const buffer = Buffer.from(base64Data, "base64");
     if (buffer.length > 6 * 1024 * 1024) {

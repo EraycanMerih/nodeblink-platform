@@ -1,4 +1,5 @@
 import { prisma } from "@/lib/db";
+import { verifySession } from "@/lib/auth";
 
 export class CreatorAuthError extends Error {
   status: number;
@@ -25,6 +26,24 @@ export async function requireCreatorByWallet(walletAddress: string) {
   }
 
   return { user, profile: user.creatorProfile };
+}
+
+export async function requireAuthenticatedCreator() {
+  const session = await verifySession();
+  if (!session) {
+    throw new CreatorAuthError("Unauthorized", 401);
+  }
+
+  const user = await prisma.user.findFirst({
+    where: { walletAddress: session.walletAddress },
+    include: { creatorProfile: true },
+  });
+
+  if (!user?.creatorProfile) {
+    throw new CreatorAuthError("Creator profile not found", 404);
+  }
+
+  return { user, profile: user.creatorProfile, session };
 }
 
 export async function requireCreatorForUsername(

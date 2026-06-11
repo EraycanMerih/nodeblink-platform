@@ -1,5 +1,6 @@
 /** @type {import('next').NextConfig} */
 const nextConfig = {
+  output: "standalone",
   reactStrictMode: true,
   transpilePackages: [
     "@solana/wallet-adapter-base",
@@ -8,6 +9,14 @@ const nextConfig = {
     "@solana/wallet-adapter-phantom",
     "@solana/wallet-adapter-solflare",
   ],
+  webpack: (config) => {
+    config.resolve.alias = {
+      ...config.resolve.alias,
+      "porto/internal": false,
+      "accounts": false,
+    };
+    return config;
+  },
   async headers() {
     return [
       {

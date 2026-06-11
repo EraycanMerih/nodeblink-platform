@@ -27,10 +27,10 @@ const DEFAULT_ACTION_ICON = "/action-icon.svg";
 function resolveActionIcon(profile: CreatorProfileView, origin: string) {
   const raw = profile.avatarUrl || DEFAULT_ACTION_ICON;
   if (raw.toLowerCase().includes("coresg-normal.trae.ai/api/ide/v1/text_to_image")) {
-    return new URL(`/creator/${profile.username}/action-icon?v=2`, origin).toString();
+    return new URL(`/pay/${profile.username}/action-icon?v=2`, origin).toString();
   }
   if (raw.toLowerCase().endsWith(".svg")) {
-    return new URL(`/creator/${profile.username}/action-icon?v=2`, origin).toString();
+    return new URL(`/pay/${profile.username}/action-icon?v=2`, origin).toString();
   }
   return new URL(raw, origin).toString();
 }
@@ -74,8 +74,7 @@ export interface CreatorActionProduct {
   symbol?: string;
   maxSupply?: number | null;
   accessTerm?: string | null;
-  deliveryUrl?: string | null;
-  webhookUrl?: string | null;
+  imageUrl?: string | null;
   variants: CreatorActionVariant[];
 }
 
@@ -91,8 +90,6 @@ export interface CreatorProfileView {
   featured: boolean;
   updatedAt: string;
   websiteUrl: string;
-  discordWebhookUrl: string;
-  accessWebhookUrl: string;
   products: CreatorActionProduct[];
 }
 
@@ -258,8 +255,6 @@ function fallbackCreator(username: string): CreatorProfileView {
     featured: false,
     updatedAt: new Date().toISOString(),
     websiteUrl: "",
-    discordWebhookUrl: "",
-    accessWebhookUrl: "",
     products: fallbackProducts(),
   };
 }
@@ -284,8 +279,7 @@ function normalizeProduct(product: {
   symbol: string | null;
   maxSupply: number | null;
   accessTerm: string | null;
-  deliveryUrl: string | null;
-  webhookUrl: string | null;
+  imageUrl?: string | null;
   variants: unknown;
 }): CreatorActionProduct | null {
   if (product.status !== ProductStatus.ACTIVE) {
@@ -310,8 +304,7 @@ function normalizeProduct(product: {
     symbol: product.symbol ?? undefined,
     maxSupply: product.maxSupply ?? undefined,
     accessTerm: product.accessTerm ?? undefined,
-    deliveryUrl: product.deliveryUrl ?? undefined,
-    webhookUrl: product.webhookUrl ?? undefined,
+    imageUrl: product.imageUrl ?? undefined,
     variants: parsedVariants.length
       ? parsedVariants.map((variant) => ({
           id: String(variant.id),
@@ -366,8 +359,6 @@ async function fetchCreatorFromDatabase(username: string) {
       featured: Boolean((record as { featured?: boolean }).featured),
       updatedAt: record.updatedAt.toISOString(),
       websiteUrl: record.websiteUrl ?? "",
-      discordWebhookUrl: record.discordWebhookUrl ?? "",
-      accessWebhookUrl: record.accessWebhookUrl ?? "",
       products: products.length > 0 ? products : fallbackProducts(),
     } satisfies CreatorProfileView;
   } catch (err) {

@@ -1,35 +1,39 @@
 import { NextResponse } from "next/server";
 import { ProductStatus } from "@prisma/client";
 import { prisma } from "@/lib/db";
+import { CreatorAuthError } from "@/lib/creator-auth";
 
 export async function GET(request: Request) {
   try {
     const { searchParams } = new URL(request.url);
-    const wallet = searchParams.get("wallet")?.trim();
-
-    if (!wallet) {
-      return NextResponse.json({ error: "wallet query required" }, { status: 400 });
+    const walletAddress = searchParams.get("wallet");
+    if (!walletAddress) {
+      return NextResponse.json({ error: "wallet parameter required" }, { status: 400 });
     }
+    
+    const user = await prisma.user.findUnique({
+      where: { walletAddress },
+      include: { creatorProfile: true },
+    });
+    
+    const profileRecord = user?.creatorProfile;
+    const wallet = walletAddress;
 
-    const user = await prisma.user.findFirst({
-      where: { walletAddress: wallet },
+    const record = profileRecord ? await prisma.creatorProfile.findUnique({
+      where: { id: profileRecord.id },
       include: {
-        creatorProfile: {
-          include: {
-            digitalAssets: {
-              where: { status: { not: ProductStatus.ARCHIVED } },
-              orderBy: { sortOrder: "asc" },
-            },
-            transactions: {
-              orderBy: { createdAt: "desc" },
-              take: 20,
-            },
-          },
+        digitalAssets: {
+          where: { status: { not: ProductStatus.ARCHIVED } },
+          orderBy: { sortOrder: "asc" },
+        },
+        transactions: {
+          orderBy: { createdAt: "desc" },
+          take: 20,
         },
       },
-    });
+    }) : null;
 
-    if (!user?.creatorProfile) {
+    if (!record) {
       return NextResponse.json({
         onboarded: false,
         wallet,
@@ -39,33 +43,32 @@ export async function GET(request: Request) {
       });
     }
 
-    const profile = user.creatorProfile;
-    const confirmed = profile.transactions.filter((t) => t.status === "CONFIRMED");
+    const confirmed = record.transactions.filter((t) => t.status === "CONFIRMED");
 
     return NextResponse.json({
       onboarded: true,
       wallet,
-      username: profile.username,
-      displayName: profile.displayName,
-      bio: profile.bio,
-      websiteUrl: profile.websiteUrl,
-      avatarUrl: profile.avatarUrl,
-      coverUrl: profile.coverUrl,
-      discordWebhookUrl: profile.discordWebhookUrl,
-      accessWebhookUrl: profile.accessWebhookUrl,
-      checkoutUrl: `/creator/${profile.username}`,
-      actionUrl: `/api/v1/actions/creator/${profile.username}`,
+      username: record.username,
+      displayName: record.displayName,
+      bio: record.bio,
+      websiteUrl: record.websiteUrl,
+      avatarUrl: record.avatarUrl,
+      coverUrl: record.coverUrl,
+      discordWebhookUrl: record.discordWebhookUrl,
+      accessWebhookUrl: record.accessWebhookUrl,
+      checkoutUrl: `/pay/${record.username}`,
+      actionUrl: `/api/v1/actions/creator/${record.username}`,
       metrics: {
-        volume: Number(profile.totalVolumeProcessed),
-        transactions: profile.totalTransactions,
-        products: profile.digitalAssets.length,
+        volume: Number(record.totalVolumeProcessed),
+        transactions: record.totalTransactions,
+        products: record.digitalAssets.length,
         confirmedSales: confirmed.length,
       },
-      products: profile.digitalAssets.map((asset) => ({
+      products: record.digitalAssets.map((asset) => ({
         ...asset,
         priceMinorUnits: asset.priceMinorUnits.toString(),
       })),
-      transactions: profile.transactions.map((tx) => ({
+      transactions: record.transactions.map((tx) => ({
         ...tx,
         grossAmount: tx.grossAmount.toString(),
         feeAmount: tx.feeAmount.toString(),

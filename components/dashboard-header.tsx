@@ -27,7 +27,7 @@ export function DashboardHeader() {
           NodeBlink
         </Link>
         <div style={{ display: "flex", alignItems: "center", gap: 10, flexWrap: "wrap" }}>
-          <Link href="/creator/demo" className="btn btn-secondary">
+          <Link href="/pay/demo" className="btn btn-secondary">
             Demo checkout
           </Link>
           <Link href="/" className="btn btn-ghost">

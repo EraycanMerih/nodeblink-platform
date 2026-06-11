@@ -23,7 +23,7 @@ export function middleware(request: NextRequest) {
   response.headers.set("Referrer-Policy", "strict-origin-when-cross-origin");
 
   const { pathname } = request.nextUrl;
-  const match = pathname.match(/^\/creator\/([^/]+)\/?$/);
+  const match = pathname.match(/^\/pay\/([^/]+)\/?$/);
   if (!match) {
     return response;
   }
@@ -50,7 +50,7 @@ export function middleware(request: NextRequest) {
 
   const actionUrl = `${origin}/api/v1/actions/creator/${encodeURIComponent(username)}`;
   const deepLink = `solana-action:${actionUrl}`;
-  const phantomBrowse = `phantom://browse/${origin.replace(/^https?:\/\//, "")}/creator/${encodeURIComponent(username)}`;
+  const phantomBrowse = `phantom://browse/${origin.replace(/^https?:\/\//, "")}/pay/${encodeURIComponent(username)}`;
 
   const target =
     request.nextUrl.searchParams.get("wallet") === "phantom"
@@ -61,5 +61,5 @@ export function middleware(request: NextRequest) {
 }
 
 export const config = {
-  matcher: ["/creator/:path*"],
+  matcher: ["/pay/:path*"],
 };

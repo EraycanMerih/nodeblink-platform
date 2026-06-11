@@ -1,56 +1,88 @@
-import Link from "next/link";
-import { ThemeToggle } from "@/components/theme-toggle";
+import Link from 'next/link';
+import { ThemeToggle } from '@/components/theme-toggle';
+import { Logo } from '@/components/logo';
 
 export function SiteHeader() {
   return (
-    <header className="nav-blur">
+    <header className="glass-nav" style={{ position: 'sticky', top: 0, zIndex: 50 }}>
       <div
         className="shell"
         style={{
-          display: "flex",
-          alignItems: "center",
-          justifyContent: "space-between",
-          padding: "14px 0",
-          flexWrap: "wrap",
-          gap: 12,
+          display: 'flex',
+          alignItems: 'center',
+          justifyContent: 'space-between',
+          height: 64,
+          gap: 16,
         }}
       >
+        {/* Logo */}
         <Link
           href="/"
-          className="display"
           style={{
-            display: "flex",
-            alignItems: "center",
-            fontWeight: 800,
-            fontSize: 22,
-            letterSpacing: "-0.03em",
+            display: 'flex',
+            alignItems: 'center',
           }}
         >
-          NodeBlink
+          <Logo size={56} />
         </Link>
-        <nav style={{ display: "flex", alignItems: "center", gap: 8, flexWrap: "wrap" }}>
-          <Link href="/#how-it-works" className="btn btn-ghost">
-            How it works
-          </Link>
-          <Link href="/#features" className="btn btn-ghost">
+
+        {/* Nav links */}
+        <nav
+          style={{
+            display: 'flex',
+            alignItems: 'center',
+            gap: 6,
+          }}
+        >
+          <Link
+            href="/#pillars"
+            className="btn-ghost"
+            style={{
+              fontSize: 14,
+              fontWeight: 500,
+              padding: '6px 12px',
+              borderRadius: 8,
+              transition: 'all 0.2s',
+            }}
+          >
             Features
           </Link>
-          <Link href="/#security" className="btn btn-ghost">
-            Security
+
+          <Link
+            href="/trust"
+            className="btn-ghost"
+            style={{
+              fontSize: 14,
+              fontWeight: 500,
+              padding: '6px 12px',
+              borderRadius: 8,
+              transition: 'all 0.2s',
+            }}
+          >
+            Trust API
           </Link>
-          <Link href="/#unfurl" className="btn btn-ghost">
-            Unfurl
+          <Link
+            href="/#pricing"
+            className="btn-ghost"
+            style={{
+              fontSize: 14,
+              fontWeight: 500,
+              padding: '6px 12px',
+              borderRadius: 8,
+              transition: 'all 0.2s',
+            }}
+          >
+            Pricing
           </Link>
-          <Link href="/#pricing" className="btn btn-ghost">
-            Fees
+          <div style={{ width: 1, height: 24, background: 'var(--color-line)', margin: '0 8px' }} />
+          <ThemeToggle />
+          <Link
+            href="/dashboard"
+            className="btn btn-primary"
+            style={{ fontSize: 14, padding: '8px 18px', marginLeft: 8 }}
+          >
+            Dashboard
           </Link>
-          <Link href="/dashboard" className="btn btn-secondary">
-            Creator Studio
-          </Link>
-          <Link href="/creator/demo" className="btn btn-primary">
-            Live demo
-          </Link>
-          <ThemeToggle className="btn btn-secondary" />
         </nav>
       </div>
     </header>

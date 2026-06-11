@@ -16,13 +16,14 @@ import { prisma } from "@/lib/db";
 export async function POST(req: Request) {
   try {
     const body = await req.json();
-    const { creatorUsername, filename, base64Data, title, priceSol, walletAddress } =
+    const { creatorUsername, filename, base64Data, title, priceValue, currency, walletAddress } =
       body as {
         creatorUsername?: string;
         filename?: string;
         base64Data?: string;
         title?: string;
-        priceSol?: number;
+        priceValue?: number;
+        currency?: string;
         walletAddress?: string;
       };
 
@@ -48,9 +49,10 @@ export async function POST(req: Request) {
 
     const assetKey = crypto.randomBytes(32).toString("base64");
     const encryptedKey = encryptBase64(assetKey);
-    const lamports = solToLamports(Number(priceSol) || 0.25);
+    const isFiat = currency === "USD";
+    const minorUnits = isFiat ? Math.round((Number(priceValue) || 1.00) * 100) : solToLamports(Number(priceValue) || 0.25);
     const productTitle = title?.trim() || filename.replace(/\.[^.]+$/, "");
-    const solLabel = formatSolFromLamports(lamports);
+    const displayLabel = isFiat ? `$${(Number(priceValue) || 1.00).toFixed(2)}` : formatSolFromLamports(minorUnits.toString());
 
     const maxSort = await prisma.digitalAsset.aggregate({
       where: { creatorProfileId: creator.id },
@@ -65,15 +67,15 @@ export async function POST(req: Request) {
         sortOrder: (maxSort._max.sortOrder ?? -1) + 1,
         title: productTitle,
         description: "Secure download delivered after payment confirmation.",
-        currency: "SOL",
-        priceMinorUnits: lamports,
+        currency: currency === "USD" ? "USD" : "SOL",
+        priceMinorUnits: minorUnits,
         storageUrl: `/uploads/${safeName}`,
         encryptedKey,
-        buttonLabel: defaultButtonLabel(ProductArchetype.UNLOCK_DOCUMENT, solLabel),
+        buttonLabel: defaultButtonLabel(ProductArchetype.UNLOCK_DOCUMENT, displayLabel),
         variants: buildDefaultVariants(
           ProductArchetype.UNLOCK_DOCUMENT,
           productTitle,
-          lamports,
+          BigInt(minorUnits),
         ),
       },
     });

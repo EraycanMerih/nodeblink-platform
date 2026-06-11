@@ -2,9 +2,9 @@ import { NextResponse } from "next/server";
 import { z } from "zod";
 import { prisma } from "@/lib/db";
 import { PublicKey } from "@solana/web3.js";
+import { verifySession } from "@/lib/auth";
 
 const bodySchema = z.object({
-  walletAddress: z.string().min(32),
   username: z
     .string()
     .min(3)
@@ -12,24 +12,29 @@ const bodySchema = z.object({
     .regex(/^[a-z0-9_-]+$/i, "Username must be alphanumeric"),
   displayName: z.string().min(2).max(64),
   bio: z.string().max(280).optional(),
+  walletAddress: z.string().min(32),
 });
 
 export async function POST(request: Request) {
   try {
     const json = await request.json();
     const body = bodySchema.parse(json);
+    const walletAddress = body.walletAddress;
 
-    try {
-      new PublicKey(body.walletAddress);
-    } catch {
-      return NextResponse.json({ error: "Invalid wallet address" }, { status: 400 });
+    const isEVM = /^0x[a-fA-F0-9]{40}$/.test(walletAddress);
+    if (!isEVM) {
+      try {
+        new PublicKey(walletAddress);
+      } catch {
+        return NextResponse.json({ error: "Invalid wallet address" }, { status: 400 });
+      }
     }
 
     const username = body.username.toLowerCase();
 
     const existing = await prisma.user.findFirst({
       where: {
-        OR: [{ username }, { walletAddress: body.walletAddress }],
+        OR: [{ username }, { walletAddress }],
       },
     });
 
@@ -43,13 +48,13 @@ export async function POST(request: Request) {
     const user = await prisma.user.create({
       data: {
         username,
-        walletAddress: body.walletAddress,
+        walletAddress,
         creatorProfile: {
           create: {
             username,
             displayName: body.displayName,
             bio: body.bio,
-            publicKey: body.walletAddress,
+            publicKey: walletAddress,
             treasuryWallet: process.env.TREASURY_WALLET,
             avatarUrl: "/action-icon.svg",
           },

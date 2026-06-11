@@ -28,6 +28,10 @@ export async function generateMetadata(): Promise<Metadata> {
       template: "%s | NodeBlink",
     },
     description,
+    icons: {
+      icon: "/logo.png",
+      apple: "/logo.png",
+    },
     metadataBase: new URL(origin),
     alternates: { canonical: origin },
     openGraph: {

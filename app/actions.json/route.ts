@@ -10,23 +10,23 @@ export async function GET(request: Request) {
   const document: ActionsJson = {
     rules: [
       {
-        pathPattern: "/creator/*",
+        pathPattern: "/pay/*",
         apiPath: "/api/v1/actions/creator/*",
       },
       {
-        pathPattern: `${origin}/creator/*`,
+        pathPattern: `${origin}/pay/*`,
         apiPath: `${origin}/api/v1/actions/creator/*`,
       },
       {
-        pathPattern: `https://www.${host}/creator/*`,
+        pathPattern: `https://www.${host}/pay/*`,
         apiPath: `${origin}/api/v1/actions/creator/*`,
       },
       {
-        pathPattern: "https://nodeblink.dev/creator/*",
+        pathPattern: "https://nodeblink.dev/pay/*",
         apiPath: `${origin}/api/v1/actions/creator/*`,
       },
       {
-        pathPattern: "https://api.nodeblink.dev/creator/*",
+        pathPattern: "https://api.nodeblink.dev/pay/*",
         apiPath: `${origin}/api/v1/actions/creator/*`,
       },
     ],

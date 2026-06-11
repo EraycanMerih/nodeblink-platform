@@ -1,4 +1,4 @@
-﻿-- CreateEnum
+-- CreateEnum
 CREATE TYPE "ProductArchetype" AS ENUM ('TIP', 'UNLOCK_DOCUMENT', 'MINT_NFT', 'ACCESS_PASS');
 
 -- CreateEnum

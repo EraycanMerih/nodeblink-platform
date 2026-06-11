@@ -8,6 +8,8 @@ datasource db {
   directUrl = env("DIRECT_URL")
 }
 
+// ─── Enums ────────────────────────────────────────────────────────────────────
+
 enum ProductArchetype {
   TIP
   UNLOCK_DOCUMENT
@@ -24,6 +26,7 @@ enum ProductStatus {
 enum AssetCurrency {
   SOL
   USDC
+  USD
 }
 
 enum TransactionStatus {
@@ -43,39 +46,49 @@ enum AdminRole {
   ADMIN
 }
 
+enum TrustLevel {
+  UNVERIFIED
+  COMMUNITY
+  VERIFIED
+  FEATURED
+}
+
+// ─── Models ───────────────────────────────────────────────────────────────────
+
 model User {
-  id            String          @id @default(cuid())
-  walletAddress String          @unique
-  username      String          @unique
-  email         String?
-  createdAt     DateTime        @default(now())
-  updatedAt     DateTime        @updatedAt
+  id             String          @id @default(cuid())
+  walletAddress  String          @unique
+  username       String          @unique
+  email          String?
+  createdAt      DateTime        @default(now())
+  updatedAt      DateTime        @updatedAt
   creatorProfile CreatorProfile?
 }
 
 model CreatorProfile {
-  id                   String         @id @default(cuid())
-  userId               String         @unique
-  user                 User           @relation(fields: [userId], references: [id], onDelete: Cascade)
-  username             String         @unique
+  id                   String                       @id @default(cuid())
+  userId               String                       @unique
+  user                 User                         @relation(fields: [userId], references: [id], onDelete: Cascade)
+  username             String                       @unique
   displayName          String
   bio                  String?
   avatarUrl            String?
   coverUrl             String?
   publicKey            String
   treasuryWallet       String?
-  platformFeeBps       Int            @default(200)
-  featured             Boolean        @default(false)
+  platformFeeBps       Int                          @default(200)
+  featured             Boolean                      @default(false)
   websiteUrl           String?
   discordWebhookUrl    String?
   accessWebhookUrl     String?
-  totalVolumeProcessed Decimal        @default(0)
-  totalTransactions    Int            @default(0)
+  totalVolumeProcessed Decimal                      @default(0)
+  totalTransactions    Int                          @default(0)
+  stripeAccountId      String?
   digitalAssets        DigitalAsset[]
   transactions         Transaction[]
   verificationRequests CreatorVerificationRequest[]
-  createdAt            DateTime       @default(now())
-  updatedAt            DateTime       @updatedAt
+  createdAt            DateTime                     @default(now())
+  updatedAt            DateTime                     @updatedAt
 }
 
 model CreatorVerificationRequest {
@@ -126,24 +139,38 @@ model DigitalAsset {
   metadataUrl      String?
   deliveryUrl      String?
   webhookUrl       String?
+  imageUrl         String?
   variants         Json?
   createdAt        DateTime         @default(now())
   updatedAt        DateTime         @updatedAt
 }
 
 model Transaction {
-  id                String            @id @default(cuid())
-  signature         String?           @unique
-  creatorProfileId  String?
-  creatorProfile    CreatorProfile?   @relation(fields: [creatorProfileId], references: [id], onDelete: SetNull)
-  productId         String?
-  senderWallet      String
-  recipientWallet   String
-  grossAmount       Decimal
-  feeAmount         Decimal
-  currency          AssetCurrency     @default(SOL)
-  status            TransactionStatus @default(PENDING)
-  metadata          Json?
-  createdAt         DateTime          @default(now())
-  confirmedAt       DateTime?
+  id               String            @id @default(cuid())
+  signature        String?           @unique
+  creatorProfileId String?
+  creatorProfile   CreatorProfile?   @relation(fields: [creatorProfileId], references: [id], onDelete: SetNull)
+  productId        String?
+  senderWallet     String
+  recipientWallet  String
+  grossAmount      Decimal
+  feeAmount        Decimal
+  currency         AssetCurrency     @default(SOL)
+  status           TransactionStatus @default(PENDING)
+  metadata         Json?
+  createdAt        DateTime          @default(now())
+  confirmedAt      DateTime?
+}
+
+model TrustRecord {
+  id            String     @id @default(cuid())
+  walletAddress String     @unique
+  level         TrustLevel @default(UNVERIFIED)
+  platform      String?
+  handle        String?
+  displayName   String?
+  proofUrl      String?
+  verifiedAt    DateTime?
+  createdAt     DateTime   @default(now())
+  updatedAt     DateTime   @updatedAt
 }
