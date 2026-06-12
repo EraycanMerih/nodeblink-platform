@@ -25,7 +25,7 @@ export function DashboardShell({ children }: { children: React.ReactNode }) {
   return (
     <div className="shell" style={{ padding: "32px 0 64px" }}>
       <div className="dashboard-grid">
-        <aside className="dashboard-sidebar" style={{ display: 'flex', flexDirection: 'column', gap: 32 }}>
+        <aside className="dashboard-sidebar" style={{ display: 'flex', flexDirection: 'column', gap: 32, zIndex: 50 }}>
           
           <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between" }}>
             <span className="display" style={{ fontSize: 20, fontWeight: 600 }}>

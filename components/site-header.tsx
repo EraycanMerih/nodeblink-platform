@@ -34,47 +34,49 @@ export function SiteHeader() {
             gap: 6,
           }}
         >
-          <Link
-            href="/#pillars"
-            className="btn-ghost"
-            style={{
-              fontSize: 14,
-              fontWeight: 500,
-              padding: '6px 12px',
-              borderRadius: 8,
-              transition: 'all 0.2s',
-            }}
-          >
-            Features
-          </Link>
+          <div className="desktop-only" style={{ display: 'flex', gap: 6, alignItems: 'center' }}>
+            <Link
+              href="/#pillars"
+              className="btn-ghost"
+              style={{
+                fontSize: 14,
+                fontWeight: 500,
+                padding: '6px 12px',
+                borderRadius: 8,
+                transition: 'all 0.2s',
+              }}
+            >
+              Features
+            </Link>
 
-          <Link
-            href="/trust"
-            className="btn-ghost"
-            style={{
-              fontSize: 14,
-              fontWeight: 500,
-              padding: '6px 12px',
-              borderRadius: 8,
-              transition: 'all 0.2s',
-            }}
-          >
-            Trust API
-          </Link>
-          <Link
-            href="/#pricing"
-            className="btn-ghost"
-            style={{
-              fontSize: 14,
-              fontWeight: 500,
-              padding: '6px 12px',
-              borderRadius: 8,
-              transition: 'all 0.2s',
-            }}
-          >
-            Pricing
-          </Link>
-          <div style={{ width: 1, height: 24, background: 'var(--color-line)', margin: '0 8px' }} />
+            <Link
+              href="/trust"
+              className="btn-ghost"
+              style={{
+                fontSize: 14,
+                fontWeight: 500,
+                padding: '6px 12px',
+                borderRadius: 8,
+                transition: 'all 0.2s',
+              }}
+            >
+              Trust API
+            </Link>
+            <Link
+              href="/#pricing"
+              className="btn-ghost"
+              style={{
+                fontSize: 14,
+                fontWeight: 500,
+                padding: '6px 12px',
+                borderRadius: 8,
+                transition: 'all 0.2s',
+              }}
+            >
+              Pricing
+            </Link>
+            <div style={{ width: 1, height: 24, background: 'var(--color-line)', margin: '0 8px' }} />
+          </div>
           <ThemeToggle />
           <Link
             href="/dashboard"

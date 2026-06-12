@@ -978,4 +978,18 @@ html.dark .orb {
   .prose {
     font-size: 15px;
   }
+  
+  .desktop-only {
+    display: none !important;
+  }
+  
+  .trust-hero {
+    flex-direction: column !important;
+    padding: 32px 20px !important;
+  }
+  
+  .trust-grid {
+    grid-template-columns: 1fr !important;
+    gap: 32px !important;
+  }
 }

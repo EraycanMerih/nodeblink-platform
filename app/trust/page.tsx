@@ -16,7 +16,7 @@ export default function TrustPage() {
       <main className="flex-1" style={{ paddingTop: 64 }}>
         <div className="shell" style={{ maxWidth: 1400 }}>
           
-          <div className="hero-mesh" style={{ padding: '64px 40px', borderRadius: 32, marginBottom: 40, textAlign: 'left', display: 'flex', alignItems: 'center', justifyContent: 'space-between', gap: 40, overflow: 'hidden' }}>
+          <div className="hero-mesh trust-hero" style={{ padding: '64px 40px', borderRadius: 32, marginBottom: 40, textAlign: 'left', display: 'flex', alignItems: 'center', justifyContent: 'space-between', gap: 40, overflow: 'hidden' }}>
             <div style={{ position: 'relative', zIndex: 1, maxWidth: 600 }} className="stack">
               <span className="badge" style={{ width: 'fit-content', background: 'var(--color-panel)', border: '1px solid var(--color-line)', color: 'var(--text)' }}>
                 <Shield size={13} style={{ color: 'var(--brand-start)' }}/> Trust Registry API
@@ -52,7 +52,7 @@ export default function TrustPage() {
             </div>
           </div>
 
-          <div style={{ display: 'grid', gridTemplateColumns: '1fr 400px', gap: 64, alignItems: 'start', paddingBottom: 80 }}>
+          <div className="trust-grid" style={{ display: 'grid', gridTemplateColumns: '1fr 400px', gap: 64, alignItems: 'start', paddingBottom: 80 }}>
             <div className="stack" style={{ gap: 48 }}>
               
               <section>
