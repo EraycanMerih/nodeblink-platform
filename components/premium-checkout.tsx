@@ -26,6 +26,7 @@ export function PremiumCheckout({ creator, actionApiUrl, mobile, productId }: Pr
   const [status, setStatus] = useState<string | null>(null);
   const [busy, setBusy] = useState(false);
   const [transactionId, setTransactionId] = useState<string | null>(null);
+  const [buyerEmail, setBuyerEmail] = useState("");
 
   const visibleProducts = useMemo(() => {
     if (!productId) return creator.products;
@@ -48,6 +49,11 @@ export function PremiumCheckout({ creator, actionApiUrl, mobile, productId }: Pr
         return;
       }
 
+      if (!buyerEmail || !buyerEmail.includes("@")) {
+        setStatus("Please enter a valid email address for delivery.");
+        return;
+      }
+
       setBusy(true);
       setStatus("Preparing secure transaction…");
 
@@ -60,7 +66,7 @@ export function PremiumCheckout({ creator, actionApiUrl, mobile, productId }: Pr
         const response = await fetch(`${actionApiUrl}?${query}`, {
           method: "POST",
           headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({ account: publicKey.toBase58() }),
+          body: JSON.stringify({ account: publicKey.toBase58(), email: buyerEmail }),
         });
 
         const payload = await response.json();
@@ -107,7 +113,7 @@ export function PremiumCheckout({ creator, actionApiUrl, mobile, productId }: Pr
         setBusy(false);
       }
     },
-    [actionApiUrl, connection, publicKey, signTransaction],
+    [actionApiUrl, connection, publicKey, signTransaction, buyerEmail],
   );
 
   return (
@@ -129,6 +135,14 @@ export function PremiumCheckout({ creator, actionApiUrl, mobile, productId }: Pr
       </div>
 
       <div className="stack" style={{ gap: 12 }}>
+        <input
+          type="email"
+          placeholder="Email address for delivery..."
+          value={buyerEmail}
+          onChange={(e) => setBuyerEmail(e.target.value)}
+          disabled={busy}
+          style={{ width: "100%", padding: "12px 16px", borderRadius: 8, border: "1px solid var(--color-line)", background: "transparent", color: "var(--text)", marginBottom: 8 }}
+        />
         {visibleProducts.map((product) => (
           <div key={product.id} className="stack" style={{ gap: 12 }}>
             {product.variants.map((variant) => (

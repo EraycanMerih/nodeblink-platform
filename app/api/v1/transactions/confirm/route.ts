@@ -113,6 +113,7 @@ export async function POST(req: NextRequest) {
     ) {
       const asset = await prisma.digitalAsset.findUnique({
         where: { id: String(meta.productId) },
+        include: { creatorProfile: true },
       });
       if (!asset?.encryptedKey || !asset.storageUrl) {
         return corsJson({ error: "Asset delivery not configured" }, 500);
@@ -121,6 +122,16 @@ export async function POST(req: NextRequest) {
       const downloadUrl = asset.storageUrl.startsWith("http")
         ? asset.storageUrl
         : `${PUBLIC_BASE_URL}${asset.storageUrl}`;
+      if (meta.buyerEmail) {
+        const { sendPurchaseEmail } = await import('@/lib/email');
+        await sendPurchaseEmail({
+          toEmail: String(meta.buyerEmail),
+          productTitle: asset.title,
+          creatorName: asset.creatorProfile.displayName,
+          downloadUrl,
+          decryptionKey: key,
+        });
+      }
       return corsJson({ status: "ok", downloadUrl, key });
     }
 

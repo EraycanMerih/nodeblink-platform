@@ -41,6 +41,25 @@ export async function POST(request: NextRequest) {
           metadata: { stripeSessionId: session.id, paymentMethod: 'card' },
         },
       });
+
+      const email = session.customer_details?.email;
+      if (email) {
+        const asset = await prisma.digitalAsset.findUnique({ where: { id: productId }, include: { creatorProfile: true } });
+        if (asset && asset.storageUrl) {
+          const { decryptBase64 } = await import('@/lib/crypto');
+          const { sendPurchaseEmail } = await import('@/lib/email');
+          const { PUBLIC_BASE_URL } = await import('@/lib/env');
+          const key = asset.encryptedKey ? decryptBase64(asset.encryptedKey) : undefined;
+          const downloadUrl = asset.storageUrl.startsWith('http') ? asset.storageUrl : `${PUBLIC_BASE_URL}${asset.storageUrl}`;
+          await sendPurchaseEmail({
+            toEmail: email,
+            productTitle: asset.title,
+            creatorName: asset.creatorProfile.displayName,
+            downloadUrl,
+            decryptionKey: key,
+          });
+        }
+      }
     }
   }
 
