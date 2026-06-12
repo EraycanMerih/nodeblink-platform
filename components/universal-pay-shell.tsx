@@ -57,9 +57,16 @@ export function UniversalPayShell({ creator, actionApiUrl, mobile, productId, is
         <div className="orb orb-2"></div>
       </div>
       
-      <main className="shell animate-rise" style={{ padding: isEmbed ? '16px 0 16px' : '60px 0 100px', position: 'relative', zIndex: 10, maxWidth: 900 }}>
+      <main className="shell animate-rise" style={{ 
+        padding: isEmbed ? '0' : '60px 0 100px', 
+        width: isEmbed ? '100%' : 'min(1200px, calc(100% - 48px))',
+        position: 'relative', 
+        zIndex: 10, 
+        maxWidth: 900,
+        margin: isEmbed ? '0' : 'auto'
+      }}>
         {/* State-of-the-art Glassmorphic Widget Container */}
-        <div className="widget-container">
+        <div className={`widget-container ${isEmbed ? 'embed-mode' : ''}`}>
           
           {/* Header Section */}
           <header className="widget-header">
