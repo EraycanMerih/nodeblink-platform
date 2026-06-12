@@ -58,7 +58,7 @@ export async function SiteFooter() {
             <p style={{ margin: 0, fontWeight: 600, fontSize: 14, color: 'var(--text)' }}>Products</p>
             {[
               { label: 'Creator Studio', href: '/dashboard' },
-              { label: 'Universal Pay', href: '/pay/demo' },
+              { label: 'Universal Pay', href: '/' },
               { label: 'Trust Registry', href: '/trust' },
             ].map((l) => (
               <Link key={l.href} href={l.href} className="muted" style={{ fontSize: 14, transition: 'color 0.2s' }}>
@@ -74,7 +74,7 @@ export async function SiteFooter() {
               { label: 'Actions JSON', href: '/actions.json' },
               { label: 'Trust API', href: '/api/v1/trust/demo' },
               { label: 'Health Check', href: '/api/health' },
-              { label: 'Demo Creator', href: '/pay/demo' },
+              { label: 'Demo Creator', href: '/' },
             ].map((l) => (
               <Link key={l.href} href={l.href} className="muted" style={{ fontSize: 14, transition: 'color 0.2s' }}>
                 {l.label}
@@ -88,7 +88,7 @@ export async function SiteFooter() {
             <a href={`mailto:${SUPPORT_EMAIL}`} className="muted" style={{ fontSize: 14, transition: 'color 0.2s' }}>
               {SUPPORT_EMAIL}
             </a>
-            <Link href="/pay/demo" className="muted" style={{ fontSize: 14, transition: 'color 0.2s' }}>
+            <Link href="/" className="muted" style={{ fontSize: 14, transition: 'color 0.2s' }}>
               Live demo
             </Link>
           </div>

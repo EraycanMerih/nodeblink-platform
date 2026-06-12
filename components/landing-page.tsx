@@ -98,7 +98,7 @@ export function LandingPage({ stats }: Props) {
               <Link href="/dashboard" className="btn btn-primary" style={{ padding: '14px 28px', fontSize: 16 }}>
                 Open Creator Studio <ArrowRight size={18} />
               </Link>
-              <Link href="/pay/demo" className="btn btn-secondary" style={{ padding: '14px 28px', fontSize: 16 }}>
+              <Link href="/dashboard" className="btn btn-secondary" style={{ padding: '14px 28px', fontSize: 16 }}>
                 Try live demo
               </Link>
             </div>
