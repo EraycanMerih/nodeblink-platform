@@ -55,13 +55,15 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
       ],
     },
     twitter: {
-      card: 'summary_large_image',
+      card: 'player',
       title: `${product.title} — ${price}`,
       description,
       images: [`${origin}/pay/${username}/${productId}/opengraph-image`],
     },
     other: {
-      'solana:action:url': `${origin}/api/v1/actions/creator/${username}?productId=${productId}`,
+      'twitter:player': `${origin}/embed/pay/${username}/${productId}`,
+      'twitter:player:width': '400',
+      'twitter:player:height': '600',
     },
   };
 }

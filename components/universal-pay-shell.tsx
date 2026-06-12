@@ -14,9 +14,10 @@ interface Props {
   actionApiUrl: string;
   mobile: boolean;
   productId?: string;
+  isEmbed?: boolean;
 }
 
-export function UniversalPayShell({ creator, actionApiUrl, mobile, productId }: Props) {
+export function UniversalPayShell({ creator, actionApiUrl, mobile, productId, isEmbed }: Props) {
   const [mode, setMode] = useState<PaymentMode>('choose');
   const [cardLoading, setCardLoading] = useState(false);
   const [cardStatus, setCardStatus] = useState<string | null>(null);
@@ -56,7 +57,7 @@ export function UniversalPayShell({ creator, actionApiUrl, mobile, productId }: 
         <div className="orb orb-2"></div>
       </div>
       
-      <main className="shell animate-rise" style={{ padding: '60px 0 100px', position: 'relative', zIndex: 10, maxWidth: 900 }}>
+      <main className="shell animate-rise" style={{ padding: isEmbed ? '16px 0 16px' : '60px 0 100px', position: 'relative', zIndex: 10, maxWidth: 900 }}>
         {/* State-of-the-art Glassmorphic Widget Container */}
         <div className="widget-container">
           

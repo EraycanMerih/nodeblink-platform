@@ -1,0 +1,11 @@
+export default function EmbedLayout({
+  children,
+}: {
+  children: React.ReactNode;
+}) {
+  return (
+    <div style={{ width: '100vw', height: '100vh', overflow: 'auto', background: '#030712' }}>
+      {children}
+    </div>
+  );
+}
