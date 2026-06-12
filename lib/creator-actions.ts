@@ -375,6 +375,51 @@ export async function getCreatorProfile(username: string): Promise<CreatorProfil
   return databaseRecord ?? fallbackCreator(username);
 }
 
+export async function getCreatorProfileByDomain(domain: string): Promise<CreatorProfileView | null> {
+  try {
+    const record = await prisma.creatorProfile.findUnique({
+      where: { customDomain: domain.toLowerCase() },
+      include: {
+        digitalAssets: {
+          where: { status: ProductStatus.ACTIVE },
+          orderBy: { sortOrder: "asc" },
+        },
+      },
+    });
+
+    if (!record) {
+      return null;
+    }
+
+    const products = record.digitalAssets
+      .map((asset) => normalizeProduct(asset))
+      .filter(
+        (asset): asset is CreatorActionProduct => asset !== null,
+      );
+
+    return {
+      username: record.username,
+      displayName: record.displayName,
+      bio: record.bio ?? "",
+      avatarUrl: record.avatarUrl ?? DEFAULT_ACTION_ICON,
+      coverUrl: record.coverUrl ?? "",
+      publicKey: record.publicKey,
+      treasuryWallet: record.treasuryWallet ?? fallbackTreasuryWallet,
+      platformFeeBps: clampFeeBps(record.platformFeeBps),
+      featured: Boolean((record as { featured?: boolean }).featured),
+      updatedAt: record.updatedAt.toISOString(),
+      websiteUrl: record.websiteUrl ?? "",
+      products: products.length > 0 ? products : fallbackProducts(),
+    } satisfies CreatorProfileView;
+  } catch (err) {
+    console.warn(
+      "Prisma unavailable for custom domain:",
+      String(err),
+    );
+    return null;
+  }
+}
+
 export function buildActionMetadata(
   profile: CreatorProfileView,
   origin: string,

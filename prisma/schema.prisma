@@ -60,6 +60,7 @@ model User {
   walletAddress  String          @unique
   username       String          @unique
   email          String?
+  legalAcceptedAt DateTime?
   createdAt      DateTime        @default(now())
   updatedAt      DateTime        @updatedAt
   creatorProfile CreatorProfile?
@@ -79,6 +80,7 @@ model CreatorProfile {
   platformFeeBps       Int                          @default(200)
   featured             Boolean                      @default(false)
   websiteUrl           String?
+  customDomain         String?                      @unique
   discordWebhookUrl    String?
   accessWebhookUrl     String?
   totalVolumeProcessed Decimal                      @default(0)

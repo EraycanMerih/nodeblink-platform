@@ -1,8 +1,26 @@
 import { NextRequest, NextResponse } from "next/server";
 
 export function middleware(request: NextRequest) {
-  const response = NextResponse.next();
   const { pathname } = request.nextUrl;
+  const host = request.headers.get("host") || "";
+
+  // Check for custom domains
+  // Ignore localhost and nodeblink.dev
+  const isCustomDomain = 
+    !host.includes("localhost") && 
+    !host.includes("127.0.0.1") && 
+    !host.endsWith("nodeblink.dev") &&
+    !host.endsWith("nodeblink.vercel.app");
+
+  let response: NextResponse;
+
+  if (isCustomDomain && !pathname.startsWith("/api") && !pathname.startsWith("/_next")) {
+    const url = request.nextUrl.clone();
+    url.pathname = `/domain/${host}${pathname}`;
+    response = NextResponse.rewrite(url);
+  } else {
+    response = NextResponse.next();
+  }
 
   if (pathname.startsWith("/embed/")) {
     // Allow framing from Twitter/X for Player Cards

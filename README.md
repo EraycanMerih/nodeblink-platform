@@ -1,30 +1,27 @@
 # NodeBlink
 
-Solana creator checkout — tips, gated PDFs, access passes, and collectibles with native Actions discovery.
+**Open-Source, Non-Custodial Creator Routing Protocol**
 
-## URLs (production)
+NodeBlink provides seamless checkout widgets for creators on Solana and Fiat (Stripe). We do not custody funds. Payments route directly from buyer to creator.
 
-| URL | What |
-|-----|------|
-| [nodeblink.dev](https://nodeblink.dev) | Full app — landing, Creator Studio, checkout, API |
-| [api.nodeblink.dev](https://api.nodeblink.dev) | Domain alias (serves the same app) |
-| [nodeblink.dev/dashboard](https://nodeblink.dev/dashboard) | Creator Studio |
-| [nodeblink.dev/creator/demo](https://nodeblink.dev/creator/demo) | Demo checkout |
+## Features
+- **Non-Custodial Routing:** No central treasury risk. Creators connect their own Stripe Express or Solana wallets.
+- **Custom Domain Resilience:** Map your own domains (e.g. `pay.creator.com`) so your checkout is never subject to platform-wide bans.
+- **Player Cards:** Embed natively in Twitter/X with seamless UI.
+- **Multi-Currency:** Support for SOL, USDC, and Fiat.
 
-## Local development
+## Getting Started
 
-```bash
-cp .env.example .env   # fill in secrets
-npm install
-npm run dev            # http://localhost:3000
-```
+1. Clone the repository.
+2. Run `cp .env.example .env` and fill in your keys.
+3. Install dependencies: `npm install`
+4. Start development server: `npm run dev`
+
+## Legal & Security
+This frontend contains zero hardcoded secrets and relies heavily on environmental variables for infrastructure bindings. It acts purely as a routing intermediary between buyers, Stripe Connect, and the Solana blockchain.
 
 ## Deploy
-
-- **DigitalOcean** — `bash scripts/setup-droplet.sh` (Next.js on port 3001, nginx proxy)
-
-See [docs/DEPLOYMENT.md](docs/DEPLOYMENT.md).
+See [docs/DEPLOYMENT.md](docs/DEPLOYMENT.md) for DigitalOcean instructions.
 
 ## Stack
-
-Next.js 15 · Prisma · Supabase PostgreSQL · Solana Actions · Wallet Adapter
+Next.js 15 · Prisma · Supabase PostgreSQL · Solana Actions · Stripe Connect

@@ -13,6 +13,7 @@ const bodySchema = z.object({
   displayName: z.string().min(2).max(64),
   bio: z.string().max(280).optional(),
   walletAddress: z.string().min(32),
+  legalAccepted: z.boolean().refine((val) => val === true, "You must accept the terms of service."),
 });
 
 export async function POST(request: Request) {
@@ -49,6 +50,7 @@ export async function POST(request: Request) {
       data: {
         username,
         walletAddress,
+        legalAcceptedAt: body.legalAccepted ? new Date() : null,
         creatorProfile: {
           create: {
             username,

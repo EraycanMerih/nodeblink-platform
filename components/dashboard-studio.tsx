@@ -101,6 +101,7 @@ export function DashboardStudio() {
   const [data, setData] = useState<DashboardPayload | null>(null);
   const [loading, setLoading] = useState(false);
   const [onboarding, setOnboarding] = useState(false);
+  const [legalAccepted, setLegalAccepted] = useState(false);
   const [savingProduct, setSavingProduct] = useState(false);
   
   const [form, setForm] = useState({ username: "", displayName: "", bio: "" });
@@ -265,6 +266,7 @@ export function DashboardStudio() {
           username: form.username,
           displayName: form.displayName,
           bio: form.bio,
+          legalAccepted,
         }),
       });
       const payload = await response.json();
@@ -423,7 +425,20 @@ export function DashboardStudio() {
             <span>Bio (optional)</span>
             <textarea className="input" rows={3} placeholder="What do you create?" value={form.bio} onChange={(e) => setForm((f) => ({ ...f, bio: e.target.value }))} />
           </label>
-          <button type="button" className="btn btn-primary" style={{ marginTop: 16 }} disabled={onboarding} onClick={onboard}>
+          
+          <label style={{ display: 'flex', alignItems: 'flex-start', gap: 12, marginTop: 16, cursor: 'pointer' }}>
+            <input 
+              type="checkbox" 
+              checked={legalAccepted} 
+              onChange={(e) => setLegalAccepted(e.target.checked)} 
+              style={{ marginTop: 4, cursor: 'pointer', width: 16, height: 16 }}
+            />
+            <span style={{ fontSize: 13, color: 'var(--muted)', lineHeight: 1.5 }}>
+              By creating an account, I agree to the <a href="/legal/terms" target="_blank" style={{ color: 'var(--text)', textDecoration: 'underline' }}>Terms of Service</a> and <a href="/legal/privacy" target="_blank" style={{ color: 'var(--text)', textDecoration: 'underline' }}>Privacy Policy</a>, and understand NodeBlink does not custody funds.
+            </span>
+          </label>
+
+          <button type="button" className="btn btn-primary" style={{ marginTop: 24 }} disabled={onboarding || !legalAccepted} onClick={onboard}>
             {onboarding ? <Loader2 size={16} className="animate-spin" /> : <Plus size={16} />} Claim username
           </button>
         </div>

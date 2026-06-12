@@ -196,6 +196,11 @@ export function UniversalPayShell({ creator, actionApiUrl, mobile, productId, is
             )}
           </div>
         </div>
+
+        {/* Legal Disclaimer Footer */}
+        <div style={{ marginTop: 16, textAlign: 'center', fontSize: 12, color: 'var(--muted)', opacity: 0.7, padding: '0 16px' }}>
+          NodeBlink is a non-custodial routing protocol. We do not hold or custody any user funds. All payments settle directly to the merchant.
+        </div>
       </main>
     </SolanaWalletProvider>
   );

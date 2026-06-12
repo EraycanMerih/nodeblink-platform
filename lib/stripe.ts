@@ -51,7 +51,7 @@ export async function createStripeCheckoutSession(params: {
     cancel_url: params.cancelUrl,
     metadata: params.metadata,
     payment_intent_data: {
-      application_fee_amount: Math.round(params.amountCents * 0.005), // 0.5% NodeBlink routing margin
+      application_fee_amount: Math.round(params.amountCents * 0.05), // 5% NodeBlink routing margin
       transfer_data: {
         destination: params.creatorStripeAccountId,
       },
