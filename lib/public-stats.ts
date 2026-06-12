@@ -92,7 +92,7 @@ export async function getPublicProtocolStats(origin: string): Promise<PublicProt
     platformFeeBps: PLATFORM_FEE_BPS,
     platformFeePercent: PLATFORM_FEE_PERCENT,
     creatorSharePercent: CREATOR_SPLIT_PERCENT,
-    feeRangeLabel: `${minFee}%–${maxFee}%`,
+    feeRangeLabel: `Flat 5.0%`,
     creators,
     products: products || demoProfile.products.length,
     confirmedPayments,
