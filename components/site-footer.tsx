@@ -92,6 +92,19 @@ export async function SiteFooter() {
               Live demo
             </Link>
           </div>
+
+          {/* Legal */}
+          <div className="stack" style={{ gap: 12 }}>
+            <p style={{ margin: 0, fontWeight: 600, fontSize: 14, color: 'var(--text)' }}>Legal</p>
+            {[
+              { label: 'Terms of Service', href: '/legal/terms' },
+              { label: 'Privacy Policy', href: '/legal/privacy' },
+            ].map((l) => (
+              <Link key={l.href} href={l.href} className="muted" style={{ fontSize: 14, transition: 'color 0.2s' }}>
+                {l.label}
+              </Link>
+            ))}
+          </div>
         </div>
 
         {/* Bottom bar */}

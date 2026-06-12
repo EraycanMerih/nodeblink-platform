@@ -42,7 +42,7 @@ const PILLARS = [
 
 const COMPARISON = [
   { feature: 'Fiat + Crypto payments', nodeblink: true, upwork: false, kofi: false, helio: false },
-  { feature: 'Platform fee', nodeblink: 'Flat 2.5%', upwork: '10% – 20%', kofi: '3% – 5%', helio: '1% – 2%' },
+  { feature: 'Platform fee', nodeblink: 'Flat 5%', upwork: '10% – 20%', kofi: '5%', helio: '1% – 2%' },
   { feature: 'Multi-wallet routing', nodeblink: true, upwork: false, kofi: false, helio: false },
   { feature: 'Trust Registry API', nodeblink: true, upwork: false, kofi: false, helio: false },
   { feature: 'Non-custodial', nodeblink: true, upwork: false, kofi: false, helio: true },
@@ -52,7 +52,7 @@ const FAQS = [
   { q: 'Can I accept both card payments and crypto?', a: 'Yes. Your NodeBlink link shows payers a choice: Pay via Card (Stripe) or Pay via Wallet (Phantom, Solflare, MetaMask). You get paid either way.' },
   { q: 'What is the Trust Registry?', a: 'NodeBlink maps verified social identities (Twitter, GitHub, YouTube) to wallet addresses. When wallets and dApps query our open API, they can show buyers who they are actually paying.' },
   { q: 'Do you hold my funds?', a: 'Never. Crypto payments go directly to your wallet. Card payments settle via Stripe Connect directly to your bank account. NodeBlink never holds funds.' },
-  { q: 'What are the fees?', a: 'We charge a flat 2.5% protocol fee on all transactions. For fiat payments, standard Stripe processing fees also apply. Trust API has a free tier + enterprise.' },
+  { q: 'What are the fees?', a: 'We charge a flat 5% protocol fee on all transactions. For fiat payments, standard Stripe processing fees also apply. Trust API has a free tier + enterprise.' },
 ];
 
 export function LandingPage({ stats }: Props) {
@@ -216,8 +216,8 @@ export function LandingPage({ stats }: Props) {
         <h2 className="display section-title" style={{ margin: 0, textAlign: 'center' }}>Simple, fair pricing</h2>
         <div style={{ display: 'grid', gap: 24, gridTemplateColumns: 'repeat(auto-fit, minmax(240px, 1fr))' }}>
           {[
-            { product: 'NodeBlink Pay (Crypto)', fee: 'Flat 2.0%', note: '2.0% base fee. 1.5% custom fee for large creators.', icon: Wallet },
-            { product: 'NodeBlink Pay (Fiat)', fee: 'Stripe + 2.0%', note: 'Standard Stripe processing + 2.0% routing margin.', icon: CreditCard },
+            { product: 'NodeBlink Pay (Crypto)', fee: 'Flat 5%', note: '5% base fee. 3% custom fee for large creators.', icon: Wallet },
+            { product: 'NodeBlink Pay (Fiat)', fee: 'Stripe + 5%', note: 'Standard Stripe processing + 5% routing margin.', icon: CreditCard },
             { product: 'Trust API', fee: 'Free / Enterprise', note: 'Free tier for standard queries. Enterprise licensing available.', icon: Shield },
           ].map((tier) => {
             const Icon = tier.icon;

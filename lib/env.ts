@@ -31,8 +31,8 @@ export const MARKETING_SITE_URL =
 export const TREASURY_WALLET =
   process.env.TREASURY_WALLET || "11111111111111111111111111111111";
 
-/** Platform fee: 2.5% (250 basis points) — configurable */
-export const PLATFORM_FEE_BPS = Number(process.env.PLATFORM_FEE_BPS || 200);
+/** Platform fee: 5.0% (500 basis points) — configurable */
+export const PLATFORM_FEE_BPS = Number(process.env.PLATFORM_FEE_BPS || 500);
 
 export const CREATOR_SPLIT_BPS = 10_000 - PLATFORM_FEE_BPS;
 
