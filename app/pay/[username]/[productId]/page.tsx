@@ -45,14 +45,25 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
       description,
       siteName: 'NodeBlink',
       type: 'website',
+      images: [
+        {
+          url: `${origin}/pay/${username}/${productId}/opengraph-image`,
+          width: 1200,
+          height: 630,
+          alt: `${product.title} by ${creator.displayName}`,
+        },
+      ],
     },
     twitter: {
-      card: 'summary_large_image',
+      card: 'player',
       title: `${product.title} — ${price}`,
       description,
+      images: [`${origin}/pay/${username}/${productId}/opengraph-image`],
     },
     other: {
-      'solana-action': `${origin}/api/v1/actions/creator/${encodeURIComponent(username)}?productId=${productId}`,
+      'twitter:player': `${origin}/embed/pay/${username}/${productId}`,
+      'twitter:player:width': '400',
+      'twitter:player:height': '600',
     },
   };
 }

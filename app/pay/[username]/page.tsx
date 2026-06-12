@@ -29,14 +29,25 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
       description,
       siteName: 'NodeBlink',
       type: 'website',
+      images: [
+        {
+          url: ogImageUrl,
+          width: 1200,
+          height: 630,
+          alt: `Pay ${creator.displayName} on NodeBlink`,
+        },
+      ],
     },
     twitter: {
-      card: 'summary_large_image',
+      card: 'player',
       title: `Pay ${creator.displayName}`,
       description,
+      images: [ogImageUrl],
     },
     other: {
-      'solana-action': `${origin}/api/v1/actions/creator/${encodeURIComponent(username)}`,
+      'twitter:player': `${origin}/embed/pay/${username}`,
+      'twitter:player:width': '400',
+      'twitter:player:height': '600',
     },
   };
 }
