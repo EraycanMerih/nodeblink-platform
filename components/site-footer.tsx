@@ -120,7 +120,7 @@ export async function SiteFooter() {
           }}
         >
           <p className="muted" style={{ margin: 0, fontSize: 13 }}>
-            © {new Date().getFullYear()} NodeBlink. Non-custodial. Open protocol.
+            © {new Date().getFullYear()} NodeBlink. Patent Pending. Non-custodial. Open protocol.
           </p>
           <p className="muted" style={{ margin: 0, fontSize: 13, opacity: 0.8 }}>
             Solana mainnet · Stripe Connect · Open Trust Registry
