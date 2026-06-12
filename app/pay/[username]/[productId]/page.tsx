@@ -61,7 +61,7 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
       images: [`${origin}/pay/${username}/${productId}/opengraph-image`],
     },
     other: {
-      'solana-action': `${origin}/api/v1/actions/creator/${username}?productId=${productId}`,
+      'solana:action:url': `${origin}/api/v1/actions/creator/${username}?productId=${productId}`,
     },
   };
 }

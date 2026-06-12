@@ -45,7 +45,7 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
       images: [ogImageUrl],
     },
     other: {
-      'solana-action': `${origin}/api/v1/actions/creator/${username}`,
+      'solana:action:url': `${origin}/api/v1/actions/creator/${username}`,
     },
   };
 }
