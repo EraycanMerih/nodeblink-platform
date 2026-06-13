@@ -149,7 +149,7 @@ export default async function OpengraphImage({ params }: Props) {
                       style={{ borderRadius: 12, objectFit: "cover" }}
                     />
                   )}
-                  <span>by @{profile.username}</span>
+                  <span>{`by @${profile.username}`}</span>
                 </div>
                 {priceLabel && (
                   <div
@@ -333,7 +333,7 @@ export default async function OpengraphImage({ params }: Props) {
                 color: "rgba(255, 255, 255, 0.85)",
               }}
             >
-              by {displayName}
+              {`by ${displayName}`}
             </div>
             {/* Badges */}
             <div
@@ -365,7 +365,7 @@ export default async function OpengraphImage({ params }: Props) {
                     style={{ borderRadius: 12, objectFit: "cover" }}
                   />
                 )}
-                <span>@{profile.username}</span>
+                <span>{`@${profile.username}`}</span>
               </div>
               {priceLabel && (
                 <div
