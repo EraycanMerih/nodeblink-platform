@@ -45,7 +45,7 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
       images: [ogImageUrl],
     },
     other: {
-      'twitter:player': `${origin}/embed/universal?u=${encodeURIComponent(username)}`,
+      'twitter:player': `${origin}/embed/pay/eraycan?u=${encodeURIComponent(username)}`,
       'twitter:player:width': '400',
       'twitter:player:height': '600',
     },
