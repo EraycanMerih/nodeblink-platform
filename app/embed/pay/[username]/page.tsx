@@ -8,14 +8,16 @@ const MOBILE_UA = /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini
 
 interface Props {
   params: Promise<{ username: string }>;
-  searchParams: Promise<{ product?: string }>;
+  searchParams: Promise<{ product?: string; u?: string; p?: string }>;
 }
 
 export const dynamic = 'force-dynamic';
 
 export default async function EmbedUniversalPayPage({ params, searchParams }: Props) {
-  const { username } = await params;
-  const { product: productId } = await searchParams;
+  const resolvedParams = await params;
+  const resolvedSearch = await searchParams;
+  const username = resolvedSearch.u || resolvedParams.username;
+  const productId = resolvedSearch.p || resolvedSearch.product;
   const origin = await getRequestOrigin();
   const headersList = await headers();
   const userAgent = headersList.get('user-agent') ?? '';

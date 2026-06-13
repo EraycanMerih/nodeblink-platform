@@ -8,12 +8,16 @@ const MOBILE_UA = /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini
 
 interface Props {
   params: Promise<{ username: string; productId: string }>;
+  searchParams: Promise<{ u?: string; p?: string }>;
 }
 
 export const dynamic = 'force-dynamic';
 
-export default async function EmbedProductPayPage({ params }: Props) {
-  const { username, productId } = await params;
+export default async function EmbedProductPayPage({ params, searchParams }: Props) {
+  const resolvedParams = await params;
+  const resolvedSearch = await searchParams;
+  const username = resolvedSearch.u || resolvedParams.username;
+  const productId = resolvedSearch.p || resolvedParams.productId;
   const origin = await getRequestOrigin();
   const headersList = await headers();
   const userAgent = headersList.get('user-agent') ?? '';
