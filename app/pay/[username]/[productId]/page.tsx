@@ -47,7 +47,7 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
       type: 'website',
       images: [
         {
-          url: `${origin}/pay/${username}/${productId}/opengraph-image`,
+          url: `${origin}/pay/${username}/${productId}/opengraph-image?v=5`,
           width: 1200,
           height: 630,
           alt: `${product.title} by ${creator.displayName}`,
@@ -58,7 +58,7 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
       card: 'player',
       title: `${product.title} — ${price}`,
       description,
-      images: [`${origin}/pay/${username}/${productId}/opengraph-image`],
+      images: [`${origin}/pay/${username}/${productId}/opengraph-image?v=5`],
     },
     other: {
       'twitter:player': `${origin}/embed/pay/${username}/${productId}`,
