@@ -49,6 +49,7 @@ export async function GET(request: Request) {
       onboarded: true,
       wallet,
       username: record.username,
+      customDomain: record.customDomain,
       displayName: record.displayName,
       bio: record.bio,
       websiteUrl: record.websiteUrl,

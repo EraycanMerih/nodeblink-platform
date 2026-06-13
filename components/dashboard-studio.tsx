@@ -38,8 +38,11 @@ type DashboardPayload = {
   username?: string;
   displayName?: string;
   bio?: string | null;
-  checkoutUrl?: string;
-  actionUrl?: string;
+  discordWebhookUrl: string | null;
+  accessWebhookUrl: string | null;
+  checkoutUrl: string;
+  customDomain: string | null;
+  actionUrl: string;
   metrics: {
     volume: number;
     transactions: number;
@@ -178,8 +181,9 @@ export function DashboardStudio() {
 
   const checkoutLink = useMemo(() => {
     if (!data?.checkoutUrl || typeof window === "undefined") return "";
+    if (data.customDomain) return `https://${data.customDomain}`;
     return `${window.location.origin}${data.checkoutUrl}`;
-  }, [data?.checkoutUrl]);
+  }, [data?.checkoutUrl, data?.customDomain]);
 
   const filteredProducts = useMemo(() => {
     if (!data) return [];
@@ -572,7 +576,7 @@ export function DashboardStudio() {
                     ) : (
                       <div className="stack" style={{ gap: 0 }}>
                         {data.products.map((product, index) => {
-                          const productUrl = typeof window !== 'undefined' ? `${window.location.origin}/pay/${data.username}/${product.id}` : '';
+                          const productUrl = typeof window !== 'undefined' ? (data.customDomain ? `https://${data.customDomain}/${product.id}` : `${window.location.origin}/pay/${data.username}/${product.id}`) : '';
                           return (
                           <div key={product.id} style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', padding: '20px 24px', borderTop: index !== 0 ? '1px solid var(--color-line)' : 'none', transition: 'background 0.2s ease' }} onMouseOver={e => e.currentTarget.style.background = 'color-mix(in srgb, var(--color-panel), var(--text) 2%)'} onMouseOut={e => e.currentTarget.style.background = 'transparent'}>
                             <div style={{ display: 'flex', alignItems: 'center', gap: 16 }}>
