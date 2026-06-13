@@ -61,7 +61,7 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
       images: [`${origin}/pay/${username}/${productId}/opengraph-image`],
     },
     other: {
-      'twitter:player': `${origin}/embed/pay/eraycan?u=${encodeURIComponent(username)}&p=${encodeURIComponent(productId)}`,
+      'twitter:player': `${origin}/embed/pay/${username}/${productId}`,
       'twitter:player:width': '400',
       'twitter:player:height': '600',
     },

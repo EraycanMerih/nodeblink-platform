@@ -14,7 +14,7 @@ export const size = {
 export const contentType = "image/png";
 
 type Props = {
-  params: { username: string; productId: string };
+  params: Promise<{ username: string; productId: string }>;
 };
 
 function formatPrice(amountMinorUnits: number, currency: string): string {
@@ -26,7 +26,7 @@ function formatPrice(amountMinorUnits: number, currency: string): string {
 }
 
 export default async function OpengraphImage({ params }: Props) {
-  const { username, productId } = params;
+  const { username, productId } = await params;
 
   try {
     const profile = await getCreatorProfile(username);
@@ -240,14 +240,33 @@ export default async function OpengraphImage({ params }: Props) {
             flexDirection: "column",
             justifyContent: "flex-end",
             padding: 72,
-            background:
-              "radial-gradient(circle at 18% 20%, rgba(85, 214, 190, 0.62) 0%, rgba(6, 42, 36, 0) 58%), radial-gradient(circle at 84% 78%, rgba(172, 252, 217, 0.44) 0%, rgba(6, 42, 36, 0) 60%), linear-gradient(135deg, #061a17 0%, #050d0c 70%, #050807 100%)",
+            background: "linear-gradient(135deg, #061a17 0%, #050d0c 70%, #050807 100%)",
             color: "rgba(243, 246, 255, 0.98)",
             fontFamily: "Inter, system-ui, -apple-system, Segoe UI, sans-serif",
             position: "relative",
             overflow: "hidden",
           }}
         >
+          <div
+            style={{
+              position: "absolute",
+              top: -200,
+              left: -200,
+              width: 1000,
+              height: 1000,
+              background: "radial-gradient(circle, rgba(85, 214, 190, 0.62) 0%, rgba(6, 42, 36, 0) 60%)",
+            }}
+          />
+          <div
+            style={{
+              position: "absolute",
+              bottom: -200,
+              right: -200,
+              width: 1000,
+              height: 1000,
+              background: "radial-gradient(circle, rgba(172, 252, 217, 0.44) 0%, rgba(6, 42, 36, 0) 60%)",
+            }}
+          />
           <div
             style={{
               position: "absolute",
@@ -395,12 +414,23 @@ export default async function OpengraphImage({ params }: Props) {
             flexDirection: "column",
             justifyContent: "center",
             padding: 72,
-            background:
-              "radial-gradient(circle at 18% 20%, rgba(85, 214, 190, 0.55) 0%, rgba(6, 42, 36, 0) 55%), linear-gradient(135deg, #061a17 0%, #050d0c 70%, #050807 100%)",
+            background: "linear-gradient(135deg, #061a17 0%, #050d0c 70%, #050807 100%)",
             color: "rgba(243, 246, 255, 0.98)",
             fontFamily: "Inter, system-ui, -apple-system, Segoe UI, sans-serif",
+            position: "relative",
+            overflow: "hidden",
           }}
         >
+          <div
+            style={{
+              position: "absolute",
+              top: -200,
+              left: -200,
+              width: 1000,
+              height: 1000,
+              background: "radial-gradient(circle, rgba(85, 214, 190, 0.55) 0%, rgba(6, 42, 36, 0) 60%)",
+            }}
+          />
           <div
             style={{ display: "flex", flexDirection: "column", gap: 18 }}
           >

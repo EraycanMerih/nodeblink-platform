@@ -14,8 +14,8 @@ export const size = {
 export const contentType = "image/png";
 
 type Props = {
-  params: { username: string };
-  searchParams?: { product?: string };
+  params: Promise<{ username: string }>;
+  searchParams?: Promise<{ product?: string }>;
 };
 
 function formatPriceMinorUnits(amountMinorUnits: number, currency: string) {
@@ -27,13 +27,14 @@ function formatPriceMinorUnits(amountMinorUnits: number, currency: string) {
 }
 
 export default async function OpengraphImage({ params, searchParams }: Props) {
-  const username = params.username;
+  const { username } = await params;
+  const resolvedSearchParams = searchParams ? await searchParams : {};
   try {
     const profile = await getCreatorProfile(username);
     const displayName = profile.displayName || profile.username;
     
     // Check if the parameter is a single value or an array, depending on how Next.js parses it here.
-    const productParam = searchParams?.product;
+    const productParam = resolvedSearchParams.product;
     const productId = Array.isArray(productParam) ? productParam[0] : productParam;
 
     const product = productId
