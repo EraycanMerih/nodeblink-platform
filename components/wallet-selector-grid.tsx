@@ -8,33 +8,37 @@ type Props = {
 export function WalletSelectorGrid({ actionApiUrl, username }: Props) {
   const origin = typeof window !== 'undefined' ? window.location.origin : '';
   const encodedUsername = encodeURIComponent(username);
+  
+  // The full URL the wallet should open
+  const targetUrl = origin ? `${origin}/pay/${encodedUsername}` : `https://nodeblink.dev/pay/${encodedUsername}`;
+  const encodedTarget = encodeURIComponent(targetUrl);
 
   const wallets = [
     {
       name: 'Phantom',
       description: 'Open in Phantom wallet',
-      deepLink: `phantom://browse/${origin.replace(/^https?:\/\//, '')}/pay/${encodedUsername}`,
+      deepLink: `https://phantom.app/ul/browse/${encodedTarget}`,
       color: '#ab9ff2',
       bg: 'rgba(171,159,242,0.12)',
     },
     {
       name: 'Solflare',
       description: 'Open in Solflare wallet',
-      deepLink: `solflare://ul/v1/browse/${encodeURIComponent(`${origin}/pay/${encodedUsername}`)}?ref=${encodeURIComponent(origin)}`,
+      deepLink: `https://solflare.com/ul/v1/browse/${encodedTarget}?ref=${encodeURIComponent(origin || 'https://nodeblink.dev')}`,
       color: '#f07827',
       bg: 'rgba(240,120,39,0.12)',
     },
     {
       name: 'MetaMask',
       description: 'Open in MetaMask (EVM routing)',
-      deepLink: `metamask://`,
+      deepLink: `https://metamask.app.link/dapp/${targetUrl.replace(/^https?:\/\//, '')}`,
       color: '#e2761b',
       bg: 'rgba(226,118,27,0.12)',
     },
     {
       name: 'Coinbase',
       description: 'Open in Coinbase Wallet',
-      deepLink: `cbwallet://dapp?url=${encodeURIComponent(`${origin}/pay/${encodedUsername}`)}`,
+      deepLink: `https://go.cb-w.com/dapp?cb_url=${encodedTarget}`,
       color: '#0052ff',
       bg: 'rgba(0,82,255,0.1)',
     },
