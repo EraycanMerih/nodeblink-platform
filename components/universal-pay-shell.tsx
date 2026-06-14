@@ -2,7 +2,7 @@
 
 import { useState } from 'react';
 import { CreditCard, Wallet, ArrowRight, Loader2, Shield, CheckCircle2, Sparkles, Box } from 'lucide-react';
-import { SolanaWalletProvider } from '@/components/wallet-provider';
+import { UnifiedWalletProvider } from '@/components/unified-wallet-provider';
 import { PremiumCheckout } from '@/components/premium-checkout';
 import { WalletSelectorGrid } from '@/components/wallet-selector-grid';
 import type { CreatorProfileView } from '@/lib/creator-actions';
@@ -51,7 +51,7 @@ export function UniversalPayShell({ creator, actionApiUrl, mobile, productId, is
     : creator.products[0]; // Highlight the first or specific product
 
   return (
-    <SolanaWalletProvider>
+    <UnifiedWalletProvider>
       <div className="immersive-bg">
         <div className="orb orb-1"></div>
         <div className="orb orb-2"></div>
@@ -72,7 +72,7 @@ export function UniversalPayShell({ creator, actionApiUrl, mobile, productId, is
           <header className="widget-header">
             <div style={{ display: 'flex', alignItems: 'center', gap: 16 }}>
               <img
-                src={creator.avatarUrl && !creator.avatarUrl.endsWith('.svg') ? creator.avatarUrl : `/api/v1/creators/avatar-image?fallback`}
+                src={creator.avatarUrl || "/action-icon.svg"}
                 alt=""
                 className="widget-avatar"
               />
@@ -202,6 +202,6 @@ export function UniversalPayShell({ creator, actionApiUrl, mobile, productId, is
           NodeBlink is a non-custodial routing protocol. We do not hold or custody any user funds. All payments settle directly to the merchant.
         </div>
       </main>
-    </SolanaWalletProvider>
+    </UnifiedWalletProvider>
   );
 }

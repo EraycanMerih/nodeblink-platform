@@ -4,7 +4,7 @@ import { getStripe } from '@/lib/stripe';
 import { prisma } from '@/lib/db';
 
 const schema = z.object({
-  walletAddress: z.string().min(32),
+  walletAddress: z.string().min(1),
   productId: z.string().min(1),
   successUrl: z.string().url(),
   cancelUrl: z.string().url(),
