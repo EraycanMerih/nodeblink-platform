@@ -84,6 +84,15 @@ export function PremiumCheckout({ creator, actionApiUrl, mobile, productId }: Pr
           transaction = Transaction.from(bytes);
         }
 
+        // PRE-SIMULATE transaction to prevent Phantom's Blowfish from flagging failed simulations as malicious
+        setStatus("Verifying transaction…");
+        const simulation = await connection.simulateTransaction(transaction as any);
+        if (simulation.value.err) {
+          setStatus("Transaction simulation failed: Insufficient funds or invalid token account.");
+          setBusy(false);
+          return;
+        }
+
         const signed = await signTransaction(transaction);
         setStatus("Submitting to Solana…");
         const signature = await connection.sendRawTransaction(signed.serialize(), {
