@@ -41,61 +41,66 @@ export function WalletSelectorGrid({ actionApiUrl, username }: Props) {
   ];
 
   return (
-    <div
-      style={{
-        display: 'grid',
-        gap: 10,
-        gridTemplateColumns: 'repeat(auto-fit, minmax(160px, 1fr))',
-      }}
-    >
-      {wallets.map((wallet) => (
-        <a
-          key={wallet.name}
-          href={wallet.deepLink}
-          style={{
-            display: 'flex',
-            flexDirection: 'column',
-            gap: 8,
-            padding: '16px',
-            borderRadius: 14,
-            border: `1px solid ${wallet.color}33`,
-            background: wallet.bg,
-            textDecoration: 'none',
-            color: 'var(--text)',
-            transition: 'box-shadow 0.15s, transform 0.15s',
-            cursor: 'pointer',
-          }}
-          onMouseEnter={(e) => {
-            (e.currentTarget as HTMLElement).style.transform = 'translateY(-2px)';
-            (e.currentTarget as HTMLElement).style.boxShadow = `0 8px 24px ${wallet.color}22`;
-          }}
-          onMouseLeave={(e) => {
-            (e.currentTarget as HTMLElement).style.transform = '';
-            (e.currentTarget as HTMLElement).style.boxShadow = '';
-          }}
-        >
-          <div
+    <div className="stack" style={{ gap: 16 }}>
+      <div style={{ textAlign: "center", marginBottom: 8 }}>
+        <h4 style={{ margin: 0, fontSize: 16, fontWeight: 600, color: "var(--text)" }}>Open in Wallet App</h4>
+        <p style={{ margin: "4px 0 0", fontSize: 13, color: "var(--muted)" }}>Securely route this checkout to your preferred mobile wallet.</p>
+      </div>
+
+      <div className="stack" style={{ gap: 10 }}>
+        {wallets.map((wallet) => (
+          <a
+            key={wallet.name}
+            href={wallet.deepLink}
             style={{
-              width: 40,
-              height: 40,
-              borderRadius: 10,
-              background: `${wallet.color}1a`,
-              display: 'grid',
-              placeItems: 'center',
-              fontSize: 18,
-              fontWeight: 700,
-              color: wallet.color,
-              fontFamily: 'var(--font-display)',
+              display: 'flex',
+              alignItems: 'center',
+              gap: 16,
+              padding: '16px',
+              borderRadius: 16,
+              border: `1px solid var(--color-line)`,
+              background: 'var(--color-panel)',
+              textDecoration: 'none',
+              color: 'var(--text)',
+              transition: 'background 0.2s',
+              cursor: 'pointer',
+            }}
+            onMouseOver={(e) => {
+              (e.currentTarget as HTMLElement).style.background = wallet.bg;
+              (e.currentTarget as HTMLElement).style.borderColor = `${wallet.color}40`;
+            }}
+            onMouseOut={(e) => {
+              (e.currentTarget as HTMLElement).style.background = 'var(--color-panel)';
+              (e.currentTarget as HTMLElement).style.borderColor = `var(--color-line)`;
             }}
           >
-            {wallet.name[0]}
-          </div>
-          <div>
-            <strong style={{ fontSize: 14, display: 'block' }}>{wallet.name}</strong>
-            <span style={{ fontSize: 12, color: 'var(--muted)', lineHeight: 1.4 }}>{wallet.description}</span>
-          </div>
-        </a>
-      ))}
+            <div
+              style={{
+                width: 48,
+                height: 48,
+                borderRadius: 12,
+                background: `${wallet.color}1a`,
+                display: 'grid',
+                placeItems: 'center',
+                fontSize: 20,
+                fontWeight: 700,
+                color: wallet.color,
+                fontFamily: 'var(--font-display)',
+                flexShrink: 0
+              }}
+            >
+              {wallet.name[0]}
+            </div>
+            <div style={{ flex: 1 }}>
+              <strong style={{ fontSize: 15, display: 'block', fontWeight: 600 }}>{wallet.name}</strong>
+              <span style={{ fontSize: 13, color: 'var(--muted)', display: 'block', marginTop: 2 }}>{wallet.description}</span>
+            </div>
+            <div style={{ color: "var(--muted)", opacity: 0.5 }}>
+              <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="m9 18 6-6-6-6"/></svg>
+            </div>
+          </a>
+        ))}
+      </div>
     </div>
   );
 }

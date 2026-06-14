@@ -86,11 +86,16 @@ export function PremiumCheckout({ creator, actionApiUrl, mobile, productId }: Pr
 
         // PRE-SIMULATE transaction to prevent Phantom's Blowfish from flagging failed simulations as malicious
         setStatus("Verifying transaction…");
-        const simulation = await connection.simulateTransaction(transaction as any);
-        if (simulation.value.err) {
-          setStatus("Transaction simulation failed: Insufficient funds or invalid token account.");
-          setBusy(false);
-          return;
+        try {
+          const simulation = await connection.simulateTransaction(transaction as any);
+          if (simulation.value.err) {
+            setStatus("Transaction simulation failed: Insufficient funds or invalid token account.");
+            setBusy(false);
+            return;
+          }
+        } catch (simError) {
+          console.warn("Skipped simulation due to RPC error:", simError);
+          // Proceed anyway if public RPC rate-limits us
         }
 
         const signed = await signTransaction(transaction);
